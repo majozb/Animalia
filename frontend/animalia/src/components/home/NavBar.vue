@@ -1,16 +1,6 @@
 <template>
     <v-container>
       <v-row align="center" justify="space-between">
-        <!-- Logo -->
-        <v-col cols="auto">
-          <v-img
-            src="../../assets/logo.png"
-            alt="Web Logo"
-            height="50"
-            contain
-          ></v-img>
-        </v-col>
-        
         <!-- Navigation Links -->
         <v-col cols="auto">
           <v-btn className="navBtn" text to="/">Home</v-btn>

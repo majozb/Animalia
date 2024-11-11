@@ -7,19 +7,21 @@
  import FooterPage from '@/components/home/FooterPage.vue';
  import Banner from '@/components/home/BannerComponent.vue';
  import NavBar from '@/components/home/NavBar.vue';
+
+  
 </script>
 
 <template>
   <NavBar />
   <HomeImage/>
-  <!-- <ProductList /> -->
+  <ProductList />
   <Banner type="adoption" 
           title="Adopción" 
           subtitle="Nosotros necesitamos ayuda. Y ellos también." 
           description="Adopta un perro y llévalo a tu casa. Te lo agradecerá incondicionalmente." 
         />
-  <!-- <AdoptionList />
-  <ProviderList /> -->
+  <AdoptionList />
+  <ProviderList />
   <Banner type="services" 
           title="Servicios Que Ofrecemos" 
           subtitle="Explora nuestros servicios para mascotas y encuentra lo que necesitas." 

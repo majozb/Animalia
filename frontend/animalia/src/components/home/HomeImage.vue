@@ -92,4 +92,9 @@ button {
 button:hover {
   background-color: #0056b3;
 }
+
+/* Media Queries para ocultar los banners en pantallas más pequeñas */ 
+@media (max-width: 1000px) { 
+  .home-banner { display: none; } 
+}
 </style>

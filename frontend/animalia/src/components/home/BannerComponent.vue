@@ -123,4 +123,8 @@ export default {
   text-align: right;
   margin-left: 80%;
 }
+/* Media Queries para ocultar los banners en pantallas más pequeñas */ 
+@media (max-width: 1000px) { 
+  .banner-container { display: none; } 
+}
 </style>
