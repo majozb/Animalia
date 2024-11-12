@@ -18,6 +18,4 @@ const AdminSchema = new mongoose.Schema({
 	pets: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Pet', required: false }], // Relatioship with Pet collection
 });
 
-const Admin = mongoose.model('Admin', AdminSchema);
-
-export default Admin;
+export const Admin = mongoose.model('Admin', AdminSchema);
