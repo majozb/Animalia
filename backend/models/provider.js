@@ -28,6 +28,4 @@ const ProviderSchema = new mongoose.Schema({
 	products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true}], // Relatioship with Product collection
 });
 
-const Provider = mongoose.model('Provider', ProviderSchema);
-
-export default Provider;
+export const Provider = mongoose.model('Provider', ProviderSchema);

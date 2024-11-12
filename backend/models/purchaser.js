@@ -27,6 +27,4 @@ const PurchaserSchema = new mongoose.Schema({
   purchases : [{ type: mongoose.Schema.Types.ObjectId, ref: 'Purchase' }] // Relatioship with Purchase collection
 });
 
-const Purchaser = mongoose.model('Purchaser', PurchaserSchema);
-
-export default Purchaser;
+export const Purchaser = mongoose.model('Purchaser', PurchaserSchema);
