@@ -9,11 +9,12 @@
         :items="pets"
         titleField="name"
         :fields="[
-          { key: 'type', label: 'Tipo' },
-          { key: 'age', label: 'Edad' },
+          { key: 'type', label: 'Especie' },
+          { key: 'breed', label: 'Raza' },
+          { key: 'age', label: 'Edad' }
         ]"
         imageType="pets"
-        :previewFlag="true"
+        :previewFlag="false"
       />
   
       <!-- Prueba con lista de productos -->
@@ -22,8 +23,8 @@
         :items="products"
         titleField="name"
         :fields="[
-          { key: 'product', label: 'Producto' },
-          { key: 'size', label: 'Tamaño' },
+          { key: 'name', label: 'Producto' },
+          { key: 'weight', label: 'Tamaño' },
           { key: 'price', label: 'Precio' }
         ]"
         imageType="products"
@@ -139,7 +140,143 @@
           "breed": "Bichon",
           "vaccines": ["Rabia", "Parvovirus", "Moquillo"],
           "age": 3
-        }],
+        },
+        {
+          "_id": "635aa4e1f1b2a3d4e5f6c8d1",
+          "name": "Maya",
+          "owner": "635af7d4f1b2a3d4e5f6b9c1",
+          "type": "Perro",
+          "breed": "Bichon",
+          "vaccines": ["Rabia", "Parvovirus", "Moquillo"],
+          "age": 3
+        },
+        {
+          "_id": "635aa4e1f1b2a3d4e5f6c8d1",
+          "name": "Maya",
+          "owner": "635af7d4f1b2a3d4e5f6b9c1",
+          "type": "Perro",
+          "breed": "Bichon",
+          "vaccines": ["Rabia", "Parvovirus", "Moquillo"],
+          "age": 3
+        },
+        {
+          "_id": "635aa4e1f1b2a3d4e5f6c8d1",
+          "name": "Maya",
+          "owner": "635af7d4f1b2a3d4e5f6b9c1",
+          "type": "Perro",
+          "breed": "Bichon",
+          "vaccines": ["Rabia", "Parvovirus", "Moquillo"],
+          "age": 3
+        },
+        {
+          "_id": "635aa4e1f1b2a3d4e5f6c8d1",
+          "name": "Maya",
+          "owner": "635af7d4f1b2a3d4e5f6b9c1",
+          "type": "Perro",
+          "breed": "Bichon",
+          "vaccines": ["Rabia", "Parvovirus", "Moquillo"],
+          "age": 3
+        },
+        {
+          "_id": "635aa4e1f1b2a3d4e5f6c8d1",
+          "name": "Maya",
+          "owner": "635af7d4f1b2a3d4e5f6b9c1",
+          "type": "Perro",
+          "breed": "Bichon",
+          "vaccines": ["Rabia", "Parvovirus", "Moquillo"],
+          "age": 3
+        },
+        {
+          "_id": "635aa4e1f1b2a3d4e5f6c8d1",
+          "name": "Maya",
+          "owner": "635af7d4f1b2a3d4e5f6b9c1",
+          "type": "Perro",
+          "breed": "Bichon",
+          "vaccines": ["Rabia", "Parvovirus", "Moquillo"],
+          "age": 3
+        },
+        {
+          "_id": "635aa4e1f1b2a3d4e5f6c8d1",
+          "name": "Maya",
+          "owner": "635af7d4f1b2a3d4e5f6b9c1",
+          "type": "Perro",
+          "breed": "Bichon",
+          "vaccines": ["Rabia", "Parvovirus", "Moquillo"],
+          "age": 3
+        },
+        {
+          "_id": "635aa4e1f1b2a3d4e5f6c8d1",
+          "name": "Maya",
+          "owner": "635af7d4f1b2a3d4e5f6b9c1",
+          "type": "Perro",
+          "breed": "Bichon",
+          "vaccines": ["Rabia", "Parvovirus", "Moquillo"],
+          "age": 3
+        },
+        {
+          "_id": "635aa4e1f1b2a3d4e5f6c8d1",
+          "name": "Maya",
+          "owner": "635af7d4f1b2a3d4e5f6b9c1",
+          "type": "Perro",
+          "breed": "Bichon",
+          "vaccines": ["Rabia", "Parvovirus", "Moquillo"],
+          "age": 3
+        },
+        {
+          "_id": "635aa4e1f1b2a3d4e5f6c8d1",
+          "name": "Maya",
+          "owner": "635af7d4f1b2a3d4e5f6b9c1",
+          "type": "Perro",
+          "breed": "Bichon",
+          "vaccines": ["Rabia", "Parvovirus", "Moquillo"],
+          "age": 3
+        },
+        {
+          "_id": "635aa4e1f1b2a3d4e5f6c8d1",
+          "name": "Maya",
+          "owner": "635af7d4f1b2a3d4e5f6b9c1",
+          "type": "Perro",
+          "breed": "Bichon",
+          "vaccines": ["Rabia", "Parvovirus", "Moquillo"],
+          "age": 3
+        },
+        {
+          "_id": "635aa4e1f1b2a3d4e5f6c8d1",
+          "name": "Maya",
+          "owner": "635af7d4f1b2a3d4e5f6b9c1",
+          "type": "Perro",
+          "breed": "Bichon",
+          "vaccines": ["Rabia", "Parvovirus", "Moquillo"],
+          "age": 3
+        },
+        {
+          "_id": "635aa4e1f1b2a3d4e5f6c8d1",
+          "name": "Maya",
+          "owner": "635af7d4f1b2a3d4e5f6b9c1",
+          "type": "Perro",
+          "breed": "Bichon",
+          "vaccines": ["Rabia", "Parvovirus", "Moquillo"],
+          "age": 3
+        },
+        {
+          "_id": "635aa4e1f1b2a3d4e5f6c8d1",
+          "name": "Maya",
+          "owner": "635af7d4f1b2a3d4e5f6b9c1",
+          "type": "Perro",
+          "breed": "Bichon",
+          "vaccines": ["Rabia", "Parvovirus", "Moquillo"],
+          "age": 3
+        },
+        {
+          "_id": "635aa4e1f1b2a3d4e5f6c8d1",
+          "name": "Maya",
+          "owner": "635af7d4f1b2a3d4e5f6b9c1",
+          "type": "Perro",
+          "breed": "Bichon",
+          "vaccines": ["Rabia", "Parvovirus", "Moquillo"],
+          "age": 3
+        }
+      ],
         products: [{
           "_id": "634aa3d4f1b2a3d4e5f6a7b1",
           "name": "Comida Premium para Perros",
