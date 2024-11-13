@@ -23,13 +23,21 @@
           <v-card-subtitle>
             <div class="fields-container">
               <v-row no-gutters>
-                <v-col v-for="(field, index) in fields" :key="field.key" class="field-item" cols="auto">
+                <v-col v-for="(field, index) in fields" :key="field.key" class="field-item" cols="12">
                   <strong>{{ field.label }}:</strong> {{ item[field.key] }}
                   <!-- <span v-if="index < fields.length - 1" class="separator">■</span> -->
                 </v-col>
               </v-row>
             </div>
           </v-card-subtitle>
+            <v-row>
+            <v-col cols="12" class="d-flex justify-center">
+              <!-- Botón para ver más detalles del ítem -->
+              <v-btn color="primary" @click="$router.push(`/${item.imageType}/${item._id}`)">
+              Ver más
+              </v-btn>
+            </v-col>
+            </v-row>
         </v-card>
       </v-col>
     </v-row>

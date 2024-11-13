@@ -14,7 +14,7 @@
           { key: 'age', label: 'Edad' }
         ]"
         imageType="pets"
-        :previewFlag="false"
+        :previewFlag="true"
       />
   
       <!-- Prueba con lista de productos -->
