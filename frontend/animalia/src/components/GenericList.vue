@@ -12,7 +12,7 @@
         <v-card class="mb-2">
           <!-- Imagen del ítem -->
           <v-img
-            :src="getImagePath(item._id)"
+            :src="getImagePath(item)"
             alt="Imagen del item"
             aspect-ratio="1"
           ></v-img>
@@ -151,12 +151,13 @@ export default {
     window.removeEventListener("resize", this.updateShownItemsQuantity);
   },
   methods: {
-    getImagePath(id) {
+    getImagePath(item) {
       // Build the path to the image of the item
-      console.log(`../assets/${this.imageType}/${id}/main.jpg`);
-      const imagePath = new URL(`../assets/${this.imageType}/${id}/main.jpg`, import.meta.url).href;
+      // const imagePath = new URL(`../assets/${this.imageType}/${id}/main.jpg`, import.meta.url).href;
+      const imagePath = new URL(item.images[0], import.meta.url).href;
       console.log(imagePath);
       return imagePath;
+      return 
     },
     updateShownItemsQuantity() {
       // Update the number of items shown based on the screen size
