@@ -2,7 +2,6 @@
 <template>
     <v-container>
       <h1>Vista de Desarrollo</h1>
-  
       <!-- Prueba con lista de mascotas -->
       <generic-list
         title="Mascotas en Adopción"
@@ -29,19 +28,32 @@
         ]"
         imageType="products"
       />
+      <FilterBox filterBy="animals" :species="species" />
+      <FilterBox filterBy="products" />
     </v-container>
   </template>
   
   <script>
   import GenericList from "../components/GenericList.vue";
+  import FilterBox from "../components/FilterBox.vue";
   
   export default {
     name: "DevView",
     components: {
       GenericList,
+      FilterBox,
     },
     data() {
       return {
+        species: [
+          { key: "dogs", name: "Perros" },
+          { key: "cats", name: "Gatos" },
+          { key: "birds", name: "Aves" },
+          { key: "fish", name: "Peces" },
+          { key: "rodents", name: "Roedores" },
+          { key: "reptiles", name: "Reptiles" },
+        ],
+        
         pets: [
         {
           name: "Buddy",
