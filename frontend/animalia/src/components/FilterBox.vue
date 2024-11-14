@@ -5,34 +5,37 @@
         <span class="headline">Filtros</span>
       </v-card-title>
       <v-card-text>
+        <!-- This part of the component will be dynamic based on the filterBy prop -->
         <v-row v-if="filterBy === 'products'">
           <v-col cols="12">
-            <v-subheader class="responsive-title">Rango de precios</v-subheader>
-            <v-row>
-              <v-col cols="6">
-              <v-text-field
-                v-model="priceRange[0]"
-                label="Precio mínimo"
-                type="number"
-                :min="0"
-                :max="9999"
-              ></v-text-field>
-              </v-col>
-              <v-col cols="6">
-              <v-text-field
-                v-model="priceRange[1]"
-                label="Precio máximo"
-                type="number"
-                :min="0"
-                :max="9999"
-              ></v-text-field>
-              </v-col>
-            </v-row>
+            <v-card-text class="responsive-title">Rango de precios</v-card-text >
+            <v-range-slider 
+              v-model="priceRange" 
+              :max=PRICE_SELECTOR_MAX_VALUE
+              :min=PRICE_SELECTOR_MIN_VALUE
+              :step="5"
+              thumb-label="always" 
+
+              strict
+            ></v-range-slider>
+          </v-col>
+          <v-col cols="12">
+            <v-card-text class="responsive-title">Disponibilidad</v-card-text >
+            <!-- The v-checkbox is reactive with the inStock data property in two ways,
+             changes will be reflected in both -->
+            <v-checkbox 
+              density="compact" 
+              v-model="inStock" 
+              label="En stock"
+            ></v-checkbox>
           </v-col>
         </v-row>
+        <!-- This part of the component will be dynamic based on the filterBy prop -->
         <v-row v-if="filterBy === 'animals'">
           <v-col cols="12">
-            <v-subheader class="responsive-title">Género</v-subheader>
+            <v-card-text class="responsive-title">Género</v-card-text >
+            <!-- The v-checkbox is reactive with the selectedGenre data property in two ways,
+             changes will be reflected in both -->
             <v-checkbox 
               density="compact" 
               v-model="selectedGenre" 
@@ -47,20 +50,20 @@
             ></v-checkbox>
           </v-col>
           <v-col cols="12">
-            <v-subheader class="responsive-title">Especies</v-subheader>
+            <v-card-text class="responsive-title">Especies</v-card-text >
+            <!-- The v-checkbox is reactive with the selectedSpecies data property in two ways,
+             changes will be reflected in both. Renders based on the species object prop -->
             <v-checkbox 
               v-for="specie in species" 
-              :key="specie.id" 
+              density="compact" 
               v-model="selectedSpecies" 
               :label="specie.name" 
-              :value="specie.key" 
-              class="shrink mr-0 mt-0 mb-0"
-              dense 
-              hide-details
+              :value="specie.key"
             ></v-checkbox>
           </v-col>
         </v-row>
       </v-card-text>
+      <!-- The clearFilters and submitFilters methods are called when the buttons are clicked -->
       <v-card-actions>
         <v-btn @click="clearFilters">Limpiar filtros</v-btn>
         <v-btn @click="submitFilters">Aplicar filtros</v-btn>
@@ -70,6 +73,9 @@
 </template>
 
 <script>
+const PRICE_SELECTOR_MIN_VALUE = 0;
+const PRICE_SELECTOR_MAX_VALUE = 300;
+
 export default {
   props: {
     filterBy: {
@@ -84,9 +90,11 @@ export default {
   data() {
     return {
       selectedSpecies: [],
-      selectedGenre: "all",
-      priceRange: [-1, -1],
+      selectedGenre: false, // Default value to be able to select false (empty)
+      priceRange: [0, 0], // Default by both zeros so the backend can notice and ignore it
       inStock: true,
+      PRICE_SELECTOR_MAX_VALUE,
+      PRICE_SELECTOR_MIN_VALUE
     };
   },
   computed: {
@@ -96,8 +104,22 @@ export default {
     clearFilters() {
       this.selectedSpecies = [];
       this.selectedGenre = "all";
+      this.priceRange = [0, 0];
+      this.inStock = true;
     },
+    // This method emits the filters to the parent component so it can ask the backend for the data.
+    // IMPORTANT: The default values are the following:
+    // selectedSpecies: [] -> If empty, the backend should ignore this filter
+    // selectedGenre: false -> If false, the backend should ignore this filter as it is empty with no restriction (false)
+    // priceRange: [0, 0] -> If both values are 0, the backend should ignore this filter
+    // inStock: true -> If true, the backend should only return products in stock, else, return all products
     submitFilters() {
+      console.log("Sent filters", {
+        selectedSpecies: this.selectedSpecies,
+        selectedGenre: this.selectedGenre,
+        priceRange: this.priceRange,
+        inStock: this.inStock,
+      });
       this.$emit('filters', {
         searchTerm: this.searchTerm,
         selectedCategory: this.selectedCategory,
@@ -110,7 +132,6 @@ export default {
 </script>
 
 <style scoped>
-/* Tamaños para pantallas pequeñas (por defecto) */
 :deep(.v-input__control .v-label) {
   font-size: 0.75em;
 }
@@ -123,7 +144,6 @@ export default {
   font-size: 1.5em;
 }
 
-/* Tamaños para pantallas medianas (>=600px) */
 @media (min-width: 600px) {
   :deep(.v-input__control .v-label) {
     font-size: 1em;
@@ -138,7 +158,6 @@ export default {
   }
 }
 
-/* Tamaños para pantallas grandes (>=960px) */
 @media (min-width: 960px) {
   :deep(.v-input__control .v-label) {
     font-size: 1.5em;

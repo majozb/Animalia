@@ -3,33 +3,40 @@
     <v-container>
       <h1>Vista de Desarrollo</h1>
       <!-- Prueba con lista de mascotas -->
-      <generic-list
-        title="Mascotas en Adopción"
-        :items="pets"
-        titleField="name"
-        :fields="[
-          { key: 'type', label: 'Especie' },
-          { key: 'breed', label: 'Raza' },
-          { key: 'age', label: 'Edad' }
-        ]"
-        imageType="pets"
-        :previewFlag="true"
-      />
-  
-      <!-- Prueba con lista de productos -->
-      <generic-list
-        title="Productos Disponibles"
-        :items="products"
-        titleField="name"
-        :fields="[
-          { key: 'name', label: 'Producto' },
-          { key: 'weight', label: 'Tamaño' },
-          { key: 'price', label: 'Precio' }
-        ]"
-        imageType="products"
-      />
-      <FilterBox filterBy="animals" :species="species" />
-      <FilterBox filterBy="products" />
+
+      <v-row>
+        <v-col cols="3">
+          <FilterBox filterBy="animals" :species="species" />
+          <FilterBox filterBy="products" />
+        </v-col>
+        <v-col cols="9">
+          <generic-list
+            title="Mascotas en Adopción"
+            :items="pets"
+            titleField="name"
+            :fields="[
+              { key: 'type', label: 'Especie' },
+              { key: 'breed', label: 'Raza' },
+              { key: 'age', label: 'Edad' }
+            ]"
+            imageType="pets"
+            :previewFlag="true"
+          />
+
+          <generic-list
+            title="Productos Disponibles"
+            :items="products"
+            titleField="name"
+            :fields="[
+              { key: 'name', label: 'Producto' },
+              { key: 'weight', label: 'Tamaño' },
+              { key: 'price', label: 'Precio' }
+            ]"
+            imageType="products"
+          />
+        </v-col>
+          
+      </v-row>
     </v-container>
   </template>
   
