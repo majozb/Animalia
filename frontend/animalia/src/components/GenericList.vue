@@ -24,8 +24,13 @@
             <div class="fields-container">
               <v-row no-gutters>
                 <v-col v-for="(field, index) in fields" :key="field.key" class="field-item" cols="12">
-                  <strong>{{ field.label }}:</strong> {{ item[field.key] }}
-                  <!-- <span v-if="index < fields.length - 1" class="separator">■</span> -->
+                  <span v-if="field.key == 'birthDate'">
+                    <!-- Proccess the date to show the amount of years that have passed since the given date -->
+                    <strong>{{ field.label }}:</strong> <em>{{ processDate(item[field.key]) + " año/s"}}</em>
+                  </span>
+                  <span v-else>
+                    <strong>{{ field.label }}:</strong> {{ item[field.key] }}
+                  </span>
                 </v-col>
               </v-row>
             </div>
@@ -33,7 +38,7 @@
             <v-row>
             <v-col cols="12" class="d-flex justify-center">
               <!-- Botón para ver más detalles del ítem -->
-              <v-btn color="primary" @click="$router.push(`/${item.imageType}/${item._id}`)">
+              <v-btn color="primary" @click="$router.push(`/${itemType}/${item._id}`)">
               Ver más
               </v-btn>
             </v-col>
@@ -87,7 +92,7 @@ export default {
         { key: "description", label: "Descripción" },
       ],
     },
-    imageType: {
+    itemType: {
       type: String,
       required: true,
     },
@@ -153,11 +158,26 @@ export default {
   methods: {
     getImagePath(item) {
       // Build the path to the image of the item
-      // const imagePath = new URL(`../assets/${this.imageType}/${id}/main.jpg`, import.meta.url).href;
+      // const imagePath = new URL(`../assets/${this.itemType}/${id}/main.jpg`, import.meta.url).href;
       const imagePath = new URL(item.images[0], import.meta.url).href;
       console.log(imagePath);
       return imagePath;
-      return 
+    },
+    processDate(date) {
+      // Returns the amount of years that have passed since the givenDate
+      // until now
+      const givenDate = new Date(date);
+      console.log("givenDate", givenDate);
+      console.log("currentDate", new Date());
+      const currentDate = new Date();
+      let diff = currentDate - givenDate;
+      console.log("diff", diff);
+      // if (currentDate.getMonth() < givenDate.getMonth() || (currentDate.getMonth() === givenDate.getMonth() && 
+      //     currentDate.getDate() < givenDate.getDate())) {
+      //   diff = diff - 1;
+      // }
+      let years = new Date(diff).getFullYear() - 1970;
+      return years;
     },
     updateShownItemsQuantity() {
       // Update the number of items shown based on the screen size
