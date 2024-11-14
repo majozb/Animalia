@@ -1,16 +1,21 @@
 import express from 'express';
 import './db/mongoose.js';
-import { Purchaser } from './models/purchaser.js';
-import { Provider } from './models/provider.js';
-import { Pet } from './models/pet.js';
+import { petRouter } from './routes/pet.js';
+import { purchaserRouter } from './routes/purchaser.js';
+import { providerRouter } from './routes/provider.js';
+import { productRouter } from './routes/product.js';
+import { adminRouter } from './routes/admin.js';
 
 export const app = express();
-const port = process.env.PORT || 5000;
 
 app.use(express.json());
+app.use(petRouter);
+app.use(purchaserRouter);
+app.use(providerRouter);
+app.use(productRouter);
+app.use(adminRouter);
 
-// app.use('/api/notes');
-
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Server is up on port ${port}`);
-  });
+});
