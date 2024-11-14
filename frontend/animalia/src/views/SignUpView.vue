@@ -7,12 +7,12 @@
           <!-- Títulos principales -->
           <v-row justify="center">
             <v-col cols="auto">
-              <h1 class="headline">¡Bienvenido de nuevo!</h1>
+              <h1 class="headline">Es un placer conocerte</h1>
             </v-col>
           </v-row>
           <v-row justify="center">
             <v-col cols="auto">
-              <h2 class="subtitle">Accede a tu cuenta</h2>
+              <h2 class="subtitle">Regístrate</h2>
             </v-col>
           </v-row>
 
@@ -20,6 +20,14 @@
           <v-form>
             <v-text-field
               label="Nombre de usuario"
+              outlined
+              dense
+              required
+              class="input-field mb-4"
+            ></v-text-field>
+            <v-text-field
+              label="email"
+              :rules="emailRules"
               outlined
               dense
               class="input-field mb-4"
@@ -31,40 +39,26 @@
               dense
               class="input-field mb-4"
             ></v-text-field>
+            <v-text-field
+              label="Teléfono"
+              type="phone"
+              outlined
+              dense
+              class="input-field mb-4"
+            ></v-text-field>
             <v-btn color="#003366" block class="mt-3" large>
-              Entrar
+              Regístrate
             </v-btn>
           </v-form>
-
-          <!-- Opciones de enlace -->
-          <v-row justify="space-between" class="mt-2">
-            <v-col class="text-left">
-              ¿Aún tienes cuenta?
-              <v-btn variant="text" small class="link" @click="goToSignUp">Regístrate</v-btn>
-            </v-col>
-            <v-col class="text-right">
-              ¿Olvidaste tu contraseña?
-              <v-btn variant="text" small class="link" @click="restorePassword">Nueva contraseña</v-btn>
-            </v-col>
-          </v-row>
-
-          <!-- Divider y botón adicional -->
-          <v-row justify="center" class="text-center">
-            <v-col cols="auto">
-              ¿Eres un proveedor o un refugio?
-              <v-btn variant="text" small class="link" @click="discoverMore">Descubre más</v-btn>
-            </v-col>
-          </v-row>
         </v-card>
-
       </v-col>
 
-      <!-- Imagen decorativa de perro y gato -->
+      <!-- Imagen decorativa de gato -->
       <v-col cols="auto" class="text-right">
           <v-img
-            :src="getImagePath('../assets/dog-and-cat.png')"
+            :src="getImagePath('../assets/cat.png')"
             alt="Imagen del item"
-            width="600px"
+            width="300px"
           ></v-img>
       </v-col>
     </v-row>
@@ -86,7 +80,7 @@ export default {
           href: '/',
         },
         {
-          title: 'Inicio Sesión',
+          title: 'Regístrate',
           disabled: true,
           href: '',
         },
@@ -113,10 +107,6 @@ export default {
 </script>
 
 <style scoped>
-.mb-0 {
-  background-color: #FAF1E6;
-}
-
 .login-container {
   background-color: #FAF1E6;
   min-height: 100vh;
@@ -167,7 +157,7 @@ export default {
   background-color: #ddd;
 }
 
-.less-padding {
-  padding: 0 !important;
+.mb-0 {
+  background-color: #FAF1E6;
 }
 </style>
