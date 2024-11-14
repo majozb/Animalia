@@ -22,8 +22,8 @@
         
         <!-- Login/Register Buttons -->
         <v-col cols="auto">
-          <v-btn text to="/login">Iniciar Sesión</v-btn>
-          <v-btn outlined color="secondary" to="/register">Registrarse</v-btn>
+          <v-btn text to="/signin">Iniciar Sesión</v-btn>
+          <v-btn outlined color="secondary" to="/signup">Registrarse</v-btn>
         </v-col>
       </v-row>
     </v-container>
