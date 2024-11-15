@@ -68,12 +68,13 @@
           ></v-img>
       </v-col>
     </v-row>
-  </v-container>
-  <v-row justify="center" class="mb-0">
+    <v-row justify="center" class="mb-0">
     <v-col cols="auto">
       <p>&copy; 2024 Animalia. Todos los derechos reservados.</p>
     </v-col>
   </v-row>
+  </v-container>
+  
 </template>
 
 <script>
