@@ -3,7 +3,7 @@
     <v-row>
       <!-- Título de la lista -->
       <v-col cols="12">
-        <v-card-title>{{ title }}</v-card-title>
+        <v-card-title class="list-title">{{ title }}</v-card-title>
       </v-col>
     </v-row>
     <v-row>
@@ -35,6 +35,7 @@
               </v-row>
             </div>
           </v-card-subtitle>
+          <br>
             <v-row>
             <v-col cols="12" class="d-flex justify-center">
               <!-- Botón para ver más detalles del ítem -->
@@ -237,69 +238,79 @@ export default {
   border-radius: 3%;
 }
 
-.v-card-title {
-  font-size: 3rem;
-}
 
 .title-item {
   white-space: normal; /* Permite el ajuste de línea */
   overflow: visible;   /* Evita el truncamiento */
   text-overflow: unset; /* Elimina los puntos suspensivos */
+  font-weight: bold;
+}
+
+.list-title {
+  font-weight: bold;
+  overflow-wrap: break-word; /* Moderno equivalente a word-wrap */
+  white-space: normal; /* Permite el salto de línea */
 }
 
 /* Media queries para hacer los tamaños más responsivos */
 @media (max-width: 600px) {
   .field-item {
-    font-size: 1rem; /* Tamaño de fuente pequeño para pantallas muy pequeñas */
+    font-size: 1.2em; /* Tamaño de fuente pequeño para pantallas muy pequeñas */
   }
-
-  .separator {
-    font-size: 1.2rem;
+  .list-title {
+    color: #003366;
+    font-size: 1.5em;
+    font-weight: bold;
   }
 
   .title-item {
-    font-size: 2.5rem;
+    font-size: 1.3em;
   }
 }
 
 @media (min-width: 601px) and (max-width: 960px) {
   .field-item {
-    font-size: 1.5em; /* Tamaño de fuente medio para pantallas medianas */
+    font-size: 1.2em; /* Tamaño de fuente medio para pantallas medianas */
   }
 
-  .separator {
-    font-size: 1em;
+  .list-title {
+    color: #003366;
+    font-size: 2rem;
+    font-weight: bold;
   }
 
   .title-item {
-    font-size: 1.5em;
+    font-size: 1.3em;
   }
 }
 
 @media (min-width: 960px) and (max-width: 1280px) {
   .field-item {
-    font-size: 1.5em; /* Tamaño de fuente más grande para pantallas grandes */
+    font-size: 1.2em; /* Tamaño de fuente más grande para pantallas grandes */
   }
-
-  .separator {
-    font-size: 1em;
-  }
-
   .title-item {
-    font-size: 1.75em;
+    font-size: 1.4em;
+  }
+  .list-title {
+  color: #003366;
+  font-size: 2.5em;
+  font-weight: bold;
   }
 }
 
 @media (min-width: 1281px) {
   .field-item {
-    font-size: 1.75em; /* Tamaño máximo para pantallas grandes */
-  }
-
-  .separator {
-    font-size: 2em;
+    font-size: 1.25em; /* Tamaño máximo para pantallas grandes */
   }
   .title-item {
-    font-size: 2.5em;
+    font-size: 1.5em;
+    /* Reduce space between lines */
+    line-height: 1.3em;
+  }
+  .list-title {
+  color: #003366;
+  font-size: 2.5em;
+  font-weight: bold;
   }
 }
 </style>

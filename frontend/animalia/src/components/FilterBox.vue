@@ -8,7 +8,7 @@
         <!-- This part of the component will be dynamic based on the filterBy prop -->
         <v-row v-if="filterBy === 'products'">
           <v-col cols="12">
-            <v-card-text class="responsive-title">Rango de precios</v-card-text >
+            <v-card-text class="filter-title">Rango de precios</v-card-text >
             <v-range-slider 
               v-model="priceRange" 
               :max=PRICE_SELECTOR_MAX_VALUE
@@ -20,7 +20,7 @@
             ></v-range-slider>
           </v-col>
           <v-col cols="12">
-            <v-card-text class="responsive-title">Disponibilidad</v-card-text >
+            <v-card-text class="filter-title">Disponibilidad</v-card-text >
             <!-- The v-checkbox is reactive with the inStock data property in two ways,
              changes will be reflected in both -->
             <v-checkbox 
@@ -33,7 +33,7 @@
         <!-- This part of the component will be dynamic based on the filterBy prop -->
         <v-row v-if="filterBy === 'animals'">
           <v-col cols="12">
-            <v-card-text class="responsive-title">Género</v-card-text >
+            <v-card-text class="filter-title">Género</v-card-text >
             <!-- The v-checkbox is reactive with the selectedGenre data property in two ways,
              changes will be reflected in both -->
             <v-checkbox 
@@ -50,7 +50,7 @@
             ></v-checkbox>
           </v-col>
           <v-col cols="12">
-            <v-card-text class="responsive-title">Especies</v-card-text >
+            <v-card-text class="filter-title">Especies</v-card-text >
             <!-- The v-checkbox is reactive with the selectedSpecies data property in two ways,
              changes will be reflected in both. Renders based on the species object prop -->
             <v-checkbox 
@@ -136,39 +136,70 @@ export default {
   font-size: 0.75em;
 }
 
-.responsive-title {
-  font-size: 1em;
-}
 
-.headline {
-  font-size: 1.5em;
-}
 
-@media (min-width: 600px) {
+@media (max-width: 600px) {
   :deep(.v-input__control .v-label) {
     font-size: 1em;
   }
 
-  .responsive-title {
+  .filter-title {
     font-size: 1.5em;
   }
 
   .headline {
-    font-size: 2em;
+    font-size: 1em;
   }
 }
 
-@media (min-width: 960px) {
+@media (min-width: 601px) and (max-width: 960px) {
   :deep(.v-input__control .v-label) {
-    font-size: 1.5em;
+    font-size: 0.8em;
   }
 
-  .responsive-title {
-    font-size: 2em;
+  .filter-title {
+    font-size: 1.2em;
+    font-weight: bold;
   }
 
   .headline {
-    font-size: 2.5em;
+    font-size: 1.2em;
+    color: #003366;
+    font-weight: bold;
+  }
+}
+
+@media (min-width: 960px) and (max-width: 1280px) {
+  :deep(.v-input__control .v-label) {
+    font-size: 0.9em;
+  }
+
+  .filter-title {
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+
+  .headline {
+    font-size: 1.5em;
+    color: #003366;
+    font-weight: bold;
+  }
+}
+
+@media (min-width: 1281px) {
+  :deep(.v-input__control .v-label) {
+    font-size: 1em;
+  }
+
+  .filter-title {
+    font-size: 1.6em;
+    font-weight: bold;
+  }
+
+  .headline {
+    font-size: 1.75em;
+    color: #003366;
+    font-weight: bold;
   }
 }
 </style>
