@@ -29,6 +29,7 @@ const PetSchema = new mongoose.Schema({
       message: props => `${props.path} should have at most 5 image and at least 1.`,
     },
   },
+  genre: { type: Boolean, required: true }, // True for female, False for male
 });
 
 export const Pet = mongoose.model('Pet', PetSchema);
