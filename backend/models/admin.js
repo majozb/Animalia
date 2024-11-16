@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import validator from 'validator';
 
 // Define the schema for the Admin collection
 const AdminSchema = new mongoose.Schema({
@@ -10,7 +11,7 @@ const AdminSchema = new mongoose.Schema({
     required: false,
     validate: {
       validator: function(v) {
-        return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v);
+        return validator.isEmail(v);
       },
       message: props => `${props.value} is not a valid email!`
     } 

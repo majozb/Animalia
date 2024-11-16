@@ -24,10 +24,10 @@ app.use(loginRouter);
 app.use(registerRouter);
 app.use(logoutRouter);
 
-// Ruta protegida para obtener la información del usuario
+// Route protected to get the user information
 app.get('/user-info', verifyToken, async (req, res) => {
     try {
-      const userId = req.user._id; // _id es parte del payload del token
+      const userId = req.user._id; // _id is part of the payload of the token
       const userType = req.user.userType;
   
       res.status(200).json({ userId, userType });
