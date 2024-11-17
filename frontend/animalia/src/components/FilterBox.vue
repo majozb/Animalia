@@ -30,7 +30,7 @@
             </v-col>
           </v-row>
           <!-- This part of the component will be dynamic based on the filterBy prop -->
-          <v-row v-if="filterBy === 'animals'">
+          <v-row v-if="filterBy === 'pets'">
             <v-col cols="12">
               <v-card-text class="filter-title">Género</v-card-text>
               <!-- The v-checkbox is reactive with the selectedGenre data property in two ways,
