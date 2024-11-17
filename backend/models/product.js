@@ -10,12 +10,12 @@ const ProductSchema = new mongoose.Schema({
 	keywords: { type: Array, required: false, default: [] },
   provider: { type: mongoose.Schema.Types.ObjectId, ref: 'Provider', required: true }, // Relatioship with Provider collection
   dimensions: {
-    type: [Number], // Array de números para las dimensiones
+    type: [Number],
     validate: {
       validator: function (v) {
-        return v.length === 3; // Asegura que el array tenga exactamente 3 elementos
+        return v.length === 3; // Make sure the array has exactly 3 values for length, width and height
       },
-      message: props => `${props.path} debe tener exactamente 3 valores para largo, ancho y alto.`,
+      message: props => `${props.path} should have exactly 3 values for length, width and height.`,
     },
     required: true
   },
@@ -24,9 +24,9 @@ const ProductSchema = new mongoose.Schema({
     required: true, 
     validate: {
       validator: function (v) {
-        return (v.length >= 1 && v.length <= 5); // Asegura que el array tenga como máximo 5 elementos y al menos 1
+        return (v.length >= 1 && v.length <= 5);
       },
-      message: props => `${props.path} debe tener como máximo 5 imágenes y al menos 1.`,
+      message: props => `${props.path} should have at least 1 image and at most 5.`,
     },
   },
 });

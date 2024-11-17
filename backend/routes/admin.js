@@ -7,7 +7,7 @@ export const adminRouter = express.Router();
 // (POST) /admins
 adminRouter.post('/admins', async (req, res) => {
   try {
-    // Hashear la contraseña antes de crear el administrador
+    // Hash the password before creating the admin
     const hashedPassword = await bcrypt.hash(req.body.password, 8);
     const admin = new Admin({
       ...req.body,

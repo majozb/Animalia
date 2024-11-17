@@ -1,20 +1,19 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
-import { Purchaser } from '../models/purchaser.js'; // Asegúrate de importar el modelo de Purchaser
+import { Purchaser } from '../models/purchaser.js';
 import jwt from 'jsonwebtoken';
 export const registerRouter = express.Router();
 
-// Función para registrar un comprador
 registerRouter.post('/register', async (req, res) => {
   try {
-    // Obtener los datos del cuerpo de la solicitud
+    // Obtain the necessary data from the request body
     const { name, user, password, email, phone } = req.body;
 
-    // Cifrar la contraseña
+    // Cipher the password
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Crear el nuevo comprador
+    // Create a new purchaser
     const newPurchaser = new Purchaser({
       name,
       user,
@@ -23,22 +22,22 @@ registerRouter.post('/register', async (req, res) => {
       phone
     });
     console.log(newPurchaser);
-    // Guardar al comprador en la base de datos
+    // Save the new purchaser in the database
     await newPurchaser.save();
 
-    // Generar el token JWT
+    // Generate the JWT token
     const token = jwt.sign(
       { _id: newPurchaser._id, userType: 'purchaser' },
-      process.env.JWT_SECRET, // Usa tu clave secreta de JWT
-      { expiresIn: '1h' } // El token expira en 1 hora
+      process.env.JWT_SECRET, // Use your JWT secret key
+      { expiresIn: '1h' } // The token will expire in 1 hour
     );
 
-    // Almacenar el token en una cookie (con las opciones adecuadas)
+    // Store the token in a cookie (with the appropriate options)
     res.cookie('token', token, {
-      httpOnly: true, // Evita que JavaScript acceda a la cookie
-      secure: process.env.NODE_ENV === 'production', // Si está en producción, usar HTTPS
-      sameSite: 'none', // Necesario si usas cookies en cross-origin requests
-      maxAge: 60 * 60 * 1000, // El token expirará después de 1 hora
+      httpOnly: true, // Prevents JavaScript from accessing the cookie
+      secure: process.env.NODE_ENV === 'production', // If is in production, the cookie will only be sent over HTTPS
+      sameSite: 'none', // The cookie is available for cross-origin requests
+      maxAge: 60 * 60 * 1000, // The token will expire in 1 hour
     });
 
     res.status(201).json({ message: 'Comprador registrado exitosamente' });
