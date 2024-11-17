@@ -19,7 +19,7 @@
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "mocha": "^10.8.2",
-    "nodemon": "^3.0.1",
+    "nodemon": "^3.1.7",
     "prettier": "^3.2.5",
     "supertest": "^7.0.0"
   },
