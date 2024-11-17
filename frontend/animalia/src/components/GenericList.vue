@@ -1,21 +1,16 @@
 <template>
   <v-container>
     <v-row>
-      <!-- Título de la lista -->
       <v-col cols="12">
         <v-card-title class="list-title">{{ title }}</v-card-title>
       </v-col>
     </v-row>
     <v-row>
-      <!-- Iterar sobre cada elemento en la colección y mostrar sus campos definidos en 'fields' -->
+      <!-- Iterate over the items to show them -->
       <v-col cols="12" sm="6" md="4" lg="3" xl="3" v-for="item in itemsToShow" :key="item._id">
         <v-card class="mb-2">
-          <!-- Imagen del ítem -->
           <v-img :src="getImagePath(item)" alt="Imagen del item" aspect-ratio="1"></v-img>
-
           <v-card-title class="title-item">{{ item[titleField] }}</v-card-title>
-
-          <!-- Campos dentro de la tarjeta, ahora están en una fila con overflow -->
           <v-card-subtitle>
             <div class="fields-container">
               <v-row no-gutters>
@@ -34,7 +29,6 @@
           <br>
           <v-row>
             <v-col cols="12" class="d-flex justify-center">
-              <!-- Botón para ver más detalles del ítem -->
               <v-card-actions>
                 <v-btn @click="$router.push(`/${itemType}/${item._id}`)">
                   Ver más
@@ -173,10 +167,6 @@ export default {
       const currentDate = new Date();
       let diff = currentDate - givenDate;
       console.log("diff", diff);
-      // if (currentDate.getMonth() < givenDate.getMonth() || (currentDate.getMonth() === givenDate.getMonth() && 
-      //     currentDate.getDate() < givenDate.getDate())) {
-      //   diff = diff - 1;
-      // }
       let years = new Date(diff).getFullYear() - 1970;
       return years;
     },
@@ -213,20 +203,16 @@ export default {
 </script>
 
 <style scoped>
-/* Estilo para los elementos de los campos */
 .field-item {
   margin-right: 15px;
   flex-shrink: 0;
   font-size: 1.2rem;
-  /* Tamaño de la fuente ajustable */
 }
 
-/* Estilo para el separador */
 .separator {
   margin-left: 10px;
   color: #777;
   font-size: 1.4rem;
-  /* Separador un poco más grande */
 }
 
 .v-card {
@@ -241,27 +227,20 @@ export default {
 
 .title-item {
   white-space: normal;
-  /* Permite el ajuste de línea */
   overflow: visible;
-  /* Evita el truncamiento */
   text-overflow: unset;
-  /* Elimina los puntos suspensivos */
   font-weight: bold;
 }
 
 .list-title {
   font-weight: bold;
   overflow-wrap: break-word;
-  /* Moderno equivalente a word-wrap */
   white-space: normal;
-  /* Permite el salto de línea */
 }
 
-/* Media queries para hacer los tamaños más responsivos */
 @media (max-width: 600px) {
   .field-item {
     font-size: 1.2em;
-    /* Tamaño de fuente pequeño para pantallas muy pequeñas */
   }
 
   .list-title {
@@ -278,7 +257,6 @@ export default {
 @media (min-width: 601px) and (max-width: 960px) {
   .field-item {
     font-size: 1.2em;
-    /* Tamaño de fuente medio para pantallas medianas */
   }
 
   .list-title {
@@ -295,7 +273,6 @@ export default {
 @media (min-width: 960px) and (max-width: 1280px) {
   .field-item {
     font-size: 1.2em;
-    /* Tamaño de fuente más grande para pantallas grandes */
   }
 
   .title-item {
@@ -312,12 +289,10 @@ export default {
 @media (min-width: 1281px) {
   .field-item {
     font-size: 1.25em;
-    /* Tamaño máximo para pantallas grandes */
   }
 
   .title-item {
     font-size: 1.5em;
-    /* Reduce space between lines */
     line-height: 1.3em;
   }
 

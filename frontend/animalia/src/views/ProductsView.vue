@@ -8,7 +8,7 @@ import FilterBox from '@/components/FilterBox.vue';
 
 <template>
   <div class="main-container">
-  <NavBar />
+    <NavBar />
     <v-row>
       <v-col cols="12" sm="12" md="3" lg="3" xl="3">
         <FilterBox filterBy="products" />
@@ -239,7 +239,7 @@ export default {
 
 
 <style scoped>
-  .main-container {
-    background-color: #fcfcfc;
-  }
+.main-container {
+  background-color: #fcfcfc;
+}
 </style>
