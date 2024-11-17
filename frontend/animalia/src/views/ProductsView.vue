@@ -7,13 +7,13 @@ import FilterBox from '@/components/FilterBox.vue';
 </script>
 
 <template>
-  <NavBar />
   <div class="main-container">
+  <NavBar />
     <v-row>
-      <v-col cols="3">
+      <v-col cols="12" sm="12" md="3" lg="3" xl="3">
         <FilterBox filterBy="products" />
       </v-col>
-      <v-col cols="9">
+      <v-col cols="12" sm="12" md="9" lg="9" xl="9">
         <generic-list title="Productos Disponibles" :items="products" titleField="name" :fields="[
           { key: 'weight', label: 'Peso (kg)' },
           { key: 'price', label: 'Precio (€)' }
