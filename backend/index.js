@@ -10,9 +10,12 @@ import { loginRouter } from './routes/login.js';
 import { registerRouter } from './routes/register.js';
 import { logoutRouter } from './routes/logout.js';
 import { verifyToken } from './routes/middleware/verifyToken.js';
+import cors from 'cors';
+
 export const app = express();
 
 app.use(express.json());
+app.use(cors());
 app.use(cokkieParser());
 app.use(petRouter);
 app.use(purchaserRouter);
@@ -25,17 +28,17 @@ app.use(logoutRouter);
 
 // Route protected to get the user information
 app.get('/user-info', verifyToken, async (req, res) => {
-    try {
-      const userId = req.user._id; // _id is part of the payload of the token
-      const userType = req.user.userType;
-  
-      res.status(200).json({ userId, userType });
-    } catch (error) {
-      res.status(500).json({ error: 'Error al obtener la información del usuario' });
-    }
-  });
-  
+  try {
+    const userId = req.user._id; // _id is part of the payload of the token
+    const userType = req.user.userType;
+
+    res.status(200).json({ userId, userType });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener la información del usuario' });
+  }
+});
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-    console.log(`Server is up on port ${port}`);
+  console.log(`Server is up on port ${port}`);
 });
