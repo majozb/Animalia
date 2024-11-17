@@ -10,7 +10,7 @@ const Owner1 = {
   user: 'alberto00',
   password: '123456',
   email: 'alberto@gmail.com',
-  phone: '123456789',
+  phone: '635998653',
   pets: [],
   points: 0,
   purchases: [],
@@ -32,6 +32,7 @@ const Dog1 = {
   breed: 'Mestizo',
   vaccines: ['Rabia', 'Moquillo'],
   birthDate: new Date('2020-01-01'),
+  images: ["image1", "image2"],
   genre: false,
 };
 
@@ -44,6 +45,7 @@ const Cat1 = {
   breed: 'American wirehair',
   vaccines: ['Rabia'],
   birthDate: new Date('2019-01-01'),
+  images: ["image1"],
   genre: true,
 };
 
@@ -55,6 +57,7 @@ const Rabbit1 = {
   type: 'Rabbit',
   breed: 'Mini Lop',
   vaccines: ['Rabia'],
+  images: ["image1", "image2", "image3"],
   birthDate: new Date('2018-01-01'),
   genre: false,
 };
@@ -103,7 +106,7 @@ describe('Pet routes', () => {
     });
     it('return three pets', async () => {
       Rabbit1.owner = owner._id;
-      const rabbit = await new Pet(Rabbit1).save();
+      await new Pet(Rabbit1).save();
       let res = await request(app).get('/pets');
       expect(res.statusCode).to.equal(200);
       expect(res.body).to.be.an('array').with.lengthOf(2);

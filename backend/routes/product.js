@@ -5,8 +5,8 @@ export const productRouter = express.Router();
 
 // (POST) /products
 productRouter.post('/products', async (req, res) => {
-  const product = new Product(req.body);
   try {
+    const product = new Product(req.body);
     await product.save();
     res.status(201).send(product);
   } catch (e) {
@@ -34,7 +34,7 @@ productRouter.get('/products/:id', async (req, res) => {
     }
     res.send(product);
   } catch (e) {
-    res.status(500).send();
+    res.status(400).send();
   }
 });
 
@@ -65,6 +65,6 @@ productRouter.delete('/products/:id', async (req, res) => {
     }
     res.send(product);
   } catch (e) {
-    res.status(500).send();
+    res.status(400).send();
   }
 });

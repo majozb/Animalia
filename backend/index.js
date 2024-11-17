@@ -10,7 +10,6 @@ import { loginRouter } from './routes/login.js';
 import { registerRouter } from './routes/register.js';
 import { logoutRouter } from './routes/logout.js';
 import { verifyToken } from './routes/middleware/verifyToken.js';
-import { Provider } from './models/provider.js';
 export const app = express();
 
 app.use(express.json());
