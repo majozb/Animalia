@@ -10,7 +10,7 @@ purchaserRouter.get('/purchasers', async (req, res) => {
     const purchasers = await Purchaser.find();
     res.status(200).send(purchasers);
   } catch (error) {
-    res.status(500).send({ error: error.message });
+    res.status(400).send({ error: error.message });
   }
 });
 
@@ -24,12 +24,18 @@ purchaserRouter.get('/purchasers/:id', async (req, res) => {
     }
     res.status(200).send(purchaser);
   } catch (error) {
-    res.status(500).send({ error: error.message });
+    res.status(400).send({ error: error.message });
   }
 });
 
 // POST /purchasers
 purchaserRouter.post('/purchasers', async (req, res) => {
+  if (!req.body.name || !req.body.user || !req.body.password) {
+    return res.status(400).send({ error: 'Name, user and password are required' });
+  }
+  if (req.body.password.length < 6) {
+    return res.status(400).send({ error: 'Password must be at least 6 characters' });
+  }
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 8);
     const purchaser = new Purchaser({ ...req.body, password: hashedPassword });
@@ -75,6 +81,6 @@ purchaserRouter.delete('/purchasers/:id', async (req, res) => {
     }
     res.status(200).send(purchaser);
   } catch (error) {
-    res.status(500).send({ error: error.message });
+    res.status(400).send({ error: error.message });
   }
 });
