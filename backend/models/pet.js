@@ -3,16 +3,6 @@ import mongoose from 'mongoose';
 // Define the schema for the Pet collection
 const PetSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  owner: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    refPath: 'ownerModel', // Reference to either Purchaser or Admin
-    required: true 
-  },
-  ownerModel: { 
-    type: String, 
-    required: true, 
-    enum: ['Purchaser', 'Admin'] // Only allow 'Purchaser' or 'Admin' as values
-  },
   description: { type: String, required: false },
   type: { type: String, required: true },
   breed: { type: String, required: true },

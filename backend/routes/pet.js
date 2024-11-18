@@ -21,9 +21,8 @@ petRouter.get('/pets', async (req, res) => {
         }
         pets = pets.filter((pet) => filter === pet.genre);
       }
-    } else {
-      res.status(200).send(pets);
     }
+    res.status(200).send(pets);
   } catch (error) {
     res.status(500).send({ error: error.message });
   }

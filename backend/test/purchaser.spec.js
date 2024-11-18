@@ -24,11 +24,33 @@ const Purchaser2 = {
   purchases: [],
 };
 
+const Purchaser3 = {
+  name: 'Alberto',
+  user: 'alberto00',
+  password: '123456',
+  email: 'alberto@gmail.com',
+  phone: '635998653',
+  pets: [],
+  points: 0,
+  purchases: [],
+};
+
+const Rabbit2 = {
+  name: 'Bugs Bunny2',
+  description: 'Conejo muy juguetón',
+  type: 'Rabbit',
+  breed: 'Mini Lop',
+  vaccines: ['Rabia'],
+  images: ["image1", "image2", "image3"],
+  birthDate: new Date('2018-01-01'),
+  genre: false,
+};
+
 let purchaser;
 
-after(async () => {
-  await Pet.deleteMany();
+beforeEach(async () => {
   await Purchaser.deleteMany();
+  purchaser = await new Purchaser(Purchaser1).save();
 });
 
 describe('Purchaser routes', () => {
@@ -44,23 +66,23 @@ describe('Purchaser routes', () => {
       expect(res.body.length).to.equal(1);
     });
     it('return two purchasers', async () => {
-      await new Purchaser(Purchaser1).save();
+      await new Purchaser(Purchaser2).save();
       const res = await request(app).get('/purchasers');
       expect(res.status).to.equal(200);
       expect(res.body.length).to.equal(2);
     });
     it('return three purchasers', async () => {
-      await new Purchaser(Purchaser1).save();
       await new Purchaser(Purchaser2).save();
+      await new Purchaser(Purchaser3).save();
       const res = await request(app).get('/purchasers');
       expect(res.status).to.equal(200);
       expect(res.body.length).to.equal(3);
     });
-    it('return one purchaser with the name Alberto', async () => {
+    it('return one purchaser with the name Juan', async () => {
       const res = await request(app).get('/purchasers');
-      let alberto = res.body.filter((purchaser) => purchaser.name === 'Alberto');
+      let alberto = res.body.filter((purchaser) => purchaser.name === 'Juan');
       expect(res.status).to.equal(200);
-      expect(alberto[0].name).to.equal('Alberto');
+      expect(alberto[0].name).to.equal('Juan');
     });
   });
   context('GET /purchasers/:id', () => {
@@ -76,10 +98,12 @@ describe('Purchaser routes', () => {
       purchaser = await Purchaser.findOne();
       const res = await request(app).get(`/purchasers/${purchaser._id}`);
       expect(res.status).to.equal(200);
-      expect(res.body.name).to.equal('Alberto');
+      expect(res.body.name).to.equal('Juan');
     });
     it('should return a purchaser by id with pets', async () => {
-      purchaser = await new Purchaser(Purchaser1).save();
+      purchaser = await new Purchaser(Purchaser2).save();
+      const pet = await new Pet(Rabbit2).save();
+      purchaser.pets.push(pet);
       const res = await request(app).get(`/purchasers/${purchaser._id}`);
       expect(res.status).to.equal(200);
       expect(res.body.pets).to.be.an('array');
@@ -93,12 +117,12 @@ describe('Purchaser routes', () => {
   });
   context('POST /purchasers', () => {
     it('should create a new purchaser', async () => {
-      const res = await request(app).post('/purchasers').send(Purchaser1);
+      const res = await request(app).post('/purchasers').send(Purchaser2);
       expect(res.status).to.equal(201);
-      expect(res.body.name).to.equal('Juan');
+      expect(res.body.name).to.equal('Maria');
     });
     it('should return a 400 if the password is not provided', async () => {
-      const res = await request(app).post('/purchasers').send({ ...Purchaser1, password: '' });
+      const res = await request(app).post('/purchasers').send({ ...Purchaser2, password: '' });
       expect(res.status).to.equal(400);
       expect(res.body.error).to.equal('Name, user and password are required');
     });
@@ -108,15 +132,14 @@ describe('Purchaser routes', () => {
       expect(res.body.error).to.equal('Password must be at least 6 characters');
     });
     it('should return a 201 if the email is not provided', async () => {
-      const res = await request(app).post('/purchasers').send(Purchaser1);
+      const res = await request(app).post('/purchasers').send(Purchaser2);
       expect(res.status).to.equal(201);
     });
     it('should return a 201 if the phone is not provided', async () => {
-      const res = await request(app).post('/purchasers').send(Purchaser1);
+      const res = await request(app).post('/purchasers').send(Purchaser2);
       expect(res.status).to.equal(201);
     });
     it('should return a 400 if the user is not unique', async () => {
-      await new Purchaser(Purchaser1).save();
       const res = await request(app).post('/purchasers').send(Purchaser1);
       expect(res.status).to.equal(400);
     });
@@ -167,7 +190,7 @@ describe('Purchaser routes', () => {
       expect(res.status).to.equal(404);
     });
     it('should return a 200 if the purchaser is deleted', async () => {
-      purchaser = await new Purchaser(Purchaser1).save();
+      purchaser = await new Purchaser(Purchaser2).save();
       const res = await request(app).delete(`/purchasers/${purchaser._id}`);
       expect(res.status).to.equal(200);
     });
