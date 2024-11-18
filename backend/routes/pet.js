@@ -6,7 +6,22 @@ export const petRouter = express.Router();
 // GET /pets
 petRouter.get('/pets', async (req, res) => {
   try {
-    const pets = await Pet.find();
+    let pets = await Pet.find();
+    if (req.body.selectedSpecies && req.body.selectedGenre) {
+      console.log(req.body);
+      if (req.body.selectedSpecies.length > 0) {
+        pets = pets.filter((pet) => req.body.selectedSpecies.includes(pet.type));
+      }
+      if (req.body.selectedGenre !== false) {
+        let filter = false;
+        if (req.body.selectedGenre === "female") {
+          filter = true;
+        } else if (req.body.selectedGenre === "male") {
+          filter = false;
+        }
+        pets = pets.filter((pet) => filter === pet.genre);
+      }
+    }
     res.status(200).send(pets);
   } catch (error) {
     res.status(500).send({ error: error.message });
