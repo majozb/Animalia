@@ -53,8 +53,8 @@ export default {
 
 <style scoped>
 .donut-chart {
-  width: 300px;
-  height: 300px;
+  width: 200px;
+  height: 200px;
   margin: 20px auto;
   text-align: center;
 }

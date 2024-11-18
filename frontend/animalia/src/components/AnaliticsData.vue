@@ -10,29 +10,12 @@
    
     <!-- Sección Doughnut -->
     <section class="section">
-      <WidgetDonut
-        chartId="productsByCategory"
-        title="Productos por Categoría"
-        :chartData="productsChartData"
-      />
-      <WidgetDonut
-        chartId="adoptionsByAnimal"
-        title="Adopciones por Tipo de Animal"
-        :chartData="adoptionsChartData"
-      />
-      <WidgetDonut
-        chartId="productsByCategory2"
-        title="Productos por Importancia"
-        :chartData="productsChartData"
-      />
-      <WidgetDonut
-        chartId="adoptionsByAnimal2"
-        title="Adopciones por Importancia"
-        :chartData="adoptionsChartData"
-      />
+      <WidgetDonut chartId="productsByCategory" title="Productos por Categoría" :chartData="productsChartData"/>
+      <WidgetDonut chartId="adoptionsByAnimal" title="Adopciones por Tipo de Animal" :chartData="adoptionsChartData" />
+      <GenericTable title="Resumen de los Últimos Productos Subidos" :headers="headers" :items="items" />
     </section>
     <section class="section">
-      <GenericTable title="Resumen de los Últimos Productos Subidos" :headers="headers" :items="items" />
+      
       <GenericTable title="Proveedores dados de alta" :headers="headers2" :items="items2" />
     </section>
     
@@ -178,7 +161,6 @@ export default {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  width: 100%;
 }
 .widget-card { 
   flex: 1 1 calc(25% - 20px); 

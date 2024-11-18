@@ -91,7 +91,7 @@ export default {
   margin-top: 16px;
   border-radius: 8px;
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.0);
 }
 
 .widget-icon {
