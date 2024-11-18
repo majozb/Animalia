@@ -29,21 +29,14 @@
         temporary
       >
         <v-list>
-          <v-list-item-group>
             <!-- Analitics-->
             <v-list-item>
-              <v-list-item-content>
                 <v-list-item-title @click="switchComponent('Analitics')">Analitics</v-list-item-title>
-              </v-list-item-content>
             </v-list-item>
-          </v-list-item-group>
-          <v-list-item-group>
             <!-- Sección de gestión de compradores -->
-           
-            <v-list-item @click="switchComponent('AddBuyer')">
-              <v-list-item-title>Añadir Comprador</v-list-item-title>
+            <v-list-item>
+              <v-list-item-title @click="switchComponent('AddBuyer')">Añadir Comprador</v-list-item-title>
             </v-list-item>
-          </v-list-item-group>
         </v-list>
       </v-navigation-drawer>
 
@@ -73,9 +66,10 @@ export default {
       this.currentComponent = null;
       this.$nextTick(() => {
         this.currentComponent = component;
+        // Oculta el menú después de seleccionar una opción en pantallas pequeñas
+        this.isMenuOpen = false;
       });
-      // Oculta el menú después de seleccionar una opción en pantallas pequeñas
-      this.isMenuOpen = false;
+      
     },
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen; // Alterna el estado de `isMenuOpen`
@@ -107,7 +101,5 @@ v-list-item {
   padding: 20px;
   flex-grow: 1;
 }
-.menu {
-  background-color: #003459;
-}
+
 </style>
