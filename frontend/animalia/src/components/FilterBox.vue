@@ -77,7 +77,7 @@ export default {
   data() {
     return {
       selectedSpecies: [],
-      selectedGenre: false, // Default value to be able to select false (empty)
+      selectedGenre: "all", // Default value to be able to select false (empty)
       priceRange: [0, 0], // Default by both zeros so the backend can notice and ignore it
       inStock: true,
       showFilters: false,
@@ -97,12 +97,29 @@ export default {
   computed: {
 
   },
+  watch: {
+    /* To avoid the selectedGenre to be false, set it to "all" when it is false
+    * Because the v-checkbox is reactive with the selectedGenre data property 
+    * (a string with the value of the selected checkbox)
+    */
+    selectedGenre() {
+      if (this.selectedGenre === false) {
+        this.selectedGenre = "all";
+      }
+    },
+  },
   methods: {
     clearFilters() {
       this.selectedSpecies = [];
       this.selectedGenre = "all";
       this.priceRange = [0, 0];
       this.inStock = true;
+      this.$emit('filters', {
+        selectedSpecies: this.selectedSpecies,
+        selectedGenre: this.selectedGenre,
+        priceRange: this.priceRange,
+        inStock: this.inStock,
+      });
     },
     changeVisibility() {
       this.screenWidth = window.innerWidth;

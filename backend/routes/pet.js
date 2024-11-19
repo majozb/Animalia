@@ -7,21 +7,34 @@ export const petRouter = express.Router();
 petRouter.get('/pets', async (req, res) => {
   try {
     let pets = await Pet.find();
-    if (req.body.selectedSpecies && req.body.selectedGenre) {
-      console.log(req.body);
-      if (req.body.selectedSpecies.length > 0) {
-        pets = pets.filter((pet) => req.body.selectedSpecies.includes(pet.type));
-      }
-      if (req.body.selectedGenre !== false) {
-        let filter = false;
-        if (req.body.selectedGenre === "female") {
-          filter = true;
-        } else if (req.body.selectedGenre === "male") {
-          filter = false;
-        }
-        pets = pets.filter((pet) => filter === pet.genre);
-      }
+    // if (req.body.selectedSpecies && req.body.selectedGenre) {
+    //   console.log(req.body);
+    //   if (req.body.selectedSpecies.length > 0) {
+    //     pets = pets.filter((pet) => req.body.selectedSpecies.includes(pet.type));
+    //   }
+    //   if (req.body.selectedGenre !== false) {
+    //     let filter = false;
+    //     if (req.body.selectedGenre === "female") {
+    //       filter = true;
+    //     } else if (req.body.selectedGenre === "male") {
+    //       filter = false;
+    //     }
+    //     pets = pets.filter((pet) => filter === pet.genre);
+    //   }
+    // }
+    const selectedSpecies = req.query.selectedSpecies ? req.query.selectedSpecies.split(',') : [];
+    const selectedGenre = req.query.selectedGenre || "all";
+
+    if (selectedSpecies.length > 0) {
+      pets = pets.filter((pet) => selectedSpecies.includes(pet.type));
     }
+    console.log("selectedSpecies", selectedSpecies);
+
+    if (selectedGenre !== "all") {
+      const filter = (selectedGenre === "female");
+      pets = pets.filter((pet) => filter === pet.genre);
+    }
+    console.log("selectedGenre", selectedGenre);
     res.status(200).send(pets);
   } catch (error) {
     res.status(500).send({ error: error.message });
