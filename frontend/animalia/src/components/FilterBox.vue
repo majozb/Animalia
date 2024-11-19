@@ -78,7 +78,7 @@ export default {
     return {
       selectedSpecies: [],
       selectedGenre: "all", // Default value to be able to select false (empty)
-      priceRange: [0, 0], // Default by both zeros so the backend can notice and ignore it
+      priceRange: [0, PRICE_SELECTOR_MAX_VALUE], // Default by both zeros so the backend can notice and ignore it
       inStock: true,
       showFilters: false,
       showVisibilityButton: false,
@@ -112,7 +112,7 @@ export default {
     clearFilters() {
       this.selectedSpecies = [];
       this.selectedGenre = "all";
-      this.priceRange = [0, 0];
+      this.priceRange = [0, PRICE_SELECTOR_MAX_VALUE];
       this.inStock = true;
       this.$emit('filters', {
         selectedSpecies: this.selectedSpecies,
@@ -144,21 +144,17 @@ export default {
     // This method emits the filters to the parent component so it can ask the backend for the data.
     // IMPORTANT: The default values are the following:
     // selectedSpecies: [] -> If empty, the backend should ignore this filter
-    // selectedGenre: false -> If false, the backend should ignore this filter as it is empty with no restriction (false)
+    // selectedGenre: "all" -> If "all", the backend should ignore this filter as it is empty with no restriction (false)
     // priceRange: [0, 0] -> If both values are 0, the backend should ignore this filter
     // inStock: true -> If true, the backend should only return products in stock, else, return all products
     submitFilters() {
-      console.log("Sent filters", {
-        selectedSpecies: this.selectedSpecies,
-        selectedGenre: this.selectedGenre,
-        priceRange: this.priceRange,
-        inStock: this.inStock,
-      });
       this.$emit('filters', {
         searchTerm: this.searchTerm,
         selectedCategory: this.selectedCategory,
         selectedSpecies: this.selectedSpecies,
         selectedGenre: this.selectedGenre,
+        priceRange: this.priceRange,
+        inStock: this.inStock,
       });
     },
   },

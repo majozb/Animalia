@@ -1,5 +1,5 @@
 import express from 'express';
-import {Product} from '../models/product.js';
+import { Product } from '../models/product.js';
 
 export const productRouter = express.Router();
 
@@ -17,8 +17,25 @@ productRouter.post('/products', async (req, res) => {
 // (GET) /products
 productRouter.get('/products', async (req, res) => {
   try {
-    const products = await Product.find({});
-    res.send(products);
+    let products = await Product.find();
+
+    // Max price filter
+    const maxPrice = Math.max(...products.map(product => product.price));
+
+    const priceRange = req.query.priceRange ? req.query.priceRange.split(',').map(Number) : [0, maxPrice];
+    const inStock = (req.query.inStock === undefined) ? true : req.query.inStock === 'true';
+
+    if (priceRange != [0, 0]) {
+      products = products.filter((product) => product.price >= priceRange[0] && product.price <= priceRange[1]);
+    }
+    console.log("Products after price filter: ", products.length);
+
+    if (inStock) {
+      products = products.filter((product) => product.stock > 0);
+    }
+    console.log("Products after stock filter: ", products.length);
+
+    res.status(200).send(products);
   } catch (e) {
     res.status(500).send();
   }
