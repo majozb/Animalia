@@ -17,21 +17,23 @@
           </v-row>
 
           <!-- Formulario -->
-          <v-form>
+          <v-form @submit.prevent="login">
             <v-text-field
+              v-model="username"
               label="Nombre de usuario"
               outlined
               dense
               class="input-field mb-4"
             ></v-text-field>
             <v-text-field
+              v-model="password"
               label="Contraseña"
               type="password"
               outlined
               dense
               class="input-field mb-4"
             ></v-text-field>
-            <v-btn color="#003366" block class="mt-3" large>
+            <v-btn color="#003366" block class="mt-3" @click="login" large>
               Entrar
             </v-btn>
           </v-form>
@@ -78,8 +80,15 @@
 </template>
 
 <script>
+import axios from 'axios'; 
+import Cookies from 'js-cookie'; 
+import { jwtDecode } from 'jwt-decode';
+import { useUserStore } from '../stores/userStore';
+
 export default {
   data: () => ({
+      username: '', 
+      password: '',
       items: [
         {
           title: 'Inicio',
@@ -93,12 +102,32 @@ export default {
         },
       ],
     }),
+    
   methods: {
     getImagePath(item) {
       // Build the path to the image of the item
       // const imagePath = new URL(`../assets/${this.imageType}/${id}/main.jpg`, import.meta.url).href;
       const imagePath = new URL(item, import.meta.url).href;
       return imagePath;
+    },
+    async login() { 
+      try { 
+        const response = await axios.post('http://localhost:3000/login', { username: this.username, password: this.password }); 
+        
+        const token = response.data;
+        const decodedToken = jwtDecode(token); 
+        const userType = decodedToken.userType;
+        const userStore = useUserStore(); 
+        
+        userStore.setUser({ 
+          user: this.username, userType: userType 
+        }); 
+        
+        this.$router.push('/'); 
+      } catch (error) { 
+        console.error("Error during login", error); 
+        alert("Credenciales inválidas"); 
+      } 
     },
     goToSignUp() {
       this.$router.push('/signup');
