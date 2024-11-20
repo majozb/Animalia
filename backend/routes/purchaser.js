@@ -1,6 +1,7 @@
 import express from 'express';
 import { Purchaser } from '../models/purchaser.js';
 import bcrypt from 'bcryptjs';
+import { Pet } from '../models/pet.js';
 
 export const purchaserRouter = express.Router();
 
@@ -75,10 +76,12 @@ purchaserRouter.put('/purchasers/:id', async (req, res) => {
 // DELETE /purchasers/:id
 purchaserRouter.delete('/purchasers/:id', async (req, res) => {
   try {
-    const purchaser = await Purchaser.findByIdAndDelete(req.params.id);
+    const purchaser = await Purchaser.findById(req.params.id);
     if (!purchaser) {
       return res.status(404).send({ error: 'Purchaser not found' });
     }
+    await Pet.deleteMany({ _id: { $in: purchaser.pets } });
+    await Purchaser.deleteOne(purchaser);
     res.status(200).send(purchaser);
   } catch (error) {
     res.status(400).send({ error: error.message });

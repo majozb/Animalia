@@ -1,6 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import {Provider} from '../models/provider.js';
+import {Product} from '../models/product.js';
 
 export const providerRouter = express.Router();
 
@@ -70,11 +71,13 @@ providerRouter.put('/providers/:id', async (req, res) => {
 // (DELETE) /providers/:id
 providerRouter.delete('/providers/:id', async (req, res) => {
   try {
-    const provider = await Provider.findByIdAndDelete(req.params.id);
+    const provider = await Provider.findById(req.params.id);
     if (!provider) {
       return res.status(404).send();
     }
-    res.send(provider);
+    await Product.deleteMany({ _id: { $in: provider.products } });
+    await Provider.deleteOne(provider);
+    res.status(200).send(provider);
   } catch (e) {
     res.status(500).send();
   }
