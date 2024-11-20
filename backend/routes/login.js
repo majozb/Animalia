@@ -51,7 +51,7 @@ loginRouter.post('/login', async (req, res) => {
       sameSite: 'none'
     });
 
-    res.status(200).json({ message: "User logged in successfully" });
+    res.json(token);
   } catch (error) {
     console.log("Error in login controller", error);
     res.status(500).json({ error: "Internal Server Error" });

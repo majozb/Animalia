@@ -11,10 +11,12 @@ import { registerRouter } from './routes/register.js';
 import { logoutRouter } from './routes/logout.js';
 import { verifyToken } from './routes/middleware/verifyToken.js';
 import { Provider } from './models/provider.js';
+import cors from 'cors';
 export const app = express();
 
 app.use(express.json());
 app.use(cokkieParser());
+app.use(cors());
 app.use(petRouter);
 app.use(purchaserRouter);
 app.use(providerRouter);
