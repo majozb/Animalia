@@ -61,7 +61,7 @@ providerRouter.put('/providers/:id', async (req, res) => {
     }
     updates.forEach((update) => provider[update] = req.body[update]);
     await provider.save();
-    res.send(provider);
+    res.status(200).send(provider);
   } catch (e) {
     res.status(400).send(e);
   }

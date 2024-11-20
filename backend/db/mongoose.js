@@ -1,6 +1,4 @@
 import { connect } from 'mongoose';
-import dotenv from 'dotenv';
-dotenv.config(); // Esto carga las variables de entorno desde .env
 
 try {
   console.log('Connecting to MongoDB server...');

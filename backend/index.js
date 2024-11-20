@@ -12,9 +12,12 @@ import { signOutRouter } from './routes/signOut.js';
 import { verifyToken } from './routes/middleware/verifyToken.js';
 import { Provider } from './models/provider.js';
 import cors from 'cors';
+
+
 export const app = express();
 
 app.use(express.json());
+app.use(cors());
 app.use(cokkieParser());
 app.use(cors());
 app.use(petRouter);
@@ -26,19 +29,20 @@ app.use(signInRouter);
 app.use(signUpRouter);
 app.use(signOutRouter);
 
-// Ruta protegida para obtener la información del usuario
+// Route protected to get the user information
 app.get('/user-info', verifyToken, async (req, res) => {
-    try {
-      const userId = req.user._id; // _id es parte del payload del token
-      const userType = req.user.userType;
-  
-      res.status(200).json({ userId, userType });
-    } catch (error) {
-      res.status(500).json({ error: 'Error al obtener la información del usuario' });
-    }
-  });
-  
+  try {
+    const userId = req.user._id; // _id is part of the payload of the token
+    const userType = req.user.userType;
+
+    res.status(200).json({ userId, userType });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener la información del usuario' });
+  }
+});
+
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log(`Server is up on port ${port}`);
+const host = '0.0.0.0'; // Escucha explícitamente en IPv4
+app.listen(port, host, () => {
+  console.log(`Server is up on port ${port}`);
 });

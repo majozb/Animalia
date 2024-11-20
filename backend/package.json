@@ -5,19 +5,33 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "env-cmd -f ./config/dev.env node index.js",
+    "test": "env-cmd -f ./config/test.env mocha --exit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
+  "devDependencies": {
+    "c8": "^9.1.0",
+    "chai": "^5.1.2",
+    "env-cmd": "^10.1.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "mocha": "^10.8.2",
+    "nodemon": "^3.1.7",
+    "prettier": "^3.2.5",
+    "supertest": "^7.0.0"
+  },
   "dependencies": {
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.8.0"
+    "mongoose": "^8.8.0",
+    "validator": "^13.11.0"
   }
 }
