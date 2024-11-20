@@ -6,9 +6,9 @@ import { purchaserRouter } from './routes/purchaser.js';
 import { providerRouter } from './routes/provider.js';
 import { productRouter } from './routes/product.js';
 import { adminRouter } from './routes/admin.js';
-import { loginRouter } from './routes/login.js';
-import { registerRouter } from './routes/register.js';
-import { logoutRouter } from './routes/logout.js';
+import { signInRouter } from './routes/signIn.js';
+import { signUpRouter } from './routes/signUp.js';
+import { signOutRouter } from './routes/signOut.js';
 import { verifyToken } from './routes/middleware/verifyToken.js';
 import { Provider } from './models/provider.js';
 import cors from 'cors';
@@ -22,9 +22,9 @@ app.use(purchaserRouter);
 app.use(providerRouter);
 app.use(productRouter);
 app.use(adminRouter);
-app.use(loginRouter);
-app.use(registerRouter);
-app.use(logoutRouter);
+app.use(signInRouter);
+app.use(signUpRouter);
+app.use(signOutRouter);
 
 // Ruta protegida para obtener la información del usuario
 app.get('/user-info', verifyToken, async (req, res) => {

@@ -1,8 +1,8 @@
 import express from 'express';
 
-const logoutRouter = express.Router();
+export const signOutRouter = express.Router();
 
-logoutRouter.get('/logout', (req, res) => {
+signOutRouter.get('/signOut', (req, res) => {
   // Eliminar el token de la cookie
   res.clearCookie('token', {
     httpOnly: true,    // Impide que el token sea accesible desde el cliente
@@ -15,4 +15,3 @@ logoutRouter.get('/logout', (req, res) => {
   res.status(200).json({ message: 'Sesión cerrada exitosamente' });
 });
 
-export { logoutRouter };

@@ -6,9 +6,9 @@ import {Purchaser} from '../models/purchaser.js';
 import {Provider} from '../models/provider.js';
 import {Admin} from '../models/admin.js';
 
-export const loginRouter = express.Router();
+export const signInRouter = express.Router();
 
-loginRouter.post('/login', async (req, res) => {
+signInRouter.post('/signIn', async (req, res) => {
   try {
     const { username, password } = req.body;
     

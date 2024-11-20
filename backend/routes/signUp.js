@@ -2,10 +2,11 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import { Purchaser } from '../models/purchaser.js'; // Asegúrate de importar el modelo de Purchaser
 import jwt from 'jsonwebtoken';
-export const registerRouter = express.Router();
+
+export const signUpRouter = express.Router();
 
 // Función para registrar un comprador
-registerRouter.post('/register', async (req, res) => {
+signUpRouter.post('/signUp', async (req, res) => {
   try {
     // Obtener los datos del cuerpo de la solicitud
     const { name, user, password, email, phone } = req.body;
