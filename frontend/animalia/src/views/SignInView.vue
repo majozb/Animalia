@@ -81,7 +81,6 @@
 
 <script>
 import axios from 'axios'; 
-import Cookies from 'js-cookie'; 
 import { jwtDecode } from 'jwt-decode';
 import { useUserStore } from '../stores/userStore';
 
@@ -112,7 +111,7 @@ export default {
     },
     async login() { 
       try { 
-        const response = await axios.post('http://localhost:3000/login', { username: this.username, password: this.password }); 
+        const response = await axios.post('http://localhost:3000/signIn', { username: this.username, password: this.password }); 
         
         const token = response.data;
         const decodedToken = jwtDecode(token); 

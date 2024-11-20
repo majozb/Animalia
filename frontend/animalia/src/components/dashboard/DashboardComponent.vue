@@ -55,9 +55,9 @@
 </template>
 
 <script>
-import AddBuyer from '@/components/AddBuyer.vue';
-import Analitics from '@/components/AnaliticsData.vue';
-import AddPet from '@/components/AddPet.vue';
+import AddBuyer from '@/components/dashboard/AddBuyer.vue';
+import Analitics from '@/components/dashboard/AnaliticsData.vue';
+import AddPet from '@/components/dashboard/AddPet.vue';
 
 export default {
   data() {
