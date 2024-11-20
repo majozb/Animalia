@@ -1,9 +1,8 @@
 import express from 'express';
 
-const logoutRouter = express.Router();
+export const signOutRouter = express.Router();
 
-logoutRouter.get('/logout', (req, res) => {
-  // Delete the token from the cookie
+signOutRouter.get('/signOut', (req, res) => {
   res.clearCookie('token', {
     httpOnly: true,    // Prevents the cookie from being accessed on the client side
     secure: process.env.NODE_ENV === 'production', // Makes the cookie only transferable over HTTPS in production
@@ -14,4 +13,3 @@ logoutRouter.get('/logout', (req, res) => {
   res.status(200).json({ message: 'Sesión cerrada exitosamente' });
 });
 
-export { logoutRouter };
