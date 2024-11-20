@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="6">
+      <v-col cols="12">
         <v-carousel v-model="currentSlide" hide-delimiters height="auto">
           <v-carousel-item v-for="(image, index) in images" :key="index">
             <v-img :src="getImagePath(image)" class="carousel-image"></v-img>
@@ -15,30 +15,21 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12">
-        <v-card-title class="list-title">Detalles de la mascota</v-card-title>
-      </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
 export default {
+  props: {
+    images: {
+      type: Array,
+      required: true,
+    },
+  },
   data() {
     return {
       currentSlide: 0,
-      images: [
-        "../../assets/test/1.jpg",
-        "../../assets/test/2.jpg",
-        "../../assets/test/3.jpg",
-        "../../assets/test/4.jpg",
-        "../../assets/test/5.jpg",
-        "../../assets/test/1.jpg",
-        "../../assets/test/2.jpg",
-        "../../assets/test/3.jpg",
-        "../../assets/test/4.jpg",
-        "../../assets/test/5.jpg",
-      ],
     };
   },
   methods: {

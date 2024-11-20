@@ -8,7 +8,6 @@ const ProductSchema = new mongoose.Schema({
   description: { type: String, required: true },
   price: { type: Number, required: true },
 	keywords: { type: Array, required: false, default: [] },
-  provider: { type: mongoose.Schema.Types.ObjectId, ref: 'Provider', required: true }, // Relatioship with Provider collection
   dimensions: {
     type: [Number],
     validate: {

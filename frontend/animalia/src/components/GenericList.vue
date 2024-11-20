@@ -126,7 +126,6 @@ export default {
     // If the previewFlag is true, the component will show a single row of items
     if (this.previewFlag) {
       this.updateShownItemsQuantity();
-      console.log("Preview flag is true");
       // Add an event listener to update the number of items shown when the window is resized
       // by calling the updateShownItemsQuantity method. Only works if previewFlag is true
       window.addEventListener("resize", this.updateShownItemsQuantity);
@@ -155,18 +154,14 @@ export default {
       // Build the path to the image of the item
       // const imagePath = new URL(`../assets/${this.itemType}/${id}/main.jpg`, import.meta.url).href;
       const imagePath = new URL(item.images[0], import.meta.url).href;
-      console.log(imagePath);
       return imagePath;
     },
     processDate(date) {
       // Returns the amount of years that have passed since the givenDate
       // until now
       const givenDate = new Date(date);
-      console.log("givenDate", givenDate);
-      console.log("currentDate", new Date());
       const currentDate = new Date();
       let diff = currentDate - givenDate;
-      console.log("diff", diff);
       let years = new Date(diff).getFullYear() - 1970;
       return years;
     },
