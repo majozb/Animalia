@@ -3,16 +3,6 @@ import mongoose from 'mongoose';
 // Define the schema for the Pet collection
 const PetSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  owner: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    refPath: 'ownerModel', // Reference to either Purchaser or Admin
-    required: true 
-  },
-  ownerModel: { 
-    type: String, 
-    required: true, 
-    enum: ['Purchaser', 'Admin'] // Only allow 'Purchaser' or 'Admin' as values
-  },
   description: { type: String, required: false },
   type: { type: String, required: true },
   breed: { type: String, required: true },
@@ -24,11 +14,12 @@ const PetSchema = new mongoose.Schema({
     required: false, 
     validate: {
       validator: function (v) {
-        return (v.length >= 0 && v.length <= 5); // Ensure the array has at most 5 elements and at least 1
+        return (v.length >= 1 && v.length <= 5); // Ensure the array has at most 5 elements and at least 1
       },
       message: props => `${props.path} should have at most 5 image and at least 1.`,
     },
   },
+  genre: { type: Boolean, required: true }, // True for female, False for male
 });
 
 export const Pet = mongoose.model('Pet', PetSchema);

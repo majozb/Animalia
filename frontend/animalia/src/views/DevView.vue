@@ -1,37 +1,16 @@
-<script setup>
- import HomeImage from '@/components/home/HomeImage.vue';
- import ProductList from '@/components/home/ProductList.vue';
- import ProviderList from '@/components/home/ProviderList.vue';
- import AdoptionList from '@/components/home/AdoptionList.vue';
- import AdviceList from '@/components/home/AdviceList.vue';
- import FooterPage from '@/components/home/FooterPage.vue';
- import Banner from '@/components/home/BannerComponent.vue';
- import NavBar from '@/components/home/NavBar.vue';
- import GenericList from '@/components/GenericList.vue';
-  
-</script>
-
+<!-- src/views/DevView.vue -->
 <template>
-  <NavBar />
-  <HomeImage/>
-  <GenericList
-            title="Productos Disponibles"
-            :items="products"
-            titleField="name"
-            :fields="[
-              { key: 'weight', label: 'Peso (kg)' },
-              { key: 'price', label: 'Precio (€)' }
-            ]"
-            itemType="products"
-            :previewFlag="true"
-          />
-  <Banner type="adoption" 
-          title="Adopción" 
-          subtitle="Nosotros necesitamos ayuda. Y ellos también." 
-          description="Adopta un perro y llévalo a tu casa. Te lo agradecerá incondicionalmente." 
-        />
-     
-    <GenericList
+    <v-container>
+      <h1>Vista de Desarrollo</h1>
+      <!-- Prueba con lista de mascotas -->
+
+      <v-row>
+        <v-col cols="3">
+          <FilterBox filterBy="animals" :species="species" />
+          <FilterBox filterBy="products" />
+        </v-col>
+        <v-col cols="9">
+          <generic-list
             title="Mascotas en Adopción"
             :items="pets"
             titleField="name"
@@ -43,24 +22,43 @@
             itemType="pets"
             :previewFlag="true"
           />
-  <ProviderList />
-  <Banner type="services" 
-          title="Servicios Que Ofrecemos" 
-          subtitle="Explora nuestros servicios para mascotas y encuentra lo que necesitas." 
-          description="Conoce los diversos servicios que ofrecemos para el cuidado y bienestar de tus mascotas." 
-          />
-  <AdviceList />
-  <FooterPage />
-</template>
 
-<script>
- export default {
-  name: "DevView",
+          <generic-list
+            title="Productos Disponibles"
+            :items="products"
+            titleField="name"
+            :fields="[
+              { key: 'weight', label: 'Peso (kg)' },
+              { key: 'price', label: 'Precio (€)' }
+            ]"
+            itemType="products"
+          />
+        </v-col>
+          
+      </v-row>
+    </v-container>
+  </template>
+  
+  <script>
+  import GenericList from "../components/GenericList.vue";
+  import FilterBox from "../components/FilterBox.vue";
+  
+  export default {
+    name: "DevView",
     components: {
       GenericList,
+      FilterBox,
     },
     data() {
       return {
+        species: [
+          { key: "dogs", name: "Perros" },
+          { key: "cats", name: "Gatos" },
+          { key: "birds", name: "Aves" },
+          { key: "fish", name: "Peces" },
+          { key: "rodents", name: "Roedores" },
+          { key: "reptiles", name: "Reptiles" },
+        ],
         
         pets: [
         {
@@ -264,7 +262,11 @@
       };
     },
   };
-</script>
-
-
-
+  </script>
+  
+  <style scoped>
+  /* Estilos adicionales para la vista de desarrollo */
+  .v-container {
+    background-color: beige;
+  }
+  </style>
