@@ -33,14 +33,18 @@
             <v-list-item>
                 <v-list-item-title @click="switchComponent('Analitics')">Analitics</v-list-item-title>
             </v-list-item>
-            <!-- Sección de gestión de compradores -->
+            <!-- AddBuyer-->
             <v-list-item>
               <v-list-item-title @click="switchComponent('AddBuyer')">Añadir Comprador</v-list-item-title>
+            </v-list-item>
+            <!-- Add Pet -->
+            <v-list-item>
+              <v-list-item-title @click="switchComponent('AddPet')">Añadir Mascota</v-list-item-title>
             </v-list-item>
         </v-list>
       </v-navigation-drawer>
 
-      <!-- Contenido principal -->
+      <!-- Main Content -->
       <v-main>
         <div class="main-content">
           <component :is="currentComponent" />
@@ -53,6 +57,8 @@
 <script>
 import AddBuyer from '@/components/AddBuyer.vue';
 import Analitics from '@/components/AnaliticsData.vue';
+import AddPet from '@/components/AddPet.vue';
+
 export default {
   data() {
     return {
@@ -82,6 +88,7 @@ export default {
   components: {
     AddBuyer,
     Analitics,
+    AddPet
   },
 };
 </script>

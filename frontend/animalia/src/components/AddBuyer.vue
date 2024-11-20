@@ -40,16 +40,6 @@
             label="Teléfono"
           ></v-text-field>
 
-          <v-select
-            v-model="selectedPet"
-            :items="availablePets"
-            item-text="name"
-            item-value="_id"
-            label="Seleccionar Mascota para Adopción"
-            :rules="[v => !!v || 'Debe seleccionar una mascota']"
-            required
-          ></v-select>
-
           <v-btn color="success" @click="submit">Añadir</v-btn>
           <v-btn color="error" @click="reset">Resetear</v-btn>
         </v-form>
@@ -94,40 +84,13 @@ export default {
         pets: []
       },
       buyers: [],
-      availablePets: [],
-      selectedPet: null,
       originalBuyer: null,
     };
   },
   mounted() {
-    console.log('Component mounted');
     this.fetchBuyers();
-    this.fetchAvailablePets();
   },
   methods: {
-    async fetchAvailablePets() {
-      try {
-        const response = await fetch('/api/pets');
-        if (!response.ok) {
-          throw new Error(`Error al obtener mascotas: ${response.statusText}`);
-        }
-        const pets = await response.json();
-
-        console.log('Mascotas:', pets);
-        const responseBuyers = await fetch('/api/purchasers');
-        if (!responseBuyers.ok) {
-          throw new Error(`Error al obtener compradores: ${responseBuyers.statusText}`);
-        }
-        const buyers = await responseBuyers.json();
-
-        const adoptedPetIds = buyers.flatMap(buyer => buyer.pets);
-        console.log('IDs de mascotas adoptadas:', adoptedPetIds);
-        this.availablePets = pets.filter(pet => !adoptedPetIds.includes(pet._id));
-      } catch (error) {
-        console.error('Error al obtener mascotas disponibles:', error);
-      }
-    },
-
     async fetchBuyers() {
       try {
         const response = await fetch('/api/purchasers');

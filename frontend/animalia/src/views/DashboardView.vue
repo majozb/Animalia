@@ -4,5 +4,5 @@
   </main> 
 </template> 
 <script setup> 
-  import Dashboard from '@/components/Dashboard.vue'; 
+  import Dashboard from '@/components/DashboardComponent.vue'; 
 </script>
