@@ -18,50 +18,48 @@ const MODEL_DATA = [
 <template>
 
   <!-- Navbar -->
-  <NavBar />
-
-  <!-- Main Content -->
-  <v-container>
-        <v-breadcrumbs :items="items"></v-breadcrumbs>
-
-    <v-row>
-      <!-- Left Column -->
-      <v-col cols="12" md="6">
-        <ImageCarrousel :images="petData.images" />
-      </v-col>
-
-      <!-- Right Column -->
-      <v-col cols="12" md="6">
-        <v-card class="pa-4">
-          <v-card-title class="text-h4">{{ petData.name }}</v-card-title>
-          <v-card-subtitle class="text-subtle">Referencia #{{ petData._id }}</v-card-subtitle>
-          <v-divider class="my-4"></v-divider>
-          <!-- Pet Details -->
-          <v-table>
-            <tbody>
-              <tr v-for="field in MODEL_DATA" :key="field.key">
-              <td class="text-body-1 font-weight-bold">{{ field.label }}</td>
-              <td class="text-body-1" v-if="field.key === 'genre'">{{ petData[field.key] ? 'Hembra' : 'Macho' }}</td>
-              <td class="text-body-1" v-else-if="field.key === 'birthDate'">{{ new Date(petData[field.key]).toLocaleDateString() }}</td>
-              <td class="text-body-1" v-else>{{ petData[field.key] }}</td>
-              </tr>
-            </tbody>
-          </v-table>
-        </v-card>
-
-      </v-col>
-    </v-row>
-
-    <!-- See More Animals -->
-    <v-row class="mt-12">
-      <GenericList title="¿Tienes espacio para más amigos?" :items="petsDisplay" titleField="name" :fields="[
-        { key: 'type', label: 'Especie' },
-        { key: 'breed', label: 'Raza' },
-        { key: 'birthDate', label: 'Edad' }
-      ]" itemType="pets" :previewFlag=true />
-    </v-row>
-  </v-container>
-
+  <div class="main-container">
+    <NavBar />
+    <!-- Main Content -->
+    <v-container>
+      <v-breadcrumbs :items="items"></v-breadcrumbs>
+      <v-row>
+        <!-- Left Column -->
+        <v-col cols="12" md="6">
+          <ImageCarrousel :images="petData.images" />
+        </v-col>
+        <!-- Right Column -->
+        <v-col cols="12" md="6">
+          <v-card class="pa-4">
+            <v-card-title class="text-h4">{{ petData.name }}</v-card-title>
+            <v-card-subtitle class="text-subtle">Referencia #{{ petData._id }}</v-card-subtitle>
+            <v-divider class="my-4"></v-divider>
+            <!-- Pet Details -->
+            <v-table>
+              <tbody>
+                <tr v-for="field in MODEL_DATA" :key="field.key">
+                  <td class="text-body-1 font-weight-bold">{{ field.label }}</td>
+                  <td class="text-body-1" v-if="field.key === 'genre'">{{ petData[field.key] ? 'Hembra' : 'Macho' }}
+                  </td>
+                  <td class="text-body-1" v-else-if="field.key === 'birthDate'">{{ new
+                    Date(petData[field.key]).toLocaleDateString() }}</td>
+                  <td class="text-body-1" v-else>{{ petData[field.key] }}</td>
+                </tr>
+              </tbody>
+            </v-table>
+          </v-card>
+        </v-col>
+      </v-row>
+      <!-- See More Animals -->
+      <v-row class="mt-12">
+        <GenericList title="¿Tienes espacio para más amigos?" :items="petsDisplay" titleField="name" :fields="[
+          { key: 'type', label: 'Especie' },
+          { key: 'breed', label: 'Raza' },
+          { key: 'birthDate', label: 'Edad' }
+        ]" itemType="pets" :previewFlag=true />
+      </v-row>
+    </v-container>
+  </div>
   <!-- Footer -->
   <FooterPage />
 </template>
@@ -72,14 +70,6 @@ export default {
     return {
       petData: {},
       petsDisplay: [],
-      images: [
-        "../../assets/pets/673b807da3039f28f89c2f37/1.jpg",
-        "../../assets/pets/673b807da3039f28f89c2f37/2.jpg",
-        "../../assets/pets/673b807da3039f28f89c2f37/3.jpg",
-        "../../assets/pets/673b807da3039f28f89c2f37/4.jpg",
-        "../../assets/pets/673b807da3039f28f89c2f37/5.jpg",
-        // Add more image paths here
-      ],
       items: [
         { title: 'Inicio', disabled: false, href: '/' },
         { title: 'Mascotas', disabled: false, href: '/pets' },
@@ -123,10 +113,11 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .main-container {
   background-color: #fcfcfc;
 }
+
 .text-h4 {
   color: #003366;
   font-weight: bold;
