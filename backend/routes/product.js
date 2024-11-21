@@ -28,12 +28,10 @@ productRouter.get('/products', async (req, res) => {
     if (priceRange != [0, 0]) {
       products = products.filter((product) => product.price >= priceRange[0] && product.price <= priceRange[1]);
     }
-    console.log("Products after price filter: ", products.length);
 
     if (inStock) {
       products = products.filter((product) => product.stock > 0);
     }
-    console.log("Products after stock filter: ", products.length);
 
     res.status(200).send(products);
   } catch (e) {
