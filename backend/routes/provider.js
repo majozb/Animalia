@@ -24,7 +24,7 @@ providerRouter.get('/providers', async (req, res) => {
     const providers = await Provider.find({});
     res.send(providers);
   } catch (e) {
-    res.status(500).send();
+    res.status(400).send();
   }
 });
 
@@ -38,7 +38,7 @@ providerRouter.get('/providers/:id', async (req, res) => {
     }
     res.send(provider);
   } catch (e) {
-    res.status(500).send();
+    res.status(400).send();
   }
 });
 
@@ -79,7 +79,7 @@ providerRouter.delete('/providers/:id', async (req, res) => {
     await Provider.deleteOne(provider);
     res.status(200).send(provider);
   } catch (e) {
-    res.status(500).send();
+    res.status(400).send();
   }
 });
 

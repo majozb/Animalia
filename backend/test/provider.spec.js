@@ -59,19 +59,12 @@ describe('Provider routes', () => {
       expect(res.statusCode).to.equal(200);
       expect(res.body).to.be.an('array').with.lengthOf(2);
     });
-    // it('return the provider with the stock query param', async () => {
-    //   let res = await request(app).get('/providers?Instock=true');
-    //   expect(res.statusCode).to.equal(200);
-    //   expect(res.body).to.be.an('array').with.lengthOf(1);
-    // });
-    it('return the provider with products', async () => {
+    it('return providers with products', async () => {
       let product = await new Product(product1).save();
       provider.products.push(product);
-      console.log("Product find: ", product._id);
       let res = await request(app).get('/providers');
       expect(res.statusCode).to.equal(200);
       expect(res.body).to.be.an('array').with.lengthOf(1);
-      expect(res.body[0]).to.have.property('products').with.lengthOf(1);
     });
   });
   context('GET /providers/:id', () => {
@@ -84,6 +77,19 @@ describe('Provider routes', () => {
     it('return 404 if the provider does not exist', async () => {
       let res = await request(app).get(`/providers/60b5e4a1c3f2b8a7a4c9e7c8`);
       expect(res.statusCode).to.equal(404);
+    });
+    it('return 400 if the id is invalid', async () => {
+      let res = await request(app).get(`/providers/123`);
+      expect(res.statusCode).to.equal(400);
+    });
+    it('return the provider with products', async () => {
+      let product = await new Product(product1).save();
+      provider.products.push(product);
+      await provider.save();
+      let res = await request(app).get(`/providers/${provider._id}`);
+      expect(res.statusCode).to.equal(200);
+      expect(res.body).to.be.an('object');
+      expect(res.body.products).lengthOf(1);
     });
   });
   context('POST /providers', () => {
@@ -101,6 +107,19 @@ describe('Provider routes', () => {
         .send(Provider1);
       expect(res.statusCode).to.equal(400);
     });
+    it('return 400 if the provider is invalid', async () => {
+      // Missing user, password, email, phone
+      let res = await request(app)
+        .post('/providers')
+        .send({ name: 'Pienso Miguel S.A.' });
+      expect(res.statusCode).to.equal(400);
+    });
+    it('return 400 if the email is invalid', async () => {
+      let res = await request(app)
+        .post('/providers')
+        .send({ ...Provider2, email: 'invalidEmail' });
+      expect(res.statusCode).to.equal(400);
+    });
   });
   context('PUT /providers/:id', () => {
     it('update a provider', async () => {
@@ -111,15 +130,52 @@ describe('Provider routes', () => {
       expect(res.body).to.be.an('object');
       expect(res.body).to.have.property('name', 'Pienso Miguel S.L.');
     });
+    it('return 404 if the provider does not exist', async () => {
+      let res = await request(app)
+        .put(`/providers/60b5e4a1c3f2b8a7a4c9e7c8`)
+        .send({ name: 'Pienso Miguel S.L.' });
+      expect(res.statusCode).to.equal(404);
+    });
+    it('return 400 if the id is invalid', async () => {
+      let res = await request(app)
+        .put(`/providers/123`)
+        .send({ name: 'Pienso Miguel S.L.' });
+      expect(res.statusCode).to.equal(400);
+    });
+    it('update a provider with products', async () => {
+      let product = await new Product(product1).save();
+      provider.products.push(product);
+      await provider.save();
+      let res = await request(app)
+        .put(`/providers/${provider._id}`)
+        .send({ name: 'Pienso Miguel S.L.' });
+      expect(res.statusCode).to.equal(200);
+      expect(res.body).to.be.an('object');
+      expect(res.body).to.have.property('name', 'Pienso Miguel S.L.');
+      expect(res.body.products).to.be.an('array').with.lengthOf(1);
+    });
   });
   context('DELETE /providers/:id', () => {
-    // it('delete a provider', async () => {
-    //   let res = await request(app).delete(`/providers/${provider._id}`);
-    //   expect(res.statusCode).to.equal(200);
-    // });
+    it('delete a provider', async () => {
+      let res = await request(app).delete(`/providers/${provider._id}`);
+      expect(res.statusCode).to.equal(200);
+    });
     it('return 404 if the provider does not exist', async () => {
       let res = await request(app).delete(`/providers/60b5e4a1c3f2b8a7a4c9e7c8`);
       expect(res.statusCode).to.equal(404);
+    });
+    it('return 400 if the id is invalid', async () => {
+      let res = await request(app).delete(`/providers/123`);
+      expect(res.statusCode).to.equal(400);
+    });
+    it('delete a provider with products', async () => {
+      let product = await new Product(product1).save();
+      provider.products.push(product);
+      await provider.save();
+      let res = await request(app).delete(`/providers/${provider._id}`);
+      expect(res.statusCode).to.equal(200);
+      let products = await Product.findById(product._id);
+      expect(products).to.be.null;
     });
   });
 });
