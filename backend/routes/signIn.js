@@ -39,7 +39,7 @@ signInRouter.post('/signIn', async (req, res) => {
 
     // Create the token with the user type
     const token = jwt.sign(
-      { _id: user._id, userType },
+      {userId: user._id, userType },
       process.env.JWT_SECRET
     );
 

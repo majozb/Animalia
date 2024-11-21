@@ -46,31 +46,71 @@ purchaserRouter.post('/purchasers', async (req, res) => {
   }
 });
 
-// PUT /purchasers/:id
 purchaserRouter.put('/purchasers/:id', async (req, res) => {
   const updates = Object.keys(req.body);
-  const allowedUpdates = ['name', 'user', 'password', 'email', 'phone', 'pets'];
+  const allowedUpdates = ['name', 'user', 'password', 'email', 'phone', 'pets', 'petId'];  // Añadido 'petId' como campo permitido
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
 
   if (!isValidOperation) {
     return res.status(400).send({ error: 'Invalid updates' });
-  } 
+  }
 
   try {
     const purchaser = await Purchaser.findById(req.params.id);
     if (!purchaser) {
       return res.status(404).send({ error: 'Purchaser not found' });
     }
-    if (req.body.password) {
-      req.body.password = await bcrypt.hash(req.body.password, 8);
+
+    if (req.body.petId) {
+      purchaser.pets.push(req.body.petId); 
     }
-    updates.forEach((update) => purchaser[update] = req.body[update]);
+
+    
+    if (req.body.password) {
+      req.body.password = await bcrypt.hash(req.body.password, 8);  
+    }
+
+    updates.forEach((update) => {
+      if (update !== 'petId') {
+        purchaser[update] = req.body[update];  
+      }
+    });
+
+    await purchaser.save();  
+    res.status(200).send(purchaser); 
+  } catch (error) {
+    res.status(400).send({ error: error.message }); 
+  }
+});
+
+// PUT /purchasers/:id/removePet
+purchaserRouter.put('/purchasers/:id/removePet', async (req, res) => {
+  try {
+    const { petId } = req.body;  // Pet ID a desvincular
+    const purchaser = await Purchaser.findById(req.params.id);  // Buscar al comprador por su ID
+
+    if (!purchaser) {
+      return res.status(404).send({ error: 'Purchaser not found' });
+    }
+
+    // Verificar si el petId está en el array de pets
+    const petIndex = purchaser.pets.indexOf(petId);
+    if (petIndex === -1) {
+      return res.status(404).send({ error: 'Pet not found in purchaser pets list' });
+    }
+
+    // Eliminar el petId del array de pets
+    purchaser.pets.splice(petIndex, 1);
+
+    // Guardar los cambios
     await purchaser.save();
-    res.status(200).send(purchaser);
+    
+    res.status(200).send({ message: 'Pet removed successfully', purchaser });
   } catch (error) {
     res.status(400).send({ error: error.message });
   }
 });
+
 
 // DELETE /purchasers/:id
 purchaserRouter.delete('/purchasers/:id', async (req, res) => {

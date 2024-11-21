@@ -23,7 +23,7 @@ const ProductSchema = new mongoose.Schema({
     required: true, 
     validate: {
       validator: function (v) {
-        return (v.length >= 1 && v.length <= 5);
+        return (v.length >= 0 && v.length <= 5);
       },
       message: props => `${props.path} should have at least 1 image and at most 5.`,
     },

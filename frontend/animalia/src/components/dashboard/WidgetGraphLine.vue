@@ -92,6 +92,7 @@ export default {
   border-radius: 8px;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.0);
+  background-color: #F7DBA7;
 }
 
 .widget-icon {

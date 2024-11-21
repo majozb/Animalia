@@ -24,9 +24,9 @@
 
 <script>
 import { Chart, registerables } from 'chart.js';
-import WidgetGraph  from '../WidgetGraphLine.vue';
-import WidgetDonut from '../WidgetDonut.vue';
-import GenericTable from '../home/GenericTable.vue';
+import WidgetGraph  from './WidgetGraphLine.vue';
+import WidgetDonut from './WidgetDonut.vue';
+import GenericTable from './GenericTable.vue';
 
 
 // Registra todos los componentes de Chart.js
