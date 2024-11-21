@@ -91,8 +91,8 @@ export default {
   margin-top: 16px;
   border-radius: 8px;
   text-align: center;
+  background-color:#F7DBA7 ;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.0);
-  background-color: #F7DBA7;
 }
 
 .widget-icon {

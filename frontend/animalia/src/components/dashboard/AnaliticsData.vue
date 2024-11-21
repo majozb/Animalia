@@ -12,10 +12,9 @@
     <section class="section">
       <WidgetDonut chartId="productsByCategory" title="Productos por Categoría" :chartData="productsChartData"/>
       <WidgetDonut chartId="adoptionsByAnimal" title="Adopciones por Tipo de Animal" :chartData="adoptionsChartData" />
-      <GenericTable title="Resumen de los Últimos Productos Subidos" :headers="headers" :items="items" />
     </section>
     <section class="section">
-      
+      <GenericTable title="Resumen de los Últimos Productos Subidos" :headers="headers" :items="items" />
       <GenericTable title="Proveedores dados de alta" :headers="headers2" :items="items2" />
     </section>
     

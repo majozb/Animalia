@@ -38,7 +38,6 @@
         </v-form>
       </v-col>
 
-      <!-- Tabla de Proveedores -->
       <v-col cols="12" md="6">
         <h2 class="title">Lista de Proveedores</h2>
         <v-data-table
@@ -125,8 +124,8 @@ export default {
 
         if (response.ok) {
           console.log('success', 'Proveedor registrado con éxito.');
-          this.fetchProviders(); // Actualiza la lista de proveedores
-          this.$refs.providerForm.reset(); // Resetea el formulario
+          this.fetchProviders(); 
+          this.$refs.providerForm.reset(); 
         } else {
           const errorData = await response.json();
           console.log('error', errorData.message || 'Error al registrar el proveedor.');
@@ -149,8 +148,7 @@ export default {
     },
 
     async editProvider(provider) {
-      // Aquí puedes agregar lógica para editar un proveedor
-      this.provider = { ...provider }; // Cargar los datos en el formulario
+      this.provider = { ...provider }; 
     },
 
     async deleteProvider(provider) {
@@ -161,7 +159,7 @@ export default {
 
         if (response.ok) {
           console.log('success', `Proveedor ${provider.name} eliminado con éxito.`);
-          this.fetchProviders(); // Actualiza la lista después de eliminar
+          this.fetchProviders(); 
         } else {
           const errorData = await response.json();
           console.log('error', errorData.message || 'Error al eliminar el proveedor.');
@@ -172,7 +170,7 @@ export default {
     },
   },
   mounted() {
-    this.fetchProviders(); // Obtener la lista de proveedores cuando el componente se monte
+    this.fetchProviders(); 
   },
 };
 </script>

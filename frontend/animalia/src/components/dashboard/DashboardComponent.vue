@@ -25,11 +25,8 @@
           <span class="user-name">Bienvenido, {{ user }}</span>
           <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="">
         </div>
-
-      
       </v-app-bar>
-    
-      
+
       <!-- Menú lateral con VNavigationDrawer -->
       <v-navigation-drawer
         v-model="isMenuOpen"
@@ -39,32 +36,28 @@
         temporary
       >
         <v-list class="menu-list">
-          <!-- Analitics-->
-          <v-list-item class="menu-item">
+          <!-- Opciones de menú basadas en el tipo de usuario -->
+          <v-list-item v-if="userType === 'admin'" class="menu-item">
             <v-list-item-title @click="switchComponent('Analitics')">
               Analíticas
             </v-list-item-title>
           </v-list-item>
-          <!-- AddBuyer-->
-          <v-list-item class="menu-item">
+          <v-list-item v-if="userType === 'admin'" class="menu-item">
             <v-list-item-title @click="switchComponent('AddBuyer')">
               Añadir Comprador
             </v-list-item-title>
           </v-list-item>
-          <!-- Add Pet -->
-          <v-list-item  class="menu-item">
+          <v-list-item v-if="userType === 'purchaser'" class="menu-item">
             <v-list-item-title @click="switchComponent('AddPet')">
               Añadir Mascota
             </v-list-item-title>
           </v-list-item>
-          <!-- Add Provider -->
-          <v-list-item class="menu-item">
+          <v-list-item v-if="userType === 'admin'" class="menu-item">
             <v-list-item-title @click="switchComponent('AddProvider')">
               Añadir Proveedor
             </v-list-item-title>
           </v-list-item>
-          <!-- Add Product -->
-          <v-list-item class="menu-item">
+          <v-list-item v-if="userType === 'provider'" class="menu-item">
             <v-list-item-title @click="switchComponent('AddProduct')">
               Añadir Producto
             </v-list-item-title>
@@ -75,7 +68,7 @@
         </v-list>
       </v-navigation-drawer>
 
-      <!-- Main Content -->
+      <!-- Contenido principal -->
       <v-main>
         <div class="main-content">
           <component :is="currentComponent" />
@@ -96,47 +89,53 @@ import AddProduct from "@/components/dashboard/AddProduct.vue";
 export default {
   data() {
     return {
-      currentComponent: "AddBuyer", // Componente inicial
+      currentComponent: "", // Componente inicial será configurado dinámicamente
       isMenuOpen: false, // Controla si el menú está abierto o no
       searchQuery: "", // Query del buscador
       breadcrumbs: [
         { title: "Inicio", disabled: false, to: "/" },
         { title: "Panel de Control", disabled: true },
-      ]
+      ],
     };
   },
   computed: {
-    user() {
-      return this.userStore.user; // Obtén el nombre de usuario del store
-    },
+    // Accede al store de usuario para determinar el tipo de usuario y nombre
     userType() {
-      return this.userStore.userType; // Obtén el rol del usuario del store
+      return useUserStore().userType;
+    },
+    user() {
+      return useUserStore().user;
     },
   },
+  created() {
+    // Configura el componente inicial según el tipo de usuario
+    this.setInitialComponent();
+  },
   methods: {
-    switchComponent(component) {
-      this.currentComponent = null;
-      this.$nextTick(() => {
-        this.currentComponent = component;
-        // Oculta el menú después de seleccionar una opción en pantallas pequeñas
-        this.isMenuOpen = false;
-      });
-    },
     toggleMenu() {
-      this.isMenuOpen = !this.isMenuOpen; // Alterna el estado de `isMenuOpen`
-    },
-    goToHome() {
-      this.$router.push("/"); // Redirige a la página principal (Home)
+      this.isMenuOpen = !this.isMenuOpen;
     },
     onSearch() {
-      // Lógica de búsqueda: se activará cada vez que el usuario escribe en el campo de búsqueda.
-      console.log("Buscar:", this.searchQuery);
+      console.log("Search query:", this.searchQuery);
+    },
+    switchComponent(componentName) {
+      this.currentComponent = componentName;
+    },
+    setInitialComponent() {
+      // Configura el componente inicial basado en el tipo de usuario
+      if (this.userType === "admin") {
+        this.currentComponent = "Analitics";
+      } else if (this.userType === "purchaser") {
+        this.currentComponent = "AddPet";
+      } else if (this.userType === "provider") {
+        this.currentComponent = "AddProduct";
+      } else {
+        this.currentComponent = ""; // Valor predeterminado o manejar errores
+      }
     },
     signOut() {
-      // Eliminar el usuario del store y el localStorage
-      this.userStore.clearUser();
-      // Redirigir al home
-      this.$router.push('/'); // Asegúrate de tener configurado Vue Router
+      useUserStore().clearUser();
+      this.$router.push("/");
     },
   },
   components: {
@@ -146,14 +145,48 @@ export default {
     AddProvider,
     AddProduct,
   },
-  setup() {
-    const userStore = useUserStore(); 
-    return { userStore };
-  },
 };
 </script>
 
 <style scoped>
+/* Estilos para el panel de control */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.app-bar {
+  background-color: #003459;
+  color: white;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.search-bar {
+  max-width: 300px;
+}
+
+.menu {
+  background-color: #002642;
+}
+
+.menu-list .menu-item {
+  color: white;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-name {
+  font-size: 16px;
+}
 .v-list-item {
   cursor: pointer;
 }
@@ -214,7 +247,9 @@ export default {
   background-color: #F7DBA7;
 }
 
-.breadcrumbs {
+.v-breadcrumbs {
   color: #F7DBA7;
 }
 </style>
+
+  
