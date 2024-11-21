@@ -40,6 +40,7 @@ petRouter.get('/pets/:id', async (req, res) => {
 // POST /pets
 petRouter.post('/pets', async (req, res) => {
   try {
+    console.log(req.body);
     const pet = new Pet(req.body);
     await pet.save();
     res.status(201).send(pet);

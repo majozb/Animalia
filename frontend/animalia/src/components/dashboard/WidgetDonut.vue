@@ -8,7 +8,6 @@
 <script>
 import { Chart, registerables } from "chart.js";
 
-// Registra todos los componentes de Chart.js
 Chart.register(...registerables);
 
 export default {

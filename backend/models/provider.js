@@ -26,7 +26,7 @@ const ProviderSchema = new mongoose.Schema({
       message: props => `${props.value} is not a valid phone number!`
     }
   },
-	products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true}], // Relatioship with Product collection
+	products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: false}], // Relatioship with Product collection
 });
 
 export const Provider = mongoose.model('Provider', ProviderSchema);

@@ -17,9 +17,8 @@ import cors from 'cors';
 export const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(cokkieParser());
-app.use(cors());
 app.use(petRouter);
 app.use(purchaserRouter);
 app.use(providerRouter);

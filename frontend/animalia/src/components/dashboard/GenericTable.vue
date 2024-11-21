@@ -65,8 +65,8 @@ export default {
   color: #333;
   text-align: center;
   padding: 16px;
-  background-color: #007BFF;
-  color: white;
+  background-color: #003459;
+  color:#F7DBA7 ;
   border-radius: 12px 12px 0 0;
 }
 
@@ -74,6 +74,8 @@ export default {
   background-color: white;
   margin-top: 0;
   border-radius: 0 0 12px 12px;
+  background-color: #F7DBA7;
+
 }
 
 .v-data-table-header {
