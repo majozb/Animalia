@@ -53,7 +53,7 @@ export default {
   background-image: url('../../assets/home-banner.png');
   background-size: cover; 
   margin: 0;
-  margin-top: -120px;
+  margin-top: -150px;
   padding: 0; 
   box-sizing: border-box; 
   border-radius: 10px; 

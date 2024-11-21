@@ -1,5 +1,5 @@
 <template>
-  <v-container class="login-container" fluid>
+  <v-container class="signIn-container" fluid>
     <v-row justify="center" align-content>
       <v-col cols="10" md="6" class="text-center">
         <v-breadcrumbs :items="items"></v-breadcrumbs>
@@ -17,21 +17,23 @@
           </v-row>
 
           <!-- Formulario -->
-          <v-form>
+          <v-form @submit.prevent="signIn">
             <v-text-field
+              v-model="username"
               label="Nombre de usuario"
               outlined
               dense
               class="input-field mb-4"
             ></v-text-field>
             <v-text-field
+              v-model="password"
               label="Contraseña"
               type="password"
               outlined
               dense
               class="input-field mb-4"
             ></v-text-field>
-            <v-btn color="#003366" block class="mt-3" large>
+            <v-btn color="#003366" block class="mt-3" @click="signIn" large>
               Entrar
             </v-btn>
           </v-form>
@@ -78,8 +80,14 @@
 </template>
 
 <script>
+import axios from 'axios'; 
+import { jwtDecode } from 'jwt-decode';
+import { useUserStore } from '../stores/userStore';
+
 export default {
   data: () => ({
+      username: '', 
+      password: '',
       items: [
         {
           title: 'Inicio',
@@ -93,6 +101,7 @@ export default {
         },
       ],
     }),
+    
   methods: {
     getImagePath(item) {
       // Build the path to the image of the item
@@ -100,6 +109,36 @@ export default {
       const imagePath = new URL(item, import.meta.url).href;
       return imagePath;
     },
+    async signIn() {
+      try {
+        const response = await axios.post('http://localhost:3000/signIn', { 
+          username: this.username, 
+          password: this.password 
+        });
+      
+        const token = response.data;
+        const decodedToken = jwtDecode(token);
+      
+        const userType = decodedToken.userType;
+        const userId = decodedToken.userId;
+      
+        const userStore = useUserStore();
+      
+        // Almacenar el usuario, tipo de usuario e ID en el store
+        userStore.setUser({ 
+          user: this.username, 
+          userType: userType,
+          userId: userId  
+        });
+
+        console.log("User Data Stored:", { user: this.username, userType, userId });
+ 
+    this.$router.push('/'); // Redirigir a la página principal
+  } catch (error) {
+    console.error("Error during signIn", error);
+    alert("Credenciales inválidas");
+  }
+},
     goToSignUp() {
       this.$router.push('/signup');
     },
@@ -118,7 +157,7 @@ export default {
   background-color: #FAF1E6;
 }
 
-.login-container {
+.signIn-container {
   background-color: #FAF1E6;
   min-height: 100vh;
   display: flex;

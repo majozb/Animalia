@@ -5,9 +5,9 @@ import {Purchaser} from '../models/purchaser.js';
 import {Provider} from '../models/provider.js';
 import {Admin} from '../models/admin.js';
 
-export const loginRouter = express.Router();
+export const signInRouter = express.Router();
 
-loginRouter.post('/login', async (req, res) => {
+signInRouter.post('/signIn', async (req, res) => {
   try {
     const { username, password } = req.body;
     
@@ -39,7 +39,7 @@ loginRouter.post('/login', async (req, res) => {
 
     // Create the token with the user type
     const token = jwt.sign(
-      { _id: user._id, userType },
+      {userId: user._id, userType },
       process.env.JWT_SECRET
     );
 
@@ -50,7 +50,7 @@ loginRouter.post('/login', async (req, res) => {
       sameSite: 'none'
     });
 
-    res.status(200).json({ message: "User logged in successfully" });
+    res.json(token);
   } catch (error) {
     console.log("Error in login controller", error);
     res.status(500).json({ error: "Internal Server Error" });

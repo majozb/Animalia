@@ -27,7 +27,7 @@ adminRouter.get('/admins', async (req, res) => {
     const admins = await Admin.find({});
     res.send(admins);
   } catch (e) {
-    res.status(500).send();
+    res.status(400).send();
   }
 });
 
@@ -41,7 +41,7 @@ adminRouter.get('/admins/:id', async (req, res) => {
     }
     res.send(admin);
   } catch (e) {
-    res.status(500).send();
+    res.status(400).send();
   }
 });
 
@@ -83,7 +83,7 @@ adminRouter.delete('/admins/:id', async (req, res) => {
     }
     res.send(admin);
   } catch (e) {
-    res.status(500).send();
+    res.status(400).send();
   }
 });
 

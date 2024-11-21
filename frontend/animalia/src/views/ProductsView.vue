@@ -11,12 +11,13 @@ import FilterBox from '@/components/FilterBox.vue';
     <NavBar />
     <v-row>
       <v-col cols="12" sm="12" md="3" lg="3" xl="3">
-        <FilterBox filterBy="products" />
+        <FilterBox filterBy="products" @filters="fetchFilteredProducts"/>
       </v-col>
       <v-col cols="12" sm="12" md="9" lg="9" xl="9">
         <generic-list title="Productos Disponibles" :items="products" titleField="name" :fields="[
           { key: 'weight', label: 'Peso (kg)' },
-          { key: 'price', label: 'Precio (€)' }
+          { key: 'price', label: 'Precio (€)' },
+          { key: 'stock', label: 'Stock' }
         ]" itemType="products" />
       </v-col>
     </v-row>
@@ -38,12 +39,19 @@ export default {
     };
   },
   mounted() {
-    this.fetchProducts();
+    this.fetchFilteredProducts();
   },
   methods: {
-    async fetchProducts() {
+    async fetchFilteredProducts(filterCriteria) {
       try {
-        const response = await fetch('http://127.0.0.1:3000/products');
+        const queryParams = new URLSearchParams(filterCriteria);
+        const url = `http://127.0.0.1:3000/products?${queryParams}`;
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

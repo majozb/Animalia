@@ -1,17 +1,7 @@
 import { expect } from 'chai';
 import request from 'supertest';
 import { Product } from '../models/product.js';
-import { Provider } from '../models/provider.js';
 import { app } from '../index.js';
-
-const provider1 = {
-  name: 'Armentario Ordóñez Rascón',
-  user: 'Pienso Armentario',
-  password: '12345678',
-  email: 'ArmentarioOrdonezRascon@gustr.com',
-  phone: '686868686',
-  products: [],
-};
 
 const product1 = {
   name: 'Pienso para perros',
@@ -20,7 +10,6 @@ const product1 = {
   description: 'Pienso para perros adultos',
   price: 20,
   keywords: ['perro', 'pienso', 'adulto'],
-  provider: '',
   dimensions: [10, 20, 30],
   images: ['url1', 'url2'],
 };
@@ -32,7 +21,6 @@ const product2 = {
   description: 'Pienso para gatos adultos',
   price: 15,
   keywords: ['gato', 'pienso', 'adulto'],
-  provider: '',
   dimensions: [5, 10, 15],
   images: ['url3', 'url4'],
 };
@@ -44,19 +32,14 @@ const product3 = {
   description: 'Rascador para gatos',
   price: 50,
   keywords: ['gato', 'accesorios', 'adulto'],
-  provider: '',
   dimensions: [20, 40, 60],
   images: ['url5', 'url6'],
 };
 
-let provider;
 let product;
 
 beforeEach(async () => {
   await Product.deleteMany();
-  await Provider.deleteMany();
-  provider = await new Provider(provider1).save();
-  product1.provider = provider._id;
   product = await new Product(product1).save();
 });
 
@@ -87,10 +70,6 @@ describe('Product routes', () => {
       const response = await request(app).post('/products').send({ ...product1, price: '' });
       expect(response.statusCode).to.equal(400);
     });
-    it('should not create a new product without a provider', async () => {
-      const response = await request(app).post('/products').send({ ...product1, provider: '' });
-      expect(response.statusCode).to.equal(400);
-    });
     it('should not create a new product without dimensions', async () => {
       const response = await request(app).post('/products').send({ ...product1, dimensions: '' });
       expect(response.statusCode).to.equal(400);
@@ -119,15 +98,12 @@ describe('Product routes', () => {
       expect(response.body.length).to.equal(1);
     });
     it('should get two products', async () => {
-      product2.provider = provider._id;
       await new Product(product2).save();
       const response = await request(app).get('/products');
       expect(response.statusCode).to.equal(200);
       expect(response.body.length).to.equal(2);
     });
     it('should get three products', async () => {
-      product2.provider = provider._id;
-      product3.provider = provider._id;
       await new Product(product2).save();
       await new Product(product3).save();
       const response = await request(app).get('/products');
@@ -139,15 +115,6 @@ describe('Product routes', () => {
       const response = await request(app).get('/products');
       expect(response.statusCode).to.equal(200);
       expect(response.body.length).to.equal(0);
-    });
-    it('returns a error if the provider is not valid', async () => {
-      try {
-        product2.provider = '1234567890';
-        await new Product(product2).save();
-        await request(app).get('/products');
-      } catch (error) {
-        expect(error).to.be.an('error');
-      }
     });
   });
   context('GET /products/:id', () => {
@@ -168,15 +135,6 @@ describe('Product routes', () => {
       const response = await request(app).get(`/products/${product._id}`);
       expect(response.statusCode).to.equal(200);
     });
-    it('returns a error if the provider is not valid', async () => {
-      try {
-        product2.provider = '1234567890';
-        await new Product(product2).save();
-        await request(app).get('/products/1234567890');
-      } catch (error) {
-        expect(error).to.be.an('error');
-      }
-    });
   });
   context('PUT /products/:id', () => {
     it('should update a product', async () => {
@@ -191,15 +149,6 @@ describe('Product routes', () => {
     it('should not update a product with an invalid id', async () => {
       const response = await request(app).put('/products/1234567890').send({ name: 'Pienso para cachorros' });
       expect(response.statusCode).to.equal(400);
-    });
-    it('should not update a product with an invalid provider', async () => {
-      try {
-        product2.provider = '1234567890';
-        await new Product(product2).save();
-        await request(app).put('/products/1234567890').send({ name: 'Pienso para cachorros' });
-      } catch (error) {
-        expect(error).to.be.an('error');
-      }
     });
     it('should update the stock of a product', async () => {
       const response = await request(app).put(`/products/${product._id}`).send({ stock: 50 });
@@ -240,15 +189,6 @@ describe('Product routes', () => {
     it('should return 400 if the id is not valid', async () => {
       const response = await request(app).delete('/products/1234567890');
       expect(response.statusCode).to.equal(400);
-    });
-    it('should return an error if the provider is not valid', async () => {
-      try {
-        product2.provider = '1234567890';
-        await new Product(product2).save();
-        await request(app).delete('/products/1234567890');
-      } catch (error) {
-        expect(error).to.be.an('error');
-      }
     });
     it('Deleting a product two times should return 404', async () => {
       const response = await request(app).delete(`/products/${product._id}`);

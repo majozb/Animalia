@@ -2,9 +2,11 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import { Purchaser } from '../models/purchaser.js';
 import jwt from 'jsonwebtoken';
-export const registerRouter = express.Router();
 
-registerRouter.post('/register', async (req, res) => {
+export const signUpRouter = express.Router();
+
+// Function to register a new purchaser
+signUpRouter.post('/signUp', async (req, res) => {
   try {
     // Obtain the necessary data from the request body
     const { name, user, password, email, phone } = req.body;

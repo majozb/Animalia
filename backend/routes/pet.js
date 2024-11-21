@@ -6,7 +6,18 @@ export const petRouter = express.Router();
 // GET /pets
 petRouter.get('/pets', async (req, res) => {
   try {
-    const pets = await Pet.find();
+    let pets = await Pet.find();
+    const selectedSpecies = req.query.selectedSpecies ? req.query.selectedSpecies.split(',') : [];
+    const selectedGenre = req.query.selectedGenre || "all";
+
+    if (selectedSpecies.length > 0) {
+      pets = pets.filter((pet) => selectedSpecies.includes(pet.type));
+    }
+
+    if (selectedGenre !== "all") {
+      const filter = (selectedGenre === "female");
+      pets = pets.filter((pet) => filter === pet.genre);
+    }
     res.status(200).send(pets);
   } catch (error) {
     res.status(500).send({ error: error.message });
@@ -29,6 +40,7 @@ petRouter.get('/pets/:id', async (req, res) => {
 // POST /pets
 petRouter.post('/pets', async (req, res) => {
   try {
+    console.log(req.body);
     const pet = new Pet(req.body);
     await pet.save();
     res.status(201).send(pet);
