@@ -1,6 +1,6 @@
 <template>
   <v-container class="add-buyer">
-    <h1>Add Buyer</h1>
+    <h1>Añadir Comprador</h1>
     <v-row>
       <!-- Form Section: Contains the form for adding a new buyer -->
       <v-col cols="12" md="6">
@@ -47,16 +47,18 @@
           ></v-text-field>
 
           <!-- Submit Button: To submit the form and add a new buyer -->
-          <v-btn color="primary" @click="submit">Add</v-btn>
+          <v-btn color="primary" @click="submit">Añadir</v-btn>
 
           <!-- Reset Button: To reset the form fields to their initial state -->
-          <v-btn color="error" @click="reset">Reset</v-btn>
+          <v-btn color="error" @click="reset">Resetear</v-btn>
         </v-form>
       </v-col>
 
       <!-- List Section: Displays the list of all buyers -->
       <v-col cols="12" md="6">
-        <h2>Buyers List</h2>
+        <h2>
+          Lista de compradores
+        </h2>
 
         <!-- Data Table: Displays a list of buyers with actions (Edit/Delete) -->
         <v-data-table
