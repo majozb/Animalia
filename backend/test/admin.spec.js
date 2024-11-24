@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import request from 'supertest';
-import { Admin } from '../models/admin.js';
-import { app } from '../index.js';
+import { Admin } from '../src/models/admin.js';
+import { app } from '../src/index.js';
 
 const admin1 = {
   name: 'Juan Carlos',

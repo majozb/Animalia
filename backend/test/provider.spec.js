@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import request from 'supertest';
-import { Provider } from '../models/provider.js';
-import { Product } from '../models/product.js';
-import { app } from '../index.js';
+import { Provider } from '../src/models/provider.js';
+import { Product } from '../src/models/product.js';
+import { app } from '../src/index.js';
 
 const Provider1 = {
   name: 'Pienso Miguel S.A.',

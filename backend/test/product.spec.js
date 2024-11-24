@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import request from 'supertest';
-import { Product } from '../models/product.js';
-import { app } from '../index.js';
+import { Product } from '../src/models/product.js';
+import { app } from '../src/index.js';
 
 const product1 = {
   name: 'Pienso para perros',

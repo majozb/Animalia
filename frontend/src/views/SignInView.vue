@@ -1,7 +1,7 @@
 <template>
   <v-container class="signIn-container" fluid>
     <v-row justify="center" align-content>
-      <v-col cols="10" md="6" class="text-center">
+      <v-col cols="6" md="6" class="text-center">
         <v-breadcrumbs :items="items"></v-breadcrumbs>
         <v-card class="pa-8" outlined>
           <!-- Títulos principales -->
@@ -18,21 +18,10 @@
 
           <!-- Formulario -->
           <v-form @submit.prevent="signIn">
-            <v-text-field
-              v-model="username"
-              label="Nombre de usuario"
-              outlined
-              dense
-              class="input-field mb-4"
-            ></v-text-field>
-            <v-text-field
-              v-model="password"
-              label="Contraseña"
-              type="password"
-              outlined
-              dense
-              class="input-field mb-4"
-            ></v-text-field>
+            <v-text-field v-model="username" label="Nombre de usuario" outlined dense
+              class="input-field mb-4"></v-text-field>
+            <v-text-field v-model="password" label="Contraseña" type="password" outlined dense
+              class="input-field mb-4"></v-text-field>
             <v-btn color="#003366" block class="mt-3" @click="signIn" large>
               Entrar
             </v-btn>
@@ -62,46 +51,42 @@
       </v-col>
 
       <!-- Imagen decorativa de perro y gato -->
-      <v-col cols="auto" class="text-right">
-          <v-img
-            :src="getImagePath('../assets/dog-and-cat.png')"
-            alt="Imagen del item"
-            width="600px"
-          ></v-img>
+      <v-col cols="6" md="6" class="text-right">
+        <v-img :src="getImagePath('../assets/dog-and-cat.png')" alt="Imagen del item" width="600px"></v-img>
       </v-col>
     </v-row>
     <v-row justify="center" class="mb-0">
-    <v-col cols="auto">
-      <p>&copy; 2024 Animalia. Todos los derechos reservados.</p>
-    </v-col>
-  </v-row>
+      <v-col cols="12" md="12">
+        <p>&copy; 2024 Animalia. Todos los derechos reservados.</p>
+      </v-col>
+    </v-row>
   </v-container>
-  
+
 </template>
 
 <script>
-import axios from 'axios'; 
+import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { useUserStore } from '../stores/userStore';
 
 export default {
   data: () => ({
-      username: '', 
-      password: '',
-      items: [
-        {
-          title: 'Inicio',
-          disabled: false,
-          href: '/',
-        },
-        {
-          title: 'Inicio Sesión',
-          disabled: true,
-          href: '',
-        },
-      ],
-    }),
-    
+    username: '',
+    password: '',
+    items: [
+      {
+        title: 'Inicio',
+        disabled: false,
+        href: '/',
+      },
+      {
+        title: 'Inicio Sesión',
+        disabled: true,
+        href: '',
+      },
+    ],
+  }),
+
   methods: {
     getImagePath(item) {
       // Build the path to the image of the item
@@ -111,34 +96,34 @@ export default {
     },
     async signIn() {
       try {
-        const response = await axios.post('http://localhost:3000/signIn', { 
-          username: this.username, 
-          password: this.password 
+        const response = await axios.post('http://localhost:3000/signIn', {
+          username: this.username,
+          password: this.password
         });
-      
+
         const token = response.data;
         const decodedToken = jwtDecode(token);
-      
+
         const userType = decodedToken.userType;
         const userId = decodedToken.userId;
-      
+
         const userStore = useUserStore();
-      
+
         // Almacenar el usuario, tipo de usuario e ID en el store
-        userStore.setUser({ 
-          user: this.username, 
+        userStore.setUser({
+          user: this.username,
           userType: userType,
-          userId: userId  
+          userId: userId
         });
 
         console.log("User Data Stored:", { user: this.username, userType, userId });
- 
-    this.$router.push('/'); // Redirigir a la página principal
-  } catch (error) {
-    console.error("Error during signIn", error);
-    alert("Credenciales inválidas");
-  }
-},
+
+        this.$router.push('/'); // Redirigir a la página principal
+      } catch (error) {
+        console.error("Error during signIn", error);
+        alert("Credenciales inválidas");
+      }
+    },
     goToSignUp() {
       this.$router.push('/signup');
     },

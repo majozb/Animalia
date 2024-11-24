@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import request from 'supertest';
-import { Pet } from '../models/pet.js';
-import { app } from '../index.js';
+import { Pet } from '../src/models/pet.js';
+import { app } from '../src/index.js';
 
 const Dog1 = {
   name: 'Juan Carlos',
