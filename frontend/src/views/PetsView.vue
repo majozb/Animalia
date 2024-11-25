@@ -54,7 +54,7 @@ export default {
     async fetchFilteredPets(filterCriteria) {
       try {
         const queryParams = new URLSearchParams(filterCriteria);
-        const url = `http://127.0.0.1:3000/pets?${queryParams}`;
+        const url = `http://127.0.0.1:3000/adoptionpets?${queryParams}`;
         const response = await fetch(url, {
           method: 'GET',
           headers: {

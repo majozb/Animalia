@@ -1,5 +1,6 @@
 import express from 'express';
 import { Pet } from '../models/pet.js';
+import { Admin } from '../models/admin.js';
 
 export const petRouter = express.Router();
 
@@ -7,6 +8,22 @@ export const petRouter = express.Router();
 petRouter.get('/pets', async (req, res) => {
   try {
     let pets = await Pet.find();
+    res.status(200).send(pets);
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
+petRouter.get('/adoptionpets', async (req, res) => {
+  try {
+    const admins = await Admin.find().populate('pets');
+    if (!admins.length) {
+      return res.status(404).send({ error: 'No admins found' });
+    }
+
+    // Combina las mascotas de todos los administradores
+    let pets = admins.flatMap((admin) => admin.pets);
+
     const selectedSpecies = req.query.selectedSpecies ? req.query.selectedSpecies.split(',') : [];
     const selectedGenre = req.query.selectedGenre || "all";
 
