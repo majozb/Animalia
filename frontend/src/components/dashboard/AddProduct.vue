@@ -106,6 +106,7 @@
           </template>
 
           <!-- Action buttons (edit and delete) for each product -->
+          <!-- eslint-disable-next-line vue/valid-v-slot -->
           <template #item.actions="{ item }">
             <v-btn icon color="primary" @click="editProduct(item)">
               <v-icon>mdi-pencil-outline</v-icon>

@@ -63,7 +63,7 @@
           ></v-text-field>
         
           </template>
-          
+          <!-- eslint-disable-next-line vue/valid-v-slot -->
           <template #item.actions="{ item }">
             <v-btn icon color="primary" @click="editProvider(item)">
               <v-icon>mdi-pencil-outline</v-icon>
@@ -131,7 +131,7 @@ export default {
           console.log('error', errorData.message || 'Error al registrar el proveedor.');
         }
       } catch (error) {
-        console.log('error', 'Error al registrar el proveedor.');
+        console.log('error', 'Error al registrar el proveedor.', error);
       }
     },
 
@@ -143,7 +143,7 @@ export default {
         }
 
       } catch (error) {
-        console.log('error', 'Error al obtener la lista de proveedores.');
+        console.log('error', 'Error al obtener la lista de proveedores.', error);
       }
     },
 
@@ -165,7 +165,7 @@ export default {
           console.log('error', errorData.message || 'Error al eliminar el proveedor.');
         }
       } catch (error) {
-        console.log('error', 'Error al eliminar el proveedor.');
+        console.log('error', 'Error al eliminar el proveedor.', error);
       }
     },
   },

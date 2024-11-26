@@ -97,6 +97,7 @@
           </template>
 
           <!-- Action buttons for each pet (edit and delete) -->
+          <!-- eslint-disable-next-line vue/valid-v-slot -->
           <template #item.actions="{ item }">
             <v-btn icon color="primary" @click="editPet(item)">
               <v-icon>mdi-pencil-outline</v-icon>

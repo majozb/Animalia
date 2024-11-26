@@ -76,7 +76,8 @@
           </template>
 
           <!-- Action buttons (Edit/Delete) for each buyer -->
-          <template #item.actions="{ item }">
+          <!-- eslint-disable-next-line vue/valid-v-slot -->
+          <template v-solt:item.actions="{ item }">
             <v-btn icon color="primary" @click="editBuyer(item)">
               <v-icon>mdi-pencil-outline</v-icon>
             </v-btn>
