@@ -17,8 +17,17 @@
           </v-row>
 
           <!-- Formulario -->
-          <v-form>
+          <v-form @submit.prevent="signUp">
             <v-text-field
+              v-model="name"
+              label="Nombre completo"
+              outlined
+              dense
+              required
+              class="input-field mb-4"
+            ></v-text-field>
+            <v-text-field
+              v-model="username"
               label="Nombre de usuario"
               outlined
               dense
@@ -26,27 +35,33 @@
               class="input-field mb-4"
             ></v-text-field>
             <v-text-field
-              label="email"
+              v-model="email"
+              label="Email"
               :rules="emailRules"
               outlined
               dense
+              required
               class="input-field mb-4"
             ></v-text-field>
             <v-text-field
+              v-model="password"
               label="Contraseña"
               type="password"
               outlined
               dense
+              required
               class="input-field mb-4"
             ></v-text-field>
             <v-text-field
+              v-model="phone"
               label="Teléfono"
               type="phone"
               outlined
               dense
+              required
               class="input-field mb-4"
             ></v-text-field>
-            <v-btn color="#003366" block class="mt-3" large>
+            <v-btn color="#003366" block class="mt-3" large @click="signUp">
               Regístrate
             </v-btn>
           </v-form>
@@ -55,60 +70,101 @@
 
       <!-- Imagen decorativa de gato -->
       <v-col cols="auto" class="text-right">
-          <v-img
-            :src="getImagePath('../assets/cat.png')"
-            alt="Imagen del item"
-            width="300px"
-          ></v-img>
+        <v-img
+          :src="getImagePath('../assets/cat.png')"
+          alt="Imagen del item"
+          width="300px"
+        ></v-img>
+      </v-col>
+    </v-row>
+    <v-row justify="center" class="mb-0">
+      <v-col cols="auto">
+        <p>&copy; 2024 Animalia. Todos los derechos reservados.</p>
       </v-col>
     </v-row>
   </v-container>
-  <v-row justify="center" class="mb-0">
-    <v-col cols="auto">
-      <p>&copy; 2024 Animalia. Todos los derechos reservados.</p>
-    </v-col>
-  </v-row>
 </template>
 
 <script>
+import { useUserStore } from "@/stores/userStore"; // Asegúrate de la ruta correcta a tu store.
+import { jwtDecode } from 'jwt-decode';
+
 export default {
   data: () => ({
-      items: [
-        {
-          title: 'Inicio',
-          disabled: false,
-          href: '/',
-        },
-        {
-          title: 'Regístrate',
-          disabled: true,
-          href: '',
-        },
-      ],
-    }),
+    name: "",
+    username: "",
+    email: "",
+    password: "",
+    phone: "",
+    items: [
+      {
+        title: "Inicio",
+        disabled: false,
+        href: "/",
+      },
+      {
+        title: "Regístrate",
+        disabled: true,
+        href: "",
+      },
+    ],
+    emailRules: [
+      (v) => !!v || "El correo electrónico es obligatorio",
+      (v) => /.+@.+\..+/.test(v) || "Debe ser un correo válido",
+    ],
+  }),
+
   methods: {
     getImagePath(item) {
-      // Build the path to the image of the item
-      // const imagePath = new URL(`../assets/${this.imageType}/${id}/main.jpg`, import.meta.url).href;
       const imagePath = new URL(item, import.meta.url).href;
       return imagePath;
     },
-    goToSignUp() {
-      this.$router.push('/signup');
+
+    async signUp() {
+      try {
+        // Realizar la petición al backend usando fetch
+        const response = await fetch("http://localhost:3000/signUp", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: this.name,
+            user: this.username,
+            password: this.password,
+            email: this.email,
+            phone: this.phone,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Error al registrar el usuario");
+        }
+
+        const token = await response.json();
+
+        // Decodificar el token para obtener los datos del usuario
+        const decodedToken = jwtDecode(token);
+
+        const userStore = useUserStore();
+        userStore.setUser({
+          user: this.username,
+          userType: decodedToken.userType,
+          userId: decodedToken._id,
+        });
+
+        this.$router.push("/");
+      } catch (error) {
+        console.error("Error al registrar el usuario:", error);
+      }
     },
-    restorePassword() {
-      // Link to a page to restore the password
-    },
-    discoverMore() {
-      this.$router.push('/discover');
-    }
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
 .login-container {
-  background-color: #FAF1E6;
+  background-color: #faf1e6;
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -128,7 +184,7 @@ export default {
 }
 
 .input-field {
-  background-color: #F0F0F0;
+  background-color: #f0f0f0;
 }
 
 .pa-8 {
@@ -145,7 +201,6 @@ export default {
 }
 
 .button {
-  /* Simulate a text and not a button */
   background-color: transparent !important;
 }
 
@@ -153,11 +208,7 @@ export default {
   color: #003366 !important;
 }
 
-.v-divider {
-  background-color: #ddd;
-}
-
 .mb-0 {
-  background-color: #FAF1E6;
+  background-color: #faf1e6;
 }
 </style>

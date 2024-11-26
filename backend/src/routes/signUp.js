@@ -42,7 +42,7 @@ signUpRouter.post('/signUp', async (req, res) => {
       maxAge: 60 * 60 * 1000, // The token will expire in 1 hour
     });
 
-    res.status(201).json({ message: 'Comprador registrado exitosamente' });
+    res.status(201).json(token);
 
   } catch (error) {
     console.error("Error al registrar el comprador:", error);
