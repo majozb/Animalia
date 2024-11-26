@@ -2,12 +2,11 @@
   <!-- Container for the "Add Product" form and product list -->
   <v-container class="add-product">
     <!-- Main heading for the form -->
-    <h1>Add Product</h1>
+    <h1>{{ originalProduct ? "Editar Producto" : "Añadir Producto" }}</h1>
     <v-row>
       <v-col cols="12" md="6">
         <!-- Form for adding a new product -->
         <v-form ref="form" v-model="valid">
-          
           <!-- Product name input field with validation -->
           <v-text-field
             v-model="product.name"
@@ -84,14 +83,14 @@
           </v-row>
 
           <!-- Buttons to submit or reset the form -->
-          <v-btn color="primary" @click="submit">Add Product</v-btn>
-          <v-btn color="error" @click="reset">Reset</v-btn>
+          <v-btn color="primary" @click="submit">Añadir</v-btn>
+          <v-btn color="error" @click="reset">Resetear</v-btn>
         </v-form>
       </v-col>
 
       <!-- Section for displaying the list of products -->
       <v-col cols="12" md="6">
-        <h2>Provider's Products</h2>
+        <h2>Lista de Productos</h2>
         <v-data-table
           :headers="tableHeaders"
           :items="products"
@@ -101,7 +100,7 @@
           <!-- Toolbar section with title -->
           <template v-slot:top>
             <v-toolbar flat>
-              <v-toolbar-title>Products</v-toolbar-title>
+              <v-toolbar-title>Productos</v-toolbar-title>
             </v-toolbar>
           </template>
 
@@ -147,6 +146,7 @@ export default {
         { title: "Dimensions", key: "dimensions" },
         { title: "Actions", key: "actions", sortable: false },
       ],
+      originalProduct: null,  // Original product data for editing
     };
   },
   mounted() {
@@ -163,7 +163,8 @@ export default {
         if (!userId) throw new Error("Provider ID not found");
 
         // Fetch products based on provider ID
-        const response = await fetch(`/api/products?provider=${userId}`);
+        const route = `http://127.0.0.1:3000/products?provider=${userId}`;
+        const response = await fetch(route);
         if (!response.ok) throw new Error("Error fetching products");
 
         const productsData = await response.json();
@@ -181,33 +182,62 @@ export default {
 
         if (!userId) throw new Error("Provider ID not found");
 
-        // Send the new product data to the backend API
-        const response = await fetch(`/api/products`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...this.product }),  // Send product details as JSON
-        });
-
-        if (!response.ok) throw new Error("Error adding product");
-
-        const newProduct = await response.json(); // Get the added product
-        this.products.push(newProduct);  // Add the new product to the list
-        this.reset();  // Reset the form
+        if (this.originalProduct) {
+          // Actualizar producto existente
+          delete this.product._id;  // Remove the _id field
+          delete this.product.__v;  // Remove the __v field
+          if (this.isProductModified()) {
+            const route = `http://127.0.0.1:3000/products/${this.originalProduct._id}`;
+            const response = await fetch(route, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ ...this.product, images: "prueba.jpg" }),
+            });
+            if (!response.ok) throw new Error("Error updating product");
+            const updatedProduct = await response.json();
+            const index = this.products.findIndex(
+              (product) => product._id === updatedProduct._id
+            );
+            if (index !== -1) {
+              this.products.splice(index, 1, updatedProduct);
+            }
+            this.reset();
+          } else {
+            console.log("No changes made to the product.");
+          }
+        } else {
+          // Crear un nuevo producto
+          const route = `http://127.0.0.1:3000/products`;
+          const response = await fetch(route, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...this.product, images: "prueba.jpg" }),
+          });
+          if (!response.ok) throw new Error("Error adding product");
+          const newProduct = await response.json();
+          this.products.push(newProduct);
+          this.reset();
+        }
       } catch (error) {
-        console.error("Error adding product:", error);
+        console.error("Error adding or updating product:", error);
       }
     },
 
     // Method to edit an existing product
     async editProduct(product) {
       this.product = { ...product };  // Pre-fill the form with product data
+      this.originalProduct = { ...product };  // Save the original product data
     },
 
+    isProductModified() {
+      return JSON.stringify(this.product) !== JSON.stringify(this.originalProduct);
+    },
     // Method to delete a product
     async deleteProduct(productId) {
       try {
         // Send a DELETE request to remove the product
-        const response = await fetch(`/api/products/${productId}`, { method: "DELETE" });
+        const route = `http://127.0.0.1:3000/products/${productId}`;
+        const response = await fetch(route, { method: "DELETE" });
         if (!response.ok) throw new Error("Error deleting product");
 
         // Remove the product from the list
@@ -228,6 +258,7 @@ export default {
         price: 0,
         dimensions: [0, 0, 0],  // Reset dimensions
       };
+      this.originalProduct = null;  // Reset original product data
     },
   },
 };

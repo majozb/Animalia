@@ -55,13 +55,13 @@
         <v-img :src="getImagePath('../assets/dog-and-cat.png')" alt="Imagen del item" width="600px"></v-img>
       </v-col>
     </v-row>
-    <v-row justify="center" class="mb-0">
+    
+  </v-container>
+  <v-row justify="center" class="mb-0">
       <v-col cols="12" md="12">
         <p>&copy; 2024 Animalia. Todos los derechos reservados.</p>
       </v-col>
     </v-row>
-  </v-container>
-
 </template>
 
 <script>
