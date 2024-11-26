@@ -1,7 +1,6 @@
 <template>
   <v-container>
     <v-row>
-      <!-- Formulario de Proveedor -->
       <v-col cols="12" md="6">
         <h2 class="title">{{ originalProvider ? 'Editar Proveedor' : 'Registrar Proveedor' }}</h2>
         <v-form @submit.prevent="handleSubmit" ref="providerForm" v-model="isValid">
@@ -105,17 +104,16 @@ export default {
             /^[6-9]\d{8}$/.test(v) || 'El número de teléfono no es válido para España',
         ],
       },
-      originalProvider: null, // Almacena los datos originales del proveedor cuando se edita
+      originalProvider: null,
     };
   },
   methods: {
     async handleSubmit() {
       const providerData = { ...this.provider };
-      delete providerData._id; // Elimina el _id si existe, para evitar conflictos en el servidor
-      delete providerData.__v; // Elimina el _v si existe, para evitar conflictos en el servidor
+      delete providerData._id; 
+      delete providerData.__v;
       try {
         if (this.originalProvider) {
-          // Si estamos editando un proveedor
           if (this.isProviderModified()) {
             const route = `http://127.0.0.1:3000/providers/${this.originalProvider._id}`;
             const response = await fetch(route, {
@@ -130,7 +128,7 @@ export default {
               const updatedProvider = await response.json();
               const index = this.providers.findIndex((p) => p._id === updatedProvider._id);
               if (index !== -1) {
-                this.providers.splice(index, 1, updatedProvider); // Actualiza la lista con el proveedor modificado
+                this.providers.splice(index, 1, updatedProvider);
               }
               console.log('Proveedor actualizado con éxito');
               this.resetForm();
@@ -139,7 +137,6 @@ export default {
             console.log('No se hicieron cambios.');
           }
         } else {
-          // Si estamos registrando un nuevo proveedor
           const route = 'http://127.0.0.1:3000/providers';
           const response = await fetch(route, {
             method: 'POST',
@@ -177,7 +174,7 @@ export default {
 
     editProvider(provider) {
       this.provider = { ...provider };
-      this.originalProvider = { ...provider }; // Guarda los datos originales del proveedor
+      this.originalProvider = { ...provider }; 
     },
 
     async deleteProvider(provider) {
@@ -208,7 +205,7 @@ export default {
         email: '',
         phone: '',
       };
-      this.originalProvider = null; // Limpiar los datos originales del proveedor
+      this.originalProvider = null; 
     },
   },
   mounted() {

@@ -2,7 +2,7 @@
   <!-- Container for the "Add Pet" form and pet list -->
   <v-container class="add-pet">
     <!-- Main heading for the form -->
-    <h1>Add Pet</h1>
+    <h1>{{ originalPet ? "Editar Mascota" : "Añadir Mascota" }}</h1>
     <v-row>
       <v-col cols="12" md="6">
         <!-- Form for adding a new pet -->
@@ -74,7 +74,7 @@
           </v-radio-group>
 
           <!-- Button to submit the form -->
-          <v-btn color="primary" @click="submit">Add Pet</v-btn>
+          <v-btn color="primary" @click="submit">Añadir Mascota</v-btn>
           <!-- Button to reset the form -->
           <v-btn color="error" @click="reset">Reset</v-btn>
         </v-form>
@@ -82,7 +82,7 @@
 
       <!-- Section to display the list of pets -->
       <v-col cols="12" md="6">
-        <h2>User's Pets</h2>
+        <h2>Mascatos del Usuario</h2>
         <v-data-table
           :headers="tableHeaders"
           :items="pets"
@@ -92,7 +92,7 @@
           <!-- Toolbar section with title -->
           <template v-slot:top>
             <v-toolbar flat>
-              <v-toolbar-title>Pets</v-toolbar-title>
+              <v-toolbar-title>Mascotas</v-toolbar-title>
             </v-toolbar>
           </template>
 
@@ -133,6 +133,7 @@ export default {
       pets: [],       // Array to hold the list of pets
       vaccinesOptions: ["Rabies", "Parvovirus", "Distemper", "Hepatitis"], // Vaccine options
       medicationOptions: ["Antibiotics", "Dewormers", "Painkillers"], // Medication options
+      originalPet: null,  // Original pet data for editing
       datePicker: false,  // Flag for date picker
       tableHeaders: [     // Table headers for displaying pets
         { title: "Name", key: "name" },
@@ -160,7 +161,8 @@ export default {
         if (!userId) throw new Error("User ID not found");
 
         // Fetch purchaser data by userId
-        const purchaserResponse = await fetch(`/api/purchasers/${userId}`);
+        const route = `http://127.0.0.1:3000/purchasers/${userId}`;
+        const purchaserResponse = await fetch(route);
         if (!purchaserResponse.ok) throw new Error("Error fetching purchaser");
 
         const purchaserData = await purchaserResponse.json();
@@ -173,7 +175,7 @@ export default {
 
         // Fetch pet details using petIds
         const petDetailsPromises = petIds.map((petId) =>
-          fetch(`/api/pets/${petId}`).then((response) => {
+          fetch(`http://localhost:3000/pets/${petId}`).then((response) => {
             if (!response.ok) throw new Error(`Error fetching pet ${petId}`);
             return response.json();
           })
@@ -193,26 +195,40 @@ export default {
 
         if (!userId) throw new Error("User ID not found");
 
-        // Send new pet data to the backend API
-        const response = await fetch(`http://localhost:3000/pets`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(this.pet),
-        });
+        if (this.originalPet) {
+          // Realizar un PUT para editar la mascota
+          const response = await fetch(`http://127.0.0.1:3000/pets/${this.originalPet._id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(this.pet),
+          });
 
-        if (!response.ok) throw new Error("Error adding pet");
+          if (!response.ok) throw new Error("Error updating pet");
 
-        const newPet = await response.json();
-        const purchaserResponse = await fetch(`http://localhost:3000/purchasers/${userId}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ petId: newPet._id }), // Link the pet to the user
-        });
+          const updatedPet = await response.json();
+          const index = this.pets.findIndex((p) => p._id === updatedPet._id);
+          if (index !== -1) this.pets.splice(index, 1, updatedPet);
+          this.reset();
+        } else {
+          // Realizar un POST para agregar una nueva mascota
+          const response = await fetch("http://127.0.0.1:3000/pets", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(this.pet),
+          });
 
-        if (!purchaserResponse.ok) throw new Error("Error linking pet with purchaser");
+          if (!response.ok) throw new Error("Error adding pet");
 
-        this.pets.push(newPet); // Add new pet to the list
-        this.reset(); // Reset the form
+          const newPet = await response.json();
+          await fetch(`http://127.0.0.1:3000/purchasers/${userId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ petId: newPet._id }),
+          });
+
+          this.pets.push(newPet);
+          this.reset();
+        }
       } catch (error) {
         console.error("Error adding pet:", error);
       }
@@ -220,6 +236,7 @@ export default {
     // Method to edit an existing pet's data
     async editPet(pet) {
       this.pet = { ...pet };
+      this.originalPet = { ...pet };
     },
     // Method to delete a pet
     async deletePet(petId) {
@@ -230,7 +247,7 @@ export default {
         if (!userId) throw new Error("User ID not found");
 
         // Unlink the pet from the purchaser
-        const purchaserResponse = await fetch(`/api/purchasers/${userId}/removePet`, {
+        const purchaserResponse = await fetch(`http://127.0.0.1:3000/purchasers/${userId}/removePet`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ petId }),
@@ -239,7 +256,7 @@ export default {
         if (!purchaserResponse.ok) throw new Error("Error unlinking pet from purchaser");
 
         // Delete the pet from the database
-        const response = await fetch(`/api/pets/${petId}`, { method: "DELETE" });
+        const response = await fetch(`http://127.0.0.1:3000/pets/${petId}`, { method: "DELETE" });
         if (!response.ok) throw new Error("Error deleting pet");
 
         // Remove the deleted pet from the list
@@ -261,6 +278,7 @@ export default {
         medication: [],
         genre: null,
       };
+      this.originalPet = null;
     },
   },
 };
