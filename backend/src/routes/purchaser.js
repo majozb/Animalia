@@ -49,7 +49,7 @@ purchaserRouter.post('/purchasers', async (req, res) => {
 
 purchaserRouter.put('/purchasers/:id', async (req, res) => {
   const updates = Object.keys(req.body);
-  const allowedUpdates = ['name', 'user', 'password', 'email', 'phone', 'pets', 'petId'];  // Añadido 'petId' como campo permitido
+  const allowedUpdates = ['name', 'user', 'password', 'email', 'phone', 'purchases', 'points', 'pets', 'petId']; 
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
 
   if (!isValidOperation) {

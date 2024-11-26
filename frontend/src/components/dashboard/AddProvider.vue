@@ -3,7 +3,7 @@
     <v-row>
       <!-- Formulario de Proveedor -->
       <v-col cols="12" md="6">
-        <h2 class="title">Registrar Proveedor</h2>
+        <h2 class="title">{{ originalProvider ? 'Editar Proveedor' : 'Registrar Proveedor' }}</h2>
         <v-form @submit.prevent="handleSubmit" ref="providerForm" v-model="isValid">
           <v-text-field
             label="Nombre"
@@ -33,7 +33,7 @@
             required
             :rules="[rules.phone]"
           ></v-text-field>
-          <v-btn color="primary" type="submit">Registrar</v-btn>
+          <v-btn color="primary" type="submit">{{ originalProvider ? 'Actualizar' : 'Registrar' }}</v-btn>
           <v-btn color="error" @click="$refs.providerForm.reset()">Resetear</v-btn>
         </v-form>
       </v-col>
@@ -52,27 +52,24 @@
               <v-toolbar-title>Proveedores</v-toolbar-title>
               <v-spacer></v-spacer>
             </v-toolbar>
-           
-          <v-text-field
-            v-model="search"
-            class="pa-2 search-field"
-            label="Buscar..."
-            hide-details
-            append-icon="mdi-magnify"
-            solo
-          ></v-text-field>
-        
+            <v-text-field
+              v-model="search"
+              class="pa-2 search-field"
+              label="Buscar..."
+              hide-details
+              append-icon="mdi-magnify"
+              solo
+            ></v-text-field>
           </template>
           <!-- eslint-disable-next-line vue/valid-v-slot -->
           <template #item.actions="{ item }">
             <v-btn icon color="primary" @click="editProvider(item)">
               <v-icon>mdi-pencil-outline</v-icon>
             </v-btn>
-            <v-btn icon color="error" @click="deleteProvider(item._id)">
+            <v-btn icon color="error" @click="deleteProvider(item)">
               <v-icon>mdi-trash-can-outline</v-icon>
             </v-btn>
           </template>
-
         </v-data-table>
       </v-col>
     </v-row>
@@ -108,69 +105,114 @@ export default {
             /^[6-9]\d{8}$/.test(v) || 'El número de teléfono no es válido para España',
         ],
       },
+      originalProvider: null, // Almacena los datos originales del proveedor cuando se edita
     };
   },
   methods: {
     async handleSubmit() {
       const providerData = { ...this.provider };
+      delete providerData._id; // Elimina el _id si existe, para evitar conflictos en el servidor
+      delete providerData.__v; // Elimina el _v si existe, para evitar conflictos en el servidor
       try {
-        const response = await fetch('/api/providers', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(providerData),
-        });
+        if (this.originalProvider) {
+          // Si estamos editando un proveedor
+          if (this.isProviderModified()) {
+            const route = `http://127.0.0.1:3000/providers/${this.originalProvider._id}`;
+            const response = await fetch(route, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(providerData),
+            });
 
-        if (response.ok) {
-          console.log('success', 'Proveedor registrado con éxito.');
-          this.fetchProviders(); 
-          this.$refs.providerForm.reset(); 
+            if (response.ok) {
+              const updatedProvider = await response.json();
+              const index = this.providers.findIndex((p) => p._id === updatedProvider._id);
+              if (index !== -1) {
+                this.providers.splice(index, 1, updatedProvider); // Actualiza la lista con el proveedor modificado
+              }
+              console.log('Proveedor actualizado con éxito');
+              this.resetForm();
+            }
+          } else {
+            console.log('No se hicieron cambios.');
+          }
         } else {
-          const errorData = await response.json();
-          console.log('error', errorData.message || 'Error al registrar el proveedor.');
+          // Si estamos registrando un nuevo proveedor
+          const route = 'http://127.0.0.1:3000/providers';
+          const response = await fetch(route, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(providerData),
+          });
+
+          if (response.ok) {
+            console.log('Proveedor registrado con éxito.');
+            this.fetchProviders(); 
+            this.$refs.providerForm.reset(); 
+          } else {
+            const errorData = await response.json();
+            console.log('Error al registrar el proveedor:', errorData.message);
+          }
         }
       } catch (error) {
-        console.log('error', 'Error al registrar el proveedor.', error);
+        console.log('Error:', error);
       }
     },
 
     async fetchProviders() {
       try {
-        const response = await fetch('/api/providers');
+        const route = 'http://127.0.0.1:3000/providers';
+        const response = await fetch(route);
         if (response.ok) {
           this.providers = await response.json();
         }
-
       } catch (error) {
-        console.log('error', 'Error al obtener la lista de proveedores.', error);
+        console.log('Error al obtener la lista de proveedores.', error);
       }
     },
 
-    async editProvider(provider) {
-      this.provider = { ...provider }; 
+    editProvider(provider) {
+      this.provider = { ...provider };
+      this.originalProvider = { ...provider }; // Guarda los datos originales del proveedor
     },
 
     async deleteProvider(provider) {
       try {
-        const response = await fetch(`/providers/${provider._id}`, {
+        const route = `http://127.0.0.1:3000/providers/${provider._id}`;
+        const response = await fetch(route, {
           method: 'DELETE',
         });
 
         if (response.ok) {
-          console.log('success', `Proveedor ${provider.name} eliminado con éxito.`);
-          this.fetchProviders(); 
-        } else {
-          const errorData = await response.json();
-          console.log('error', errorData.message || 'Error al eliminar el proveedor.');
+          console.log('Proveedor eliminado con éxito');
+          this.fetchProviders();
         }
       } catch (error) {
-        console.log('error', 'Error al eliminar el proveedor.', error);
+        console.log('Error al eliminar el proveedor', error);
       }
+    },
+
+    isProviderModified() {
+      return JSON.stringify(this.provider) !== JSON.stringify(this.originalProvider);
+    },
+
+    resetForm() {
+      this.provider = {
+        name: '',
+        user: '',
+        password: '',
+        email: '',
+        phone: '',
+      };
+      this.originalProvider = null; // Limpiar los datos originales del proveedor
     },
   },
   mounted() {
-    this.fetchProviders(); 
+    this.fetchProviders();
   },
 };
 </script>
@@ -184,12 +226,11 @@ export default {
   color: #003459;
 }
 
-.v-data-table{
+.v-data-table {
   background-color: #F7DBA7;
 }
 .v-toolbar {
   color: #F7DBA7;
-  background-color:#003459;
+  background-color: #003459;
 }
-
 </style>
