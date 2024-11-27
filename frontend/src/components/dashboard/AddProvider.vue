@@ -224,10 +224,10 @@ export default {
 }
 
 .v-data-table {
-  background-color: #F7DBA7;
+  background-color: white;
 }
 .v-toolbar {
-  color: #F7DBA7;
+  color: white;
   background-color: #003459;
 }
 </style>

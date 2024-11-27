@@ -8,73 +8,41 @@
         <!-- Form for adding a new pet -->
         <v-form ref="form" v-model="valid">
           <!-- Pet name input field with validation -->
-          <v-text-field
-            v-model="pet.name"
-            :rules="[v => !!v || 'Name is required']"
-            label="Pet Name"
-            required
-          ></v-text-field>
+          <v-text-field v-model="pet.name" :rules="[v => !!v || 'Name is required']" label="Pet Name"
+            required></v-text-field>
 
           <!-- Pet description input field -->
-          <v-textarea
-            v-model="pet.description"
-            label="Description"
-            rows="3"
-          ></v-textarea>
+          <v-textarea v-model="pet.description" label="Description" rows="3"></v-textarea>
 
           <!-- Pet type input field with validation -->
-          <v-text-field
-            v-model="pet.type"
-            :rules="[v => !!v || 'Type is required']"
-            label="Pet Type"
-            required
-          ></v-text-field>
+          <v-text-field v-model="pet.type" :rules="[v => !!v || 'Type is required']" label="Pet Type"
+            required></v-text-field>
 
           <!-- Pet breed input field with validation -->
-          <v-text-field
-            v-model="pet.breed"
-            :rules="[v => !!v || 'Breed is required']"
-            label="Breed"
-            required
-          ></v-text-field>
+          <v-text-field v-model="pet.breed" :rules="[v => !!v || 'Breed is required']" label="Breed"
+            required></v-text-field>
 
           <!-- Combobox for selecting multiple vaccines -->
-          <v-combobox
-            v-model="pet.vaccines"
-            :items="vaccinesOptions"
-            label="Vaccines"
-            multiple
-          ></v-combobox>
+          <v-combobox v-model="pet.vaccines" :items="vaccinesOptions" label="Vaccines" multiple></v-combobox>
 
           <!-- Combobox for selecting multiple medications -->
-          <v-combobox
-            v-model="pet.medication"
-            :items="medicationOptions"
-            label="Medications"
-            multiple
-          ></v-combobox>
+          <v-combobox v-model="pet.medication" :items="medicationOptions" label="Medications" multiple></v-combobox>
 
           <!-- Pet birth date input field -->
-          <v-text-field
-            v-model="pet.birthDate"
-            label="Birth Date"
-            :rules="[v => !!v || 'Birth date is required']"
-            type="date" 
-          ></v-text-field>
+          <v-text-field v-model="pet.birthDate" label="Birth Date" :rules="[v => !!v || 'Birth date is required']"
+            type="date"></v-text-field>
 
           <!-- Radio buttons for selecting pet gender -->
-          <v-radio-group
-            v-model="pet.genre"
-            :rules="[v => v !== null || 'Gender is required']"
-            label="Gender"
-            row
-          >
+          <v-radio-group v-model="pet.genre" :rules="[v => v !== null || 'Gender is required']" label="Gender" row>
             <v-radio label="Female" :value="true"></v-radio>
             <v-radio label="Male" :value="false"></v-radio>
           </v-radio-group>
 
+          <!-- Field to upload pet image -->
+          <v-file-input v-model="imageToUpload" label="Upload Pet Image" accept="image/*" required></v-file-input>
+
           <!-- Button to submit the form -->
-          <v-btn color="primary" @click="submit">Añadir Mascota</v-btn>
+          <v-btn color="primary" @click="submit">Añadir mascota</v-btn>
           <!-- Button to reset the form -->
           <v-btn color="error" @click="reset">Reset</v-btn>
         </v-form>
@@ -82,13 +50,8 @@
 
       <!-- Section to display the list of pets -->
       <v-col cols="12" md="6">
-        <h2>Mascatos del Usuario</h2>
-        <v-data-table
-          :headers="tableHeaders"
-          :items="pets"
-          item-value="_id"
-          class="elevation-1"
-        >
+        <h2>Mascotas del usuario</h2>
+        <v-data-table :headers="tableHeaders" :items="pets" item-value="_id" class="elevation-1">
           <!-- Toolbar section with title -->
           <template v-slot:top>
             <v-toolbar flat>
@@ -128,8 +91,10 @@ export default {
         vaccines: [],
         birthDate: "",
         medication: [],
+        images: [],
         genre: null,
       },
+      imageToUpload: null,  // Image to upload
       pets: [],       // Array to hold the list of pets
       vaccinesOptions: ["Rabies", "Parvovirus", "Distemper", "Hepatitis"], // Vaccine options
       medicationOptions: ["Antibiotics", "Dewormers", "Painkillers"], // Medication options
@@ -139,10 +104,12 @@ export default {
         { title: "Name", key: "name" },
         { title: "Type", key: "type" },
         { title: "Breed", key: "breed" },
+        { title: "Vaccines", key: "vaccines" },
         { title: "Birth Date", key: "birthDate" },
         { title: "Gender", key: "genre" },
-        { title: "Vaccines", key: "vaccines" },
         { title: "Medications", key: "medication" },
+        { title: "Images", key: "images" },
+        { title: "Gender", key: "genre" },
         { title: "Actions", key: "actions", sortable: false },
       ],
     };
@@ -196,11 +163,18 @@ export default {
         if (!userId) throw new Error("User ID not found");
 
         if (this.originalPet) {
-          // Realizar un PUT para editar la mascota
-          const response = await fetch(`http://127.0.0.1:3000/pets/${this.originalPet._id}`, {
+          const formData = new FormData();
+          formData.append('name', this.pet.name);
+          formData.append('description', this.pet.description);
+          formData.append('type', this.pet.type);
+          formData.append('breed', this.pet.breed);
+          formData.append('birthDate', this.pet.birthDate);
+          formData.append('genre', this.pet.genre);
+          formData.append('image', this.imageToUpload);
+
+          const response = await fetch(`http://localhost:3000/pets/${this.originalPet._id}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(this.pet),
+            body: formData,
           });
 
           if (!response.ok) throw new Error("Error updating pet");
@@ -210,15 +184,25 @@ export default {
           if (index !== -1) this.pets.splice(index, 1, updatedPet);
           this.reset();
         } else {
-          // Realizar un POST para agregar una nueva mascota
-          const response = await fetch("http://127.0.0.1:3000/pets", {
+          if (!this.imageToUpload) throw new Error("Image is required");
+          const formData = new FormData();
+          formData.append('name', this.pet.name);
+          formData.append('description', this.pet.description);
+          formData.append('type', this.pet.type);
+          formData.append('breed', this.pet.breed);
+          formData.append('birthDate', this.pet.birthDate);
+          formData.append('genre', this.pet.genre);
+          formData.append('image', this.imageToUpload);
+          
+          const response = await fetch('http://localhost:3000/pets', {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(this.pet),
+            body: formData,
           });
 
-          if (!response.ok) throw new Error("Error adding pet");
-
+          if (!response.ok) {
+            console.log("Response:", response);
+            throw new Error("Error adding pet");
+          }
           const newPet = await response.json();
           await fetch(`http://127.0.0.1:3000/purchasers/${userId}`, {
             method: "PUT",
@@ -277,6 +261,7 @@ export default {
         birthDate: "",
         medication: [],
         genre: null,
+        images: [],
       };
       this.originalPet = null;
     },
@@ -290,11 +275,11 @@ export default {
 .v-data-table td {
   padding: 12px;
   text-align: left;
-  white-space: nowrap; 
+  white-space: nowrap;
 }
 
 .v-data-table td {
-  max-width: 200px; 
+  max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -302,11 +287,12 @@ export default {
 /* Styling for the data table container */
 .v-data-table {
   overflow-x: auto;
-  background-color: #F7DBA7;
+  background-color: white;
   color: #003459;
 }
 
-h1, h2 {
+h1,
+h2 {
   color: #003459;
 }
 

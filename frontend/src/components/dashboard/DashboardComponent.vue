@@ -47,6 +47,11 @@
               Añadir Comprador
             </v-list-item-title>
           </v-list-item>
+          <v-list-item v-if="userType === 'admin'" class="menu-item">
+            <v-list-item-title @click="switchComponent('AddPet')">
+              Añadir Mascota
+            </v-list-item-title>
+          </v-list-item>
           <v-list-item v-if="userType === 'purchaser'" class="menu-item">
             <v-list-item-title @click="switchComponent('AddPet')">
               Añadir Mascota
@@ -194,7 +199,7 @@ export default {
 .dashboard-container {
   display: flex;
   height: 100vh;
-  background-color: #F7DBA7;
+  background-color: white;
 }
 
 .app-bar {
@@ -202,11 +207,11 @@ export default {
 }
 
 .title {
-  color: #F7DBA7;
+  color: white;
 }
 
 .search-bar {
-  background-color: #F7DBA7;
+  background-color: white;
   color: #003459;
 }
 
@@ -219,7 +224,7 @@ export default {
 
 .user-name {
   font-weight: bold;
-  color: #F7DBA7;
+  color: white;
 }
 
 .user-info img {
@@ -233,7 +238,7 @@ export default {
 }
 
 .menu-list .menu-item {
-  color: #F7DBA7;
+  color: white;
 }
 
 .menu-list .menu-item:hover {
@@ -244,11 +249,11 @@ export default {
 .main-content {
   padding: 20px;
   flex-grow: 1;
-  background-color: #F7DBA7;
+  background-color: white;
 }
 
 .v-breadcrumbs {
-  color: #F7DBA7;
+  color: white;
 }
 </style>
 

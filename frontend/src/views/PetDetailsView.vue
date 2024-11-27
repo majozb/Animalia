@@ -98,7 +98,7 @@ export default {
     },
     async fetchPets() {
       try {
-        const route = `http://127.0.0.1:3000/pets`;
+        const route = `http://127.0.0.1:3000/adoptionpets`;
         const response = await fetch(route);
         if (!response.ok) {
           throw new Error('Network response was not ok');

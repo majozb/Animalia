@@ -263,7 +263,7 @@ export default {
 }
 
 .v-data-table {
-  background-color: #F7DBA7;  /* Data table background color */
+  background-color: white;  /* Data table background color */
 }
 
 h2 {

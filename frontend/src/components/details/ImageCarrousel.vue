@@ -8,10 +8,10 @@
           </v-carousel-item>
         </v-carousel>
 
-        <v-row justify="center" class="mt-4 image-list-container">
+        <!-- <v-row justify="center" class="mt-4 image-list-container">
           <v-img v-for="(image, index) in images" :key="index" :src="getImagePath(image)" class="thumbnail"
             @click="currentSlide = index"></v-img>
-        </v-row>
+        </v-row> -->
       </v-col>
     </v-row>
     <v-row>

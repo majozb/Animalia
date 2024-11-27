@@ -11,12 +11,13 @@ import { signUpRouter } from './routes/signUp.js';
 import { signOutRouter } from './routes/signOut.js';
 import { verifyToken } from './routes/middleware/verifyToken.js';
 import cors from 'cors';
-
+import { v2 as cloudinary } from 'cloudinary';
 
 export const app = express();
 
 app.use(express.json());
-app.use(cors({ origin: 'http://localhost:5173' }));
+// app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors());
 app.use(cokkieParser());
 app.use(petRouter);
 app.use(purchaserRouter);
@@ -26,6 +27,13 @@ app.use(adminRouter);
 app.use(signInRouter);
 app.use(signUpRouter);
 app.use(signOutRouter);
+
+// Cloudinary configuration
+cloudinary.config({ 
+  cloud_name: 'dny9olxtv', 
+  api_key: '278728522981576', 
+  api_secret: '13nJLDZP06_XWOBIc3-Y6IY39zY' // Click 'View API Keys' above to copy your API secret
+});
 
 // Route protected to get the user information
 app.get('/user-info', verifyToken, async (req, res) => {
