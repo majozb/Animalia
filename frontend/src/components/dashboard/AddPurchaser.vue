@@ -1,30 +1,30 @@
 <template>
-  <v-container class="add-buyer">
+  <v-container class="add-purchaser">
     <h1>Añadir Comprador</h1>
     <v-row>
-      <!-- Form Section: Contains the form for adding a new buyer -->
+      <!-- Form Section: Contains the form for adding a new purchaser -->
       <v-col cols="12" md="6">
         <v-form ref="form" v-model="valid">
-          <!-- Name Field: Text field for the buyer's name, with validation -->
+          <!-- Name Field: Text field for the purchaser's name, with validation -->
           <v-text-field
-            v-model="buyer.name"
+            v-model="purchaser.name"
             :rules="[v => !!v || 'Name is required']"
             label="Name"
             required
           ></v-text-field>
 
-          <!-- Username Field: Text field for the buyer's username, with validation -->
+          <!-- Username Field: Text field for the purchaser's username, with validation -->
           <v-text-field
-            v-model="buyer.user"
+            v-model="purchaser.user"
             :rules="[v => !!v || 'Username is required']"
             autocomplete="new-username"
             label="Username"
             required
           ></v-text-field>
 
-          <!-- Password Field: Text field for the buyer's password, with validation -->
+          <!-- Password Field: Text field for the purchaser's password, with validation -->
           <v-text-field
-            v-model="buyer.password"
+            v-model="purchaser.password"
             :rules="[v => !!v || 'Password is required']"
             label="Password"
             autocomplete="new-password"
@@ -32,21 +32,21 @@
             required
           ></v-text-field>
 
-          <!-- Email Field: Text field for the buyer's email, with validation -->
+          <!-- Email Field: Text field for the purchaser's email, with validation -->
           <v-text-field
-            v-model="buyer.email"
+            v-model="purchaser.email"
             :rules="[v => /.+@.+/.test(v) || 'Invalid email']"
             label="Email"
           ></v-text-field>
 
-          <!-- Phone Field: Text field for the buyer's phone number, with validation -->
+          <!-- Phone Field: Text field for the purchaser's phone number, with validation -->
           <v-text-field
-            v-model="buyer.phone"
+            v-model="purchaser.phone"
             :rules="[v => /^\d{9}$/.test(v) || 'Invalid phone number']"
             label="Phone"
           ></v-text-field>
 
-          <!-- Submit Button: To submit the form and add a new buyer -->
+          <!-- Submit Button: To submit the form and add a new purchaser -->
           <v-btn color="primary" @click="submit">Añadir</v-btn>
 
           <!-- Reset Button: To reset the form fields to their initial state -->
@@ -54,14 +54,14 @@
         </v-form>
       </v-col>
 
-      <!-- List Section: Displays the list of all buyers -->
+      <!-- List Section: Displays the list of all purchasers -->
       <v-col cols="12" md="6">
         <h2>Lista de Compradores</h2>
 
-        <!-- Data Table: Displays a list of buyers with actions (Edit/Delete) -->
+        <!-- Data Table: Displays a list of purchasers with actions (Edit/Delete) -->
         <v-data-table
           :headers="headers"
-          :items="buyers"
+          :items="purchasers"
           item-value="_id"
           class="elevation-1"
         >
@@ -73,13 +73,13 @@
             </v-toolbar>
           </template>
 
-          <!-- Action buttons (Edit/Delete) for each buyer -->
+          <!-- Action buttons (Edit/Delete) for each purchaser -->
           <!-- eslint-disable-next-line vue/valid-v-slot -->
           <template #item.actions="{ item }">
-            <v-btn icon color="primary" @click="editBuyer(item)">
+            <v-btn icon color="primary" @click="editpurchaser(item)">
               <v-icon>mdi-pencil-outline</v-icon>
             </v-btn>
-            <v-btn icon color="error" @click="deleteBuyer(item._id)">
+            <v-btn icon color="error" @click="deletepurchaser(item._id)">
               <v-icon>mdi-trash-can-outline</v-icon>
             </v-btn>
           </template>
@@ -91,21 +91,21 @@
 
 <script>
 export default {
-  name: "AddBuyer",  // Component name
+  name: "AddPurchaser",  // Component name
 
   data() {
     return {
       valid: false,  // Holds form validation state
-      buyer: {
-        name: "",  // Buyer name
+      purchaser: {
+        name: "",  // purchaser name
         user: "",  // Username
         password: "",  // Password
         email: "",  // Email
         phone: "",  // Phone number
         pets: [],  // List of pets (initially empty)
       },
-      buyers: [],  // List of buyers fetched from the server
-      originalBuyer: null,  // Holds the original buyer data for comparison when editing
+      purchasers: [],  // List of purchasers fetched from the server
+      originalpurchaser: null,  // Holds the original purchaser data for comparison when editing
       headers: [
         { title: "Name", key: "name" },
         { title: "Username", key: "user" },
@@ -117,13 +117,13 @@ export default {
   },
 
   mounted() {
-    // Fetch the list of buyers when the component is mounted
-    this.fetchBuyers();
+    // Fetch the list of purchasers when the component is mounted
+    this.fetchpurchasers();
   },
 
   methods: {
-    // Method to fetch the list of buyers from the server
-    async fetchBuyers() {
+    // Method to fetch the list of purchasers from the server
+    async fetchpurchasers() {
       try {
         const route = 'http://127.0.0.1:3000/purchasers';
         const response = await fetch(route);
@@ -131,23 +131,23 @@ export default {
           throw new Error(`Error: ${response.statusText}`);
         }
         const data = await response.json();
-        this.buyers = data;  // Store fetched buyers in the `buyers` data property
+        this.purchasers = data;  // Store fetched purchasers in the `purchasers` data property
       } catch (error) {
-        console.error("Error fetching buyers:", error);  // Handle any errors
+        console.error("Error fetching purchasers:", error);  // Handle any errors
       }
     },
 
-    // Method to handle form submission (Add or Edit buyer)
+    // Method to handle form submission (Add or Edit purchaser)
     async submit() {
       // Check if the form is valid before submitting
       if (this.$refs.form.validate()) {
         try {
-          // If editing an existing buyer, update their data
-          if (this.originalBuyer) {
-            delete this.buyer._id;  // Remove the _id field before updating
-            delete this.buyer.__v;  // Remove the __v field before updating
-            if (this.isBuyerModified()) {
-              const route = `http://127.0.0.1:3000/purchasers/${this.originalBuyer._id}`;
+          // If editing an existing purchaser, update their data
+          if (this.originalpurchaser) {
+            delete this.purchaser._id;  // Remove the _id field before updating
+            delete this.purchaser.__v;  // Remove the __v field before updating
+            if (this.ispurchaserModified()) {
+              const route = `http://127.0.0.1:3000/purchasers/${this.originalpurchaser._id}`;
               const response = await fetch(
                 route,
                 {
@@ -155,105 +155,105 @@ export default {
                   headers: {
                     "Content-Type": "application/json",
                   },
-                  body: JSON.stringify(this.buyer),
+                  body: JSON.stringify(this.purchaser),
                 }
               );
 
               if (!response.ok) {
-                throw new Error(`Error updating buyer: ${response.statusText}`);
+                throw new Error(`Error updating purchaser: ${response.statusText}`);
               }
 
-              const updatedBuyer = await response.json();
-              // Replace the old buyer data with the updated one
-              const index = this.buyers.findIndex((b) => b._id === updatedBuyer._id);
+              const updatedpurchaser = await response.json();
+              // Replace the old purchaser data with the updated one
+              const index = this.purchasers.findIndex((b) => b._id === updatedpurchaser._id);
               if (index !== -1) {
-                this.buyers.splice(index, 1, updatedBuyer);
+                this.purchasers.splice(index, 1, updatedpurchaser);
               }
 
-              console.log("Updated buyer:", updatedBuyer);
+              console.log("Updated purchaser:", updatedpurchaser);
             } else {
               console.log("No changes made to the data.");
             }
           } else {
-            // If adding a new buyer, create the new buyer
+            // If adding a new purchaser, create the new purchaser
             const route = 'http://127.0.0.1:3000/purchasers';
             const response = await fetch(route, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify(this.buyer),
+              body: JSON.stringify(this.purchaser),
             });
 
             if (!response.ok) {
-              throw new Error(`Error adding buyer: ${response.statusText}`);
+              throw new Error(`Error adding purchaser: ${response.statusText}`);
             }
 
-            const newBuyer = await response.json();
-            this.buyers.push(newBuyer);  // Add the new buyer to the list
-            console.log("Added new buyer:", newBuyer);
+            const newpurchaser = await response.json();
+            this.purchasers.push(newpurchaser);  // Add the new purchaser to the list
+            console.log("Added new purchaser:", newpurchaser);
           }
 
           this.reset();  // Reset the form fields after submission
         } catch (error) {
-          console.error("Error adding/updating buyer:", error);
+          console.error("Error adding/updating purchaser:", error);
         }
       }
     },
 
-    // Method to populate the form with buyer details for editing
-    async editBuyer(buyer) {
-      this.buyer = { ...buyer };  // Copy buyer data to the form
-      this.originalBuyer = { ...buyer };  // Save original buyer data for comparison
+    // Method to populate the form with purchaser details for editing
+    async editpurchaser(purchaser) {
+      this.purchaser = { ...purchaser };  // Copy purchaser data to the form
+      this.originalpurchaser = { ...purchaser };  // Save original purchaser data for comparison
     },
 
-    // Method to delete a buyer
-    async deleteBuyer(buyerId) {
+    // Method to delete a purchaser
+    async deletepurchaser(purchaserId) {
       try {
-        const route = `http://127.0.0.1:3000/purchasers/${buyerId}`;
+        const route = `http://127.0.0.1:3000/purchasers/${purchaserId}`;
         const response = await fetch(route, {
           method: "DELETE",  // Use DELETE HTTP method
         });
 
         if (!response.ok) {
-          throw new Error(`Error deleting buyer: ${response.statusText}`);
+          throw new Error(`Error deleting purchaser: ${response.statusText}`);
         }
 
-        // Remove the deleted buyer from the buyers list
-        this.buyers = this.buyers.filter((buyer) => buyer._id !== buyerId);
-        console.log("Buyer deleted:", buyerId);
+        // Remove the deleted purchaser from the purchasers list
+        this.purchasers = this.purchasers.filter((purchaser) => purchaser._id !== purchaserId);
+        console.log("purchaser deleted:", purchaserId);
       } catch (error) {
-        console.error("Error deleting buyer:", error);
+        console.error("Error deleting purchaser:", error);
       }
     },
 
-    // Method to check if the buyer's data has been modified
-    isBuyerModified() {
-      return JSON.stringify(this.buyer) !== JSON.stringify(this.originalBuyer);
+    // Method to check if the purchaser's data has been modified
+    ispurchaserModified() {
+      return JSON.stringify(this.purchaser) !== JSON.stringify(this.originalpurchaser);
     },
 
     // Method to reset the form fields
     reset() {
       this.$refs.form.reset();  // Reset the form
-      this.buyer = {
+      this.purchaser = {
         name: "",
         user: "",
         password: "",
         email: "",
         phone: "",
       };
-      this.originalBuyer = null;  // Clear original buyer data
+      this.originalpurchaser = null;  // Clear original purchaser data
     },
   },
 };
 </script>
 
 <style scoped>
-.add-buyer {
+.add-purchaser {
   text-align: center;
 }
 
-.add-buyer h1 {
+.add-purchaser h1 {
   color: #003459;  /* Color for the title */
 }
 
@@ -271,7 +271,7 @@ h2 {
 }
 
 @media (max-width: 768px) {
-  .add-buyer {
+  .add-purchaser {
     text-align: center;  /* Center text on small screens */
   }
   .v-col {
