@@ -1,72 +1,85 @@
 <template>
-  <v-container>
+  <v-container class="add-buyer">
+    <h1>Añadir Comprador</h1>
     <v-row>
-      <!-- Formulario de Proveedor -->
+      <!-- Form Section: Contains the form for adding a new buyer -->
       <v-col cols="12" md="6">
-        <h2 class="title">{{ originalProvider ? 'Editar Proveedor' : 'Registrar Proveedor' }}</h2>
-        <v-form @submit.prevent="handleSubmit" ref="providerForm" v-model="isValid">
+        <v-form ref="form" v-model="valid">
+          <!-- Name Field: Text field for the buyer's name, with validation -->
           <v-text-field
-            label="Nombre"
-            v-model="provider.name"
+            v-model="buyer.name"
+            :rules="[v => !!v || 'Name is required']"
+            label="Name"
             required
           ></v-text-field>
+
+          <!-- Username Field: Text field for the buyer's username, with validation -->
           <v-text-field
-            label="Usuario"
-            v-model="provider.user"
+            v-model="buyer.user"
+            :rules="[v => !!v || 'Username is required']"
+            autocomplete="new-username"
+            label="Username"
             required
           ></v-text-field>
+
+          <!-- Password Field: Text field for the buyer's password, with validation -->
           <v-text-field
-            label="Contraseña"
-            v-model="provider.password"
+            v-model="buyer.password"
+            :rules="[v => !!v || 'Password is required']"
+            label="Password"
+            autocomplete="new-password"
             type="password"
             required
           ></v-text-field>
+
+          <!-- Email Field: Text field for the buyer's email, with validation -->
           <v-text-field
-            label="Correo Electrónico"
-            v-model="provider.email"
-            required
-            :rules="[rules.email]"
+            v-model="buyer.email"
+            :rules="[v => /.+@.+/.test(v) || 'Invalid email']"
+            label="Email"
           ></v-text-field>
+
+          <!-- Phone Field: Text field for the buyer's phone number, with validation -->
           <v-text-field
-            label="Teléfono"
-            v-model="provider.phone"
-            required
-            :rules="[rules.phone]"
+            v-model="buyer.phone"
+            :rules="[v => /^\d{9}$/.test(v) || 'Invalid phone number']"
+            label="Phone"
           ></v-text-field>
-          <v-btn color="primary" type="submit">{{ originalProvider ? 'Actualizar' : 'Registrar' }}</v-btn>
-          <v-btn color="error" @click="$refs.providerForm.reset()">Resetear</v-btn>
+
+          <!-- Submit Button: To submit the form and add a new buyer -->
+          <v-btn color="primary" @click="submit">Añadir</v-btn>
+
+          <!-- Reset Button: To reset the form fields to their initial state -->
+          <v-btn color="error" @click="reset">Resetear</v-btn>
         </v-form>
       </v-col>
 
+      <!-- List Section: Displays the list of all buyers -->
       <v-col cols="12" md="6">
-        <h2 class="title">Lista de Proveedores</h2>
+        <h2>Lista de Compradores</h2>
+
+        <!-- Data Table: Displays a list of buyers with actions (Edit/Delete) -->
         <v-data-table
           :headers="headers"
-          :items="providers"
-          item-value="id"
+          :items="buyers"
+          item-value="_id"
           class="elevation-1"
-          dense
         >
+          <!-- Toolbar section at the top of the table -->
           <template v-slot:top>
             <v-toolbar flat>
-              <v-toolbar-title>Proveedores</v-toolbar-title>
+              <v-toolbar-title>Compradores</v-toolbar-title>
               <v-spacer></v-spacer>
             </v-toolbar>
-            <v-text-field
-              v-model="search"
-              class="pa-2 search-field"
-              label="Buscar..."
-              hide-details
-              append-icon="mdi-magnify"
-              solo
-            ></v-text-field>
           </template>
+
+          <!-- Action buttons (Edit/Delete) for each buyer -->
           <!-- eslint-disable-next-line vue/valid-v-slot -->
           <template #item.actions="{ item }">
-            <v-btn icon color="primary" @click="editProvider(item)">
+            <v-btn icon color="primary" @click="editBuyer(item)">
               <v-icon>mdi-pencil-outline</v-icon>
             </v-btn>
-            <v-btn icon color="error" @click="deleteProvider(item)">
+            <v-btn icon color="error" @click="deleteBuyer(item._id)">
               <v-icon>mdi-trash-can-outline</v-icon>
             </v-btn>
           </template>
@@ -78,159 +91,191 @@
 
 <script>
 export default {
+  name: "AddBuyer",  // Component name
+
   data() {
     return {
-      isValid: false,
-      provider: {
-        name: '',
-        user: '',
-        password: '',
-        email: '',
-        phone: '',
-        products: [],
+      valid: false,  // Holds form validation state
+      buyer: {
+        name: "",  // Buyer name
+        user: "",  // Username
+        password: "",  // Password
+        email: "",  // Email
+        phone: "",  // Phone number
+        pets: [],  // List of pets (initially empty)
       },
-      search: '',
-      providers: [],
+      buyers: [],  // List of buyers fetched from the server
+      originalBuyer: null,  // Holds the original buyer data for comparison when editing
       headers: [
-        { title: 'Nombre', key: 'name' },
-        { title: 'Usuario', key: 'user' },
-        { title: 'Correo Electrónico', key: 'email' },
-        { title: 'Teléfono', key: 'phone' },
-        { title: 'Acciones', key: 'actions', sortable: false },
+        { title: "Name", key: "name" },
+        { title: "Username", key: "user" },
+        { title: "Email", key: "email" },
+        { title: "Phone", key: "phone" },
+        { title: "Actions", key: "actions", sortable: false },
       ],
-      rules: {
-        email: [(v) => /.+@.+\..+/.test(v) || 'El correo no es válido'],
-        phone: [
-          (v) =>
-            /^[6-9]\d{8}$/.test(v) || 'El número de teléfono no es válido para España',
-        ],
-      },
-      originalProvider: null, // Almacena los datos originales del proveedor cuando se edita
     };
   },
+
+  mounted() {
+    // Fetch the list of buyers when the component is mounted
+    this.fetchBuyers();
+  },
+
   methods: {
-    async handleSubmit() {
-      const providerData = { ...this.provider };
-      delete providerData._id; // Elimina el _id si existe, para evitar conflictos en el servidor
-
+    // Method to fetch the list of buyers from the server
+    async fetchBuyers() {
       try {
-        if (this.originalProvider) {
-          // Si estamos editando un proveedor
-          if (this.isProviderModified()) {
-            const route = `http://127.0.0.1:3000/providers/${this.originalProvider._id}`;
-            const response = await fetch(route, {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(providerData),
-            });
+        const route = 'http://127.0.0.1:3000/purchasers';
+        const response = await fetch(route);
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+        const data = await response.json();
+        this.buyers = data;  // Store fetched buyers in the `buyers` data property
+      } catch (error) {
+        console.error("Error fetching buyers:", error);  // Handle any errors
+      }
+    },
 
-            if (response.ok) {
-              const updatedProvider = await response.json();
-              const index = this.providers.findIndex((p) => p._id === updatedProvider._id);
-              if (index !== -1) {
-                this.providers.splice(index, 1, updatedProvider); // Actualiza la lista con el proveedor modificado
+    // Method to handle form submission (Add or Edit buyer)
+    async submit() {
+      // Check if the form is valid before submitting
+      if (this.$refs.form.validate()) {
+        try {
+          // If editing an existing buyer, update their data
+          if (this.originalBuyer) {
+            delete this.buyer._id;  // Remove the _id field before updating
+            delete this.buyer.__v;  // Remove the __v field before updating
+            if (this.isBuyerModified()) {
+              const route = `http://127.0.0.1:3000/purchasers/${this.originalBuyer._id}`;
+              const response = await fetch(
+                route,
+                {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(this.buyer),
+                }
+              );
+
+              if (!response.ok) {
+                throw new Error(`Error updating buyer: ${response.statusText}`);
               }
-              console.log('Proveedor actualizado con éxito');
-              this.resetForm();
+
+              const updatedBuyer = await response.json();
+              // Replace the old buyer data with the updated one
+              const index = this.buyers.findIndex((b) => b._id === updatedBuyer._id);
+              if (index !== -1) {
+                this.buyers.splice(index, 1, updatedBuyer);
+              }
+
+              console.log("Updated buyer:", updatedBuyer);
+            } else {
+              console.log("No changes made to the data.");
             }
           } else {
-            console.log('No se hicieron cambios.');
-          }
-        } else {
-          // Si estamos registrando un nuevo proveedor
-          const route = 'http://127.0.0.1:3000/providers';
-          const response = await fetch(route, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(providerData),
-          });
+            // If adding a new buyer, create the new buyer
+            const route = 'http://127.0.0.1:3000/purchasers';
+            const response = await fetch(route, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(this.buyer),
+            });
 
-          if (response.ok) {
-            console.log('Proveedor registrado con éxito.');
-            this.fetchProviders(); 
-            this.$refs.providerForm.reset(); 
-          } else {
-            const errorData = await response.json();
-            console.log('Error al registrar el proveedor:', errorData.message);
+            if (!response.ok) {
+              throw new Error(`Error adding buyer: ${response.statusText}`);
+            }
+
+            const newBuyer = await response.json();
+            this.buyers.push(newBuyer);  // Add the new buyer to the list
+            console.log("Added new buyer:", newBuyer);
           }
+
+          this.reset();  // Reset the form fields after submission
+        } catch (error) {
+          console.error("Error adding/updating buyer:", error);
         }
-      } catch (error) {
-        console.log('Error:', error);
       }
     },
 
-    async fetchProviders() {
-      try {
-        const route = 'http://127.0.0.1:3000/providers';
-        const response = await fetch(route);
-        if (response.ok) {
-          this.providers = await response.json();
-        }
-      } catch (error) {
-        console.log('Error al obtener la lista de proveedores.', error);
-      }
+    // Method to populate the form with buyer details for editing
+    async editBuyer(buyer) {
+      this.buyer = { ...buyer };  // Copy buyer data to the form
+      this.originalBuyer = { ...buyer };  // Save original buyer data for comparison
     },
 
-    editProvider(provider) {
-      this.provider = { ...provider };
-      this.originalProvider = { ...provider }; // Guarda los datos originales del proveedor
-    },
-
-    async deleteProvider(provider) {
+    // Method to delete a buyer
+    async deleteBuyer(buyerId) {
       try {
-        const route = `http://127.0.0.1:3000/providers/${provider._id}`;
+        const route = `http://127.0.0.1:3000/purchasers/${buyerId}`;
         const response = await fetch(route, {
-          method: 'DELETE',
+          method: "DELETE",  // Use DELETE HTTP method
         });
 
-        if (response.ok) {
-          console.log('Proveedor eliminado con éxito');
-          this.fetchProviders();
+        if (!response.ok) {
+          throw new Error(`Error deleting buyer: ${response.statusText}`);
         }
+
+        // Remove the deleted buyer from the buyers list
+        this.buyers = this.buyers.filter((buyer) => buyer._id !== buyerId);
+        console.log("Buyer deleted:", buyerId);
       } catch (error) {
-        console.log('Error al eliminar el proveedor', error);
+        console.error("Error deleting buyer:", error);
       }
     },
 
-    isProviderModified() {
-      return JSON.stringify(this.provider) !== JSON.stringify(this.originalProvider);
+    // Method to check if the buyer's data has been modified
+    isBuyerModified() {
+      return JSON.stringify(this.buyer) !== JSON.stringify(this.originalBuyer);
     },
 
-    resetForm() {
-      this.provider = {
-        name: '',
-        user: '',
-        password: '',
-        email: '',
-        phone: '',
+    // Method to reset the form fields
+    reset() {
+      this.$refs.form.reset();  // Reset the form
+      this.buyer = {
+        name: "",
+        user: "",
+        password: "",
+        email: "",
+        phone: "",
       };
-      this.originalProvider = null; // Limpiar los datos originales del proveedor
+      this.originalBuyer = null;  // Clear original buyer data
     },
-  },
-  mounted() {
-    this.fetchProviders();
   },
 };
 </script>
 
 <style scoped>
-.provider-form {
-  max-width: 600px;
-  margin: 0 auto;
+.add-buyer {
+  text-align: center;
 }
-.title {
-  color: #003459;
+
+.add-buyer h1 {
+  color: #003459;  /* Color for the title */
+}
+
+.v-toolbar {
+  background-color: #003459;  /* Toolbar background color */
+  color: white;  /* Toolbar text color */
 }
 
 .v-data-table {
-  background-color: #F7DBA7;
+  background-color: #F7DBA7;  /* Data table background color */
 }
-.v-toolbar {
-  color: #F7DBA7;
-  background-color: #003459;
+
+h2 {
+  color: #003459;  /* Color for the secondary heading */
+}
+
+@media (max-width: 768px) {
+  .add-buyer {
+    text-align: center;  /* Center text on small screens */
+  }
+  .v-col {
+    margin-bottom: 20px;  /* Add margin to columns on small screens */
+  }
 }
 </style>
