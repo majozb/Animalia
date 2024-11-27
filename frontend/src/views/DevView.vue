@@ -3,20 +3,19 @@
     <v-container>
       <h1>Vista de Desarrollo</h1>
       <!-- Prueba con lista de mascotas -->
-      <ImageCarrousel />
+      <CategorySelector />
 
       
     </v-container>
   </template>
   
   <script>
-  import ImageCarrousel from "@/components/details/ImageCarrousel.vue";
-
+  import CategorySelector from '@/components/CategorySelector.vue';
   
   export default {
     name: "DevView",
     components: {
-      ImageCarrousel,
+      CategorySelector,
     },
     data() {
       return {
