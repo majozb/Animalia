@@ -43,7 +43,7 @@
             </v-list-item-title>
           </v-list-item>
           <v-list-item v-if="userType === 'admin'" class="menu-item">
-            <v-list-item-title @click="switchComponent('AddBuyer')">
+            <v-list-item-title @click="switchComponent('AddPurchaser')">
               Añadir Comprador
             </v-list-item-title>
           </v-list-item>
@@ -80,7 +80,7 @@
 
 <script>
 import { useUserStore } from "@/stores/userStore"; // Importa el store de Pinia
-import AddBuyer from "@/components/dashboard/AddBuyer.vue";
+import AddPurchaser from "@/components/dashboard/AddPurchaser.vue";
 import Analitics from "@/components/dashboard/AnaliticsData.vue";
 import AddPet from "@/components/dashboard/AddPet.vue";
 import AddProvider from "@/components/dashboard/AddProvider.vue";
@@ -139,7 +139,7 @@ export default {
     },
   },
   components: {
-    AddBuyer,
+    AddPurchaser,
     Analitics,
     AddPet,
     AddProvider,
