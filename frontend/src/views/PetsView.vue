@@ -18,6 +18,7 @@ const ALL_SPECIES = [
 <template>
   <div class="main-container">
     <NavBar />
+    <v-breadcrumbs :items="items"></v-breadcrumbs>
     <v-row>
       <v-col cols="12" sm="12" md="3" lg="3" xl="3">
         <FilterBox filterBy="pets" :species="ALL_SPECIES" @filters="fetchFilteredPets" />
@@ -45,6 +46,10 @@ export default {
     return {
       pets: [],
       products: [],
+      items: [
+        { title: 'Inicio', disabled: false, href: '/' },
+        { title: 'Mascotas', disabled: true, href: '/pets' },
+      ]
     };
   },
   mounted() {

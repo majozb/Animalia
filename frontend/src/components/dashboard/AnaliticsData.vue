@@ -14,16 +14,16 @@
       <WidgetDonut chartId="adoptionsByAnimal" title="Adopciones por Tipo de Animal" :chartData="adoptionsChartData" />
     </section>
     <section class="section">
-      <GenericTable title="Resumen de los Últimos Productos Subidos" :headers="headers" :items="items" />
-      <GenericTable title="Proveedores dados de alta" :headers="headers2" :items="items2" />
+      <GenericTable title="Resumen de los Últimos Productos Subidos" :headers="headers" :items="products" />
+      <GenericTable title="Proveedores dados de alta" :headers="headers2" :items="providers" />
     </section>
-    
+
   </div>
 </template>
 
 <script>
 import { Chart, registerables } from 'chart.js';
-import WidgetGraph  from './WidgetGraphLine.vue';
+import WidgetGraph from './WidgetGraphLine.vue';
 import WidgetDonut from './WidgetDonut.vue';
 import GenericTable from './GenericTable.vue';
 
@@ -40,59 +40,63 @@ export default {
   },
   data() {
     return {
-      chartData: { 
-        labels: ['', '', '', '', '', '', ''], 
-        datasets: [ 
-          { 
+      counter_alimentos: 0,
+      counter_accesorios: 0,
+      counter_salud: 0,
+      chartData: {
+        labels: ['', '', '', '', '', '', ''],
+        datasets: [
+          {
             label: 'Total Ventas',
             data: [30, 32, 28, 35, 33, 36, 37],
             borderColor: '#4CAF50',
-            backgroundColor: 'rgba(76, 175, 80, 0.3)', 
-            fill: true, 
+            backgroundColor: 'rgba(76, 175, 80, 0.3)',
+            fill: true,
             tension: 0.4
-          }] 
+          }]
       },
-      chartData2: { 
-        labels: ['', '', '', '', '', '', ''], 
-        datasets: [ 
-          { 
+      chartData2: {
+        labels: ['', '', '', '', '', '', ''],
+        datasets: [
+          {
             label: 'Total Gastos',
             data: [30, 32, 28, 35, 33, 36, 37],
             borderColor: '#e95917',
-            backgroundColor: 'rgba(233, 89, 23, 0.3)', 
-            fill: true, 
+            backgroundColor: 'rgba(233, 89, 23, 0.3)',
+            fill: true,
             tension: 0.4
-          }] 
+          }]
       },
-      chartData3: { 
-        labels: ['', '', '', '', '', '', ''], 
-        datasets: [ 
-          { 
+      chartData3: {
+        labels: ['', '', '', '', '', '', ''],
+        datasets: [
+          {
             label: 'Número de Pedidos',
             data: [30, 32, 28, 35, 33, 36, 37],
             borderColor: '#bfbfbf',
-            backgroundColor: 'rgba(191, 191, 191, 0.3)', 
-            fill: true, 
+            backgroundColor: 'rgba(191, 191, 191, 0.3)',
+            fill: true,
             tension: 0.4
-          }] 
+          }]
       },
-      chartData4: { 
-        labels: ['', '', '', '', '', '', ''], 
-        datasets: [ 
-          { 
+      chartData4: {
+        labels: ['', '', '', '', '', '', ''],
+        datasets: [
+          {
             label: 'Número de Visitantes',
             data: [30, 32, 28, 35, 33, 36, 37],
             borderColor: '#362ecf',
-            backgroundColor: 'rgba(54, 46, 207, 0.3)', 
-            fill: true, 
+            backgroundColor: 'rgba(54, 46, 207, 0.3)',
+            fill: true,
             tension: 0.4
-          }] 
+          }]
       },
       productsChartData: {
-        labels: ["Alimentos", "Juguetes", "Accesorios"],
+        labels: ["Alimentos", "Accesorios", "Salud"],
         datasets: [
           {
-            data: [300, 150, 200],
+            // data: [this.counter_alimentos, this.counter_accesorios, this.counter_salud],
+            data: [50, 30, 20],
             backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
           },
         ],
@@ -106,70 +110,106 @@ export default {
           },
         ],
       },
-      headers: [ 
-        { title: 'Nombre', key: 'nombre' },  
-        { title: 'Stock', key: 'stock' }, 
-        { title: 'Descripcion', key: 'descripcion' }, 
-        { title: 'Keywords', key: 'keywords' }, 
-        { title: 'Dimesiones', key: 'dimensiones' }, 
-        { title: 'Peso', key: 'peso' },
-        { title: 'ID Proveedor', key: 'id_proveedor'},
-        { title: 'Precio', key: 'precio'}], 
-      items: [ 
-        { nombre: 'Collar para Perro', stock: 50, descripcion: 'Collar ajustable para perros de todos los tamaños.', keywords: 'collar, perro, ajustable', dimensiones: '40-60 cm', peso: '100 g', id_proveedor: 'PROV001', precio: '€10.00' }, 
-        { nombre: 'Comida para Gato', stock: 200, descripcion: 'Alimento premium para gatos adultos.', keywords: 'comida, gato, premium', dimensiones: '20x10 cm', peso: '2 kg', id_proveedor: 'PROV002', precio: '€15.00' }, 
-        { nombre: 'Juguete para Mascotas', stock: 120, descripcion: 'Juguete resistente y divertido para perros y gatos.', keywords: 'juguete, mascota, resistente', dimensiones: '15x15 cm', peso: '200 g', id_proveedor: 'PROV003', precio: '€8.00' }, 
-        { nombre: 'Cama para Perros', stock: 30, descripcion: 'Cama cómoda y lavable para perros de todos los tamaños.', keywords: 'cama, perro, lavable', dimensiones: '80x60 cm', peso: '1.5 kg', id_proveedor: 'PROV004', precio: '€25.00' }, 
-        { nombre: 'Jaula para Pájaros', stock: 15, descripcion: 'Jaula espaciosa para pájaros pequeños y medianos.', keywords: 'jaula, pájaro, espaciosa', dimensiones: '50x50x70 cm', peso: '3 kg', id_proveedor: 'PROV005', precio: '€45.00' }, 
-        { nombre: 'Arena para Gatos', stock: 100, descripcion: 'Arena absorbente y sin olor para gatos.', keywords: 'arena, gato, absorbente', dimensiones: '30x20 cm', peso: '5 kg', id_proveedor: 'PROV006', precio: '€10.00' }, 
-        { nombre: 'Transportador de Mascotas', stock: 20, descripcion: 'Transportador seguro y cómodo para mascotas pequeñas.', keywords: 'transportador, mascotas, seguro', dimensiones: '60x40x40 cm', peso: '2.5 kg', id_proveedor: 'PROV007', precio: '€35.00' }, 
-        { nombre: 'Rascador para Gatos', stock: 40, descripcion: 'Rascador de sisal para gatos, ideal para afilar uñas.', keywords: 'rascador, gato, sisal', dimensiones: '30x30x70 cm', peso: '4 kg', id_proveedor: 'PROV008', precio: '€20.00' }, 
-        { nombre: 'Hueso para Perros', stock: 300, descripcion: 'Hueso de goma duradero para morder.', keywords: 'hueso, perro, duradero', dimensiones: '20x5 cm', peso: '250 g', id_proveedor: 'PROV009', precio: '€5.00' }, 
-        { nombre: 'Cepillo para Mascotas', stock: 70, descripcion: 'Cepillo para mantener el pelo de las mascotas limpio y suave.', keywords: 'cepillo, mascotas, pelo', dimensiones: '25x10 cm', peso: '150 g', id_proveedor: 'PROV010', precio:'€12.00' },
-        { nombre: 'Cepillo para Mascotas', stock: 70, descripcion: 'Cepillo para mantener el pelo de las mascotas limpio y suave.', keywords: 'cepillo, mascotas, pelo', dimensiones: '25x10 cm', peso: '150 g', id_proveedor: 'PROV010', precio:'€12.00' }
-      ],
+      headers: [
+        { title: 'Nombre', key: 'name' },
+        { title: 'Stock', key: 'stock' },
+        { title: 'Descripción', key: 'description' },
+        { title: 'Keywords', key: 'keywords' },
+        { title: 'Dimensiones', key: 'dimensions' },
+        { title: 'Peso', key: 'weight' },
+        { title: 'Precio', key: 'price' }],
+      products: [],
       headers2: [
-        { title: 'id', key: 'id' },
-        { title: 'Nombre y A', key: 'nombre' },
+        { title: 'Nombre y A', key: 'name' },
         { title: 'User', key: 'user' },
-        { title: 'Password', key: 'password' },
-        { title: 'Numero', key: 'numero' },
-        { title: 'Mail', key: 'mail' }
+        { title: 'Email', key: 'email' },
+        { title: 'N. teléfono', key: 'phone' }
       ],
-      items2: [
-        { id: 'MongoDB1', nombre: 'Proveedor A', user: 'userA', password: 'hashedpasswordA', numero: '1234567890', mail: 'proveedora@mail.com'},
-        { id: 'MongoDB2', nombre: 'Proveedor B', user: 'userB', password: 'hashedpasswordB', numero: '2345678901', mail: 'proveedorb@mail.com'},
-        { id: 'MongoDB3', nombre: 'Proveedor C', user: 'userC', password: 'hashedpasswordC', numero: '3456789012', mail: 'proveedorc@mail.com'},
-        { id: 'MongoDB4', nombre: 'Proveedor D', user: 'userD', password: 'hashedpasswordD', numero: '4567890123', mail: 'proveedord@mail.com'},
-        { id: 'MongoDB5', nombre: 'Proveedor E', user: 'userE', password: 'hashedpasswordE', numero: '5678901234', mail: 'proveedore@mail.com'},
-        { id: 'MongoDB6', nombre: 'Proveedor F', user: 'userF', password: 'hashedpasswordF', numero: '6789012345', mail: 'proveedorf@mail.com'},
-        { id: 'MongoDB7', nombre: 'Proveedor G', user: 'userG', password: 'hashedpasswordG', numero: '7890123456', mail: 'proveedorg@mail.com'},
-        { id: 'MongoDB8', nombre: 'Proveedor H', user: 'userH', password: 'hashedpasswordH', numero: '8901234567', mail: 'proveedorh@mail.com' },
-        { id: 'MongoDB9', nombre: 'Proveedor I', user: 'userI', password: 'hashedpasswordI', numero: '9012345678', mail: 'proveedori@mail.com'},
-        { id: 'MongoDB10', nombre: 'Proveedor J', user: 'userJ', password: 'hashedpasswordJ', numero: '0123456789', mail: 'proveedorj@mail.com'}
-    ]
+      providers: []
     }
   },
+  methods: {
+    async fetchProducts() {
+      try {
+        const response = await fetch('http://localhost:3000/products');
+        const data = await response.json();
+
+        this.products = data;
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        return [];
+      }
+    },
+    async fetchProviders() {
+      try {
+        const response = await fetch('http://localhost:3000/providers');
+        const data = await response.json();
+        console.log('Data:', data);
+
+        this.providers = data;
+      } catch (error) {
+        console.error('Error fetching providers:', error);
+        return [];
+      }
+    },
+    async productsChartDataFunction() {
+      try {
+        const response = await fetch('http://localhost:3000/products');
+        const data = await response.json();
+        console.log('Data:', data);
+        let counter_alimentos = 0;
+        let counter_accesorios = 0;
+        let counter_salud = 0;
+
+        data.forEach((product) => {
+          if (product.keywords.includes('alimentación')) {
+            counter_alimentos++;
+          } else if (product.keywords.includes('accesorios')) {
+            counter_accesorios++;
+          } else if (product.keywords.includes('salud')) {
+            counter_salud++;
+          }
+        });
+
+        console.log('Alimentos:', counter_alimentos);
+        console.log('Accesorios:', counter_accesorios);
+        console.log('Salud:', counter_salud);
+
+        this.counter_accesorios = counter_accesorios;
+        this.counter_alimentos = counter_alimentos;
+        this.counter_salud = counter_salud;
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        return [];
+      }
+    }
+  },
+  mounted() {
+    this.fetchProducts();
+    this.fetchProviders();
+    this.productsChartDataFunction();
+  }
 };
 
 </script>
 
 <style scoped>
-
 .section {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
 }
-.widget-card { 
-  flex: 1 1 calc(25% - 20px); 
-  min-width: 250px; 
-} 
 
-@media (max-width: 768px) { 
-  .widget-card, .donut-chart { 
-    flex: 1 1 100%; 
-  } 
+.widget-card {
+  flex: 1 1 calc(25% - 20px);
+  min-width: 250px;
 }
 
+@media (max-width: 768px) {
+
+  .widget-card,
+  .donut-chart {
+    flex: 1 1 100%;
+  }
+}
 </style>

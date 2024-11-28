@@ -49,6 +49,13 @@
             required
           ></v-text-field>
 
+          <!-- Product keywords input field -->
+          <v-text-field
+            v-model="product.keywords"
+            label="Keywords"
+            hint="Separate keywords with commas"
+          ></v-text-field>
+
           <!-- Input fields for product dimensions -->
           <v-row>
             <v-col cols="4">
@@ -81,6 +88,9 @@
               ></v-text-field>
             </v-col>
           </v-row>
+
+          <!-- Field to upload product image -->
+          <v-file-input v-model="imageToUpload" label="Upload Product Image" accept="image/*" required></v-file-input>
 
           <!-- Buttons to submit or reset the form -->
           <v-btn color="primary" @click="submit">Añadir</v-btn>
@@ -135,15 +145,20 @@ export default {
         stock: 0,
         price: 0,
         dimensions: [0, 0, 0], // Length, width, height
+        images: [],
+        keywords: []
       },
+      imageToUpload: null, // Image file to upload
       products: [], // Array to hold the list of products
       tableHeaders: [  // Table headers for displaying products
         { title: "Name", key: "name" },
-        { title: "Description", key: "description" },
         { title: "Weight", key: "weight" },
         { title: "Stock", key: "stock" },
+        { title: "Description", key: "description" },
         { title: "Price", key: "price" },
+        { title: "Keywords", key: "keywords" },
         { title: "Dimensions", key: "dimensions" },
+        { title: "Images", key: "images" },
         { title: "Actions", key: "actions", sortable: false },
       ],
       originalProduct: null,  // Original product data for editing
@@ -161,9 +176,8 @@ export default {
         const userId = userStore.userId;
 
         if (!userId) throw new Error("Provider ID not found");
-
-        // Fetch products based on provider ID
-        const route = `http://127.0.0.1:3000/products?provider=${userId}`;
+      
+        const route = `http://127.0.0.1:3000/providers/${userId}/products`;
         const response = await fetch(route);
         if (!response.ok) throw new Error("Error fetching products");
 
@@ -181,9 +195,10 @@ export default {
         const userId = userStore.userId;
 
         if (!userId) throw new Error("Provider ID not found");
+        this.product.keywords = this.product.keywords.split(",").map((keyword) => keyword.trim());
 
         if (this.originalProduct) {
-          // Actualizar producto existente
+          // Update an existing product
           delete this.product._id;  // Remove the _id field
           delete this.product.__v;  // Remove the __v field
           if (this.isProductModified()) {
@@ -191,7 +206,7 @@ export default {
             const response = await fetch(route, {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ ...this.product, images: "prueba.jpg" }),
+              body: JSON.stringify({ ...this.product}),
             });
             if (!response.ok) throw new Error("Error updating product");
             const updatedProduct = await response.json();
@@ -206,15 +221,34 @@ export default {
             console.log("No changes made to the product.");
           }
         } else {
-          // Crear un nuevo producto
-          const route = `http://127.0.0.1:3000/products`;
-          const response = await fetch(route, {
+          // Create a new product
+          if (!this.imageToUpload) {
+            throw new Error("Image is required");
+          }
+          this.product.dimensions = this.product.dimensions.map(Number);
+          const formData = new FormData();
+          formData.append('name', this.product.name);
+          formData.append('weight', this.product.weight);
+          formData.append('stock', this.product.stock);
+          formData.append('description', this.product.description);
+          formData.append('price', this.product.price);
+          formData.append('keywords', this.product.keywords);
+          formData.append('dimensions', this.product.dimensions);
+          formData.append('image', this.imageToUpload);
+
+          const response = await fetch('http://localhost:3000/products', {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ...this.product, images: "prueba.jpg" }),
+            body: formData,
           });
+
           if (!response.ok) throw new Error("Error adding product");
+
           const newProduct = await response.json();
+          await fetch(`http://localhost:3000/providers/${userId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ productId: newProduct._id }),
+          });
           this.products.push(newProduct);
           this.reset();
         }
@@ -235,6 +269,20 @@ export default {
     // Method to delete a product
     async deleteProduct(productId) {
       try {
+        const userStore = useUserStore();
+        const userId = userStore.userId;
+
+        if (!userId) throw new Error("User ID not found");
+
+        // Unlink the product from the provider
+        const Response = await fetch(`http://localhost:3000/providers/${userId}/removeProduct`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ productId }),
+        });
+
+        if (!Response.ok) throw new Error(`Error unlinking product from provider`);
+
         // Send a DELETE request to remove the product
         const route = `http://127.0.0.1:3000/products/${productId}`;
         const response = await fetch(route, { method: "DELETE" });
@@ -282,12 +330,12 @@ export default {
 /* Styling for the data table container */
 .v-data-table {
   overflow-x: auto;
-  background-color: #F7DBA7; /* Light yellow background */
+  background-color: white; /* Light yellow background */
 }
 
 /* Styling for the toolbar */
 .v-toolbar {
   background-color: #003459;  /* Dark blue background */
-  color: #F7DBA7;  /* Light yellow text */
+  color: white;  /* Light yellow text */
 }
 </style>

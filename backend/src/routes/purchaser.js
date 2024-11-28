@@ -66,7 +66,6 @@ purchaserRouter.put('/purchasers/:id', async (req, res) => {
       purchaser.pets.push(req.body.petId); 
     }
 
-    
     if (req.body.password) {
       req.body.password = await bcrypt.hash(req.body.password, 8);  
     }
@@ -87,23 +86,21 @@ purchaserRouter.put('/purchasers/:id', async (req, res) => {
 // PUT /purchasers/:id/removePet
 purchaserRouter.put('/purchasers/:id/removePet', async (req, res) => {
   try {
-    const { petId } = req.body;  // Pet ID a desvincular
-    const purchaser = await Purchaser.findById(req.params.id);  // Buscar al comprador por su ID
+    const { petId } = req.body;
+    const purchaser = await Purchaser.findById(req.params.id);  // Find the purchaser by id
 
     if (!purchaser) {
       return res.status(404).send({ error: 'Purchaser not found' });
     }
 
-    // Verificar si el petId está en el array de pets
+    // Verify if the petId is in the purchaser pets list
     const petIndex = purchaser.pets.indexOf(petId);
     if (petIndex === -1) {
       return res.status(404).send({ error: 'Pet not found in purchaser pets list' });
     }
 
-    // Eliminar el petId del array de pets
+    // Remove the pet from the purchaser pets list
     purchaser.pets.splice(petIndex, 1);
-
-    // Guardar los cambios
     await purchaser.save();
     
     res.status(200).send({ message: 'Pet removed successfully', purchaser });
