@@ -49,6 +49,13 @@
             required
           ></v-text-field>
 
+          <!-- Product keywords input field -->
+          <v-text-field
+            v-model="product.keywords"
+            label="Keywords"
+            hint="Separate keywords with commas"
+          ></v-text-field>
+
           <!-- Input fields for product dimensions -->
           <v-row>
             <v-col cols="4">
@@ -169,9 +176,8 @@ export default {
         const userId = userStore.userId;
 
         if (!userId) throw new Error("Provider ID not found");
-
-        // Fetch products based on provider ID
-        const route = `http://127.0.0.1:3000/products?provider=${userId}`;
+      
+        const route = `http://127.0.0.1:3000/providers/${userId}/products`;
         const response = await fetch(route);
         if (!response.ok) throw new Error("Error fetching products");
 
@@ -189,6 +195,7 @@ export default {
         const userId = userStore.userId;
 
         if (!userId) throw new Error("Provider ID not found");
+        this.product.keywords = this.product.keywords.split(",").map((keyword) => keyword.trim());
 
         if (this.originalProduct) {
           // Update an existing product
@@ -199,7 +206,7 @@ export default {
             const response = await fetch(route, {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ ...this.product, images: "prueba.jpg" }),
+              body: JSON.stringify({ ...this.product}),
             });
             if (!response.ok) throw new Error("Error updating product");
             const updatedProduct = await response.json();
@@ -262,6 +269,20 @@ export default {
     // Method to delete a product
     async deleteProduct(productId) {
       try {
+        const userStore = useUserStore();
+        const userId = userStore.userId;
+
+        if (!userId) throw new Error("User ID not found");
+
+        // Unlink the product from the provider
+        const Response = await fetch(`http://localhost:3000/providers/${userId}/removeProduct`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ productId }),
+        });
+
+        if (!Response.ok) throw new Error(`Error unlinking product from provider`);
+
         // Send a DELETE request to remove the product
         const route = `http://127.0.0.1:3000/products/${productId}`;
         const response = await fetch(route, { method: "DELETE" });

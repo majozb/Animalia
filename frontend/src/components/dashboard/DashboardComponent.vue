@@ -44,27 +44,27 @@
           </v-list-item>
           <v-list-item v-if="userType === 'admin'" class="menu-item">
             <v-list-item-title @click="switchComponent('AddPurchaser')">
-              Añadir Comprador
+              Compradores
             </v-list-item-title>
           </v-list-item>
           <v-list-item v-if="userType === 'admin'" class="menu-item">
             <v-list-item-title @click="switchComponent('AddPet')">
-              Añadir Mascota
+              Mascotas
             </v-list-item-title>
           </v-list-item>
           <v-list-item v-if="userType === 'purchaser'" class="menu-item">
             <v-list-item-title @click="switchComponent('AddPet')">
-              Añadir Mascota
+              Mascotas
             </v-list-item-title>
           </v-list-item>
           <v-list-item v-if="userType === 'admin'" class="menu-item">
             <v-list-item-title @click="switchComponent('AddProvider')">
-              Añadir Proveedor
+              Proveedores
             </v-list-item-title>
           </v-list-item>
           <v-list-item v-if="userType === 'provider'" class="menu-item">
             <v-list-item-title @click="switchComponent('AddProduct')">
-              Añadir Producto
+              Productos
             </v-list-item-title>
           </v-list-item>
           <v-list-item @click="signOut" class="menu-item">
@@ -242,7 +242,7 @@ export default {
 }
 
 .menu-list .menu-item:hover {
-  background-color: #F7DBA7;
+  background-color: white;
   color: #003459;
 }
 

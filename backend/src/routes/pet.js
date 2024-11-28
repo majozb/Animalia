@@ -21,6 +21,7 @@ petRouter.get('/pets', async (req, res) => {
   }
 });
 
+// GET /adoptionpets
 petRouter.get('/adoptionpets', async (req, res) => {
   try {
     const admins = await Admin.find().populate('pets');
@@ -28,7 +29,7 @@ petRouter.get('/adoptionpets', async (req, res) => {
       return res.status(404).send({ error: 'No admins found' });
     }
 
-    // Combina las mascotas de todos los administradores
+    // Combine all pets from all admins
     let pets = admins.flatMap((admin) => admin.pets);
 
     const selectedSpecies = req.query.selectedSpecies ? req.query.selectedSpecies.split(',') : [];
@@ -86,8 +87,6 @@ petRouter.post('/pets', upload.single('image'), async (req, res) => {
       stream.end(req.file.buffer); // Send the image buffer to the stream
     });
 
-    // console.log('Cloudinary image URL:', uploadResult.secure_url);
-
     // Update the pet with the image URL
     pet.images = [uploadResult.secure_url];
     await pet.save();
@@ -125,31 +124,3 @@ petRouter.delete('/pets/:id', async (req, res) => {
     res.status(400).send({ error: error.message });
   }
 });
-
-
-async function uploadImageToCloudinary(images, petId) {
-  try {
-    const formData = new FormData();
-    formData.append('file', images);
-    formData.append('upload_preset', 'Animalia'); // Tu preset de Cloudinary
-    formData.append('crop', 'thumb'); // Recortar la imagen al tamaño solicitado
-    formData.append('width', 500);     // Ancho máximo
-    formData.append('height', 500);    // Alto máximo
-    formData.append('gravity', 'center'); // Asegura que el recorte sea centrado
-
-    const publicId = `pets/${petId}`;  // Carpeta /pets/id_pet.jpg
-    formData.append('public_id', publicId);
-
-    // Enviar la imagen a Cloudinary
-    const response = await fetch('https://api.cloudinary.com/v1_1/dny9olxtv/image/upload', {
-      method: 'POST',
-      body: formData,
-    });
-    const data = await response.json();
-    return data.secure_url;
-
-  } catch (error) {
-    console.error('Error uploading image to Cloudinary:', error);
-    throw new Error('Failed to upload image');
-  }
-}

@@ -96,8 +96,8 @@ export default {
       },
       imageToUpload: null,  // Image to upload
       pets: [],       // Array to hold the list of pets
-      vaccinesOptions: ["Rabies", "Parvovirus", "Distemper", "Hepatitis"], // Vaccine options
-      medicationOptions: ["Antibiotics", "Dewormers", "Painkillers"], // Medication options
+      vaccinesOptions: ["Rabia", "Parvovirus", "Distemper", "Hepatitis", "Moquillo"], // Vaccine options
+      medicationOptions: ["Antibióticos", "Desparasitarios", "Analgésicos"], // Medication options
       originalPet: null,  // Original pet data for editing
       datePicker: false,  // Flag for date picker
       tableHeaders: [     // Table headers for displaying pets
@@ -124,17 +124,18 @@ export default {
       try {
         const userStore = useUserStore();
         const userId = userStore.userId;
+        const userType = userStore.userType;
 
         if (!userId) throw new Error("User ID not found");
 
-        // Fetch purchaser data by userId
-        const route = `http://127.0.0.1:3000/purchasers/${userId}`;
-        const purchaserResponse = await fetch(route);
-        if (!purchaserResponse.ok) throw new Error("Error fetching purchaser");
+        // Fetch user data by userId
+        const route = `http://localhost:3000/${userType}s/${userId}`;
+        const Response = await fetch(route);
+        if (!Response.ok) throw new Error(`Error fetching ${userType} data`);
 
-        const purchaserData = await purchaserResponse.json();
+        const Data = await Response.json();
 
-        const petIds = purchaserData.pets || []; // Get pet IDs from purchaser data
+        const petIds = Data.pets || []; // Get pet IDs from purchaser data
         if (!petIds.length) {
           this.pets = [];  // If no pets, set empty list
           return;
@@ -159,27 +160,41 @@ export default {
       try {
         const userStore = useUserStore();
         const userId = userStore.userId;
+        const userType = userStore.userType;
+        let flag = false;
 
         if (!userId) throw new Error("User ID not found");
 
+        if (this.originalPet && this.originalPet.birthDate) {
+          this.pet.birthDate = this.originalPet.birthDate.split('T')[0];
+        }
+
         if (this.originalPet) {
           const formData = new FormData();
-          formData.append('name', this.pet.name);
-          formData.append('description', this.pet.description);
-          formData.append('type', this.pet.type);
-          formData.append('breed', this.pet.breed);
-          formData.append('birthDate', this.pet.birthDate);
-          formData.append('genre', this.pet.genre);
-          formData.append('image', this.imageToUpload);
+          formData.append('name', this.pet.name || this.originalPet.name);
+          formData.append('description', this.pet.description || this.originalPet.description);
+          formData.append('type', this.pet.type || this.originalPet.type);
+          formData.append('breed', this.pet.breed || this.originalPet.breed);
+          formData.append('vaccines', JSON.stringify(this.pet.vaccines || this.originalPet.vaccines)); // Serializamos arrays
+          formData.append('birthDate', this.pet.birthDate || this.originalPet.birthDate);
+          formData.append('medication', JSON.stringify(this.pet.medication || this.originalPet.medication)); // Serializamos arrays
+          formData.append('genre', String(this.pet.genre || this.originalPet.genre)); // Convertimos a string
+          if (this.imageToUpload) formData.append('image', this.imageToUpload); // Verificamos si existe
+
 
           const response = await fetch(`http://localhost:3000/pets/${this.originalPet._id}`, {
             method: "PUT",
             body: formData,
           });
 
+          console.log("Response:", response);
+          console.log("Form data:", formData.getAll());
+          console.log("This original.pet:", this.originalPet);
+
           if (!response.ok) throw new Error("Error updating pet");
 
           const updatedPet = await response.json();
+          console.log("Updated pet:", updatedPet);
           const index = this.pets.findIndex((p) => p._id === updatedPet._id);
           if (index !== -1) this.pets.splice(index, 1, updatedPet);
           this.reset();
@@ -190,21 +205,23 @@ export default {
           formData.append('description', this.pet.description);
           formData.append('type', this.pet.type);
           formData.append('breed', this.pet.breed);
+          formData.append('vaccines', this.pet.vaccines);
           formData.append('birthDate', this.pet.birthDate);
+          formData.append('medication', this.pet.medication);
           formData.append('genre', this.pet.genre);
           formData.append('image', this.imageToUpload);
-          
+
           const response = await fetch('http://localhost:3000/pets', {
             method: "POST",
             body: formData,
           });
 
           if (!response.ok) {
-            console.log("Response:", response);
             throw new Error("Error adding pet");
           }
           const newPet = await response.json();
-          await fetch(`http://127.0.0.1:3000/purchasers/${userId}`, {
+          flag = true;
+          await fetch(`http://127.0.0.1:3000/${userType}s/${userId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ petId: newPet._id }),
@@ -214,6 +231,13 @@ export default {
           this.reset();
         }
       } catch (error) {
+        // if (flag) {
+        //   this.pets.pop();
+        //   // Deleting the pet from the database
+        //   await fetch(`http://127.0.0.1:3000/pets/${this.pet._id}`, { method: "DELETE" });
+        //   // Remove the image from the server
+
+        // }
         console.error("Error adding pet:", error);
       }
     },
@@ -221,23 +245,27 @@ export default {
     async editPet(pet) {
       this.pet = { ...pet };
       this.originalPet = { ...pet };
+      if (this.pet.birthDate) {
+        this.pet.birthDate = this.pet.birthDate.split('T')[0]; // Formatting the date
+      }
     },
     // Method to delete a pet
     async deletePet(petId) {
       try {
         const userStore = useUserStore();
         const userId = userStore.userId;
+        const userType = userStore.userType;
 
         if (!userId) throw new Error("User ID not found");
 
-        // Unlink the pet from the purchaser
-        const purchaserResponse = await fetch(`http://127.0.0.1:3000/purchasers/${userId}/removePet`, {
+        // Unlink the pet from the user
+        const Response = await fetch(`http://127.0.0.1:3000/${userType}s/${userId}/removePet`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ petId }),
         });
 
-        if (!purchaserResponse.ok) throw new Error("Error unlinking pet from purchaser");
+        if (!Response.ok) throw new Error(`Error unlinking pet from ${userType}`);
 
         // Delete the pet from the database
         const response = await fetch(`http://127.0.0.1:3000/pets/${petId}`, { method: "DELETE" });

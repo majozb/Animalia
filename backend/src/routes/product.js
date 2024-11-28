@@ -87,21 +87,45 @@ productRouter.get('/products/:id', async (req, res) => {
 });
 
 // (PUT) /products/:id
-productRouter.put('/products/:id', async (req, res) => { 
-  const updates = Object.keys(req.body); 
-  const allowedUpdates = ['name', 'weight', 'stock', 'description', 'price', 'keywords', 'provider', 'dimensions', 'images']; 
-  const isValidOperation = updates.every((update) => allowedUpdates.includes(update)); 
-  
-  if (!isValidOperation) { return res.status(400).send({ error: 'Actualización no permitida' }); } 
-  
-  try { 
-    const product = await Product.findById(req.params.id); 
-    if (!product) { return res.status(404).send(); } 
-    
-    updates.forEach((update) => product[update] = req.body[update]); 
-    await product.save(); 
-    res.send(product); 
-  } catch (e) { res.status(400).send(e); } 
+productRouter.put('/products/:id', upload.single('image'), async (req, res) => {
+  req.body.dimensions = req.body.dimensions.split(',').map(Number);
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ['name', 'weight', 'stock', 'description', 'price', 'keywords', 'provider', 'dimensions', 'images'];
+  const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+
+  if (!isValidOperation) { return res.status(400).send({ error: 'Actualización no permitida' }); }
+
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) { return res.status(404).send(); }
+
+    if (req.file) {
+      const uploadResult = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: `products/${product._id}` }, // Directory in Cloudinary
+          (error, result) => {
+            if (error) {
+              console.error('Cloudinary upload error:', error);
+              reject(error);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+        stream.end(req.file.buffer); // Send the image buffer to the stream
+      });
+      // Update the product with the image URL
+      product.images = [uploadResult.secure_url];
+    }
+    updates.forEach((update) => {
+      if (update !== 'images') {
+        product[update] = req.body[update];  
+      }
+    });
+
+    await product.save();
+    res.send(product);
+  } catch (e) { res.status(400).send(e); }
 });
 
 // (DELETE) /products/:id
