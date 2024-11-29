@@ -23,7 +23,6 @@ signUpRouter.post('/signUp', async (req, res) => {
       email,
       phone
     });
-    console.log(newPurchaser);
     // Save the new purchaser in the database
     await newPurchaser.save();
 
