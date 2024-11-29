@@ -8,84 +8,42 @@
         <!-- Form for adding a new product -->
         <v-form ref="form" v-model="valid">
           <!-- Product name input field with validation -->
-          <v-text-field
-            v-model="product.name"
-            :rules="[v => !!v || 'Name is required']"
-            label="Product Name"
-            required
-          ></v-text-field>
+          <v-text-field v-model="product.name" :rules="[v => !!v || 'Name is required']" label="Product Name"
+            required></v-text-field>
 
           <!-- Product description input field -->
-          <v-textarea
-            v-model="product.description"
-            label="Description"
-            rows="3"
-          ></v-textarea>
+          <v-textarea v-model="product.description" label="Description" rows="3"></v-textarea>
 
           <!-- Product weight input field with validation -->
-          <v-text-field
-            v-model="product.weight"
-            :rules="[v => !!v || 'Weight is required']"
-            label="Weight"
-            type="number"
-            required
-          ></v-text-field>
+          <v-text-field v-model="product.weight" :rules="[v => !!v || 'Weight is required']" label="Weight"
+            type="number" required></v-text-field>
 
           <!-- Product stock input field with validation -->
-          <v-text-field
-            v-model="product.stock"
-            :rules="[v => !!v || 'Stock is required']"
-            label="Stock"
-            type="number"
-            required
-          ></v-text-field>
+          <v-text-field v-model="product.stock" :rules="[v => !!v || 'Stock is required']" label="Stock" type="number"
+            required></v-text-field>
 
           <!-- Product price input field with validation -->
-          <v-text-field
-            v-model="product.price"
-            :rules="[v => !!v || 'Price is required']"
-            label="Price"
-            type="number"
-            required
-          ></v-text-field>
+          <v-text-field v-model="product.price" :rules="[v => !!v || 'Price is required']" label="Price" type="number"
+            required></v-text-field>
 
           <!-- Product keywords input field -->
-          <v-text-field
-            v-model="product.keywords"
-            label="Keywords"
-            hint="Separate keywords with commas"
-          ></v-text-field>
+          <v-text-field v-model="product.keywords" label="Keywords" hint="Separate keywords with commas"></v-text-field>
 
           <!-- Input fields for product dimensions -->
           <v-row>
             <v-col cols="4">
-              <v-text-field
-                v-model="product.dimensions[0]"
-                :rules="[v => !!v || 'Length is required']"
-                label="Length"
-                type="number"
-                required
-              ></v-text-field>
+              <v-text-field v-model="product.dimensions[0]" :rules="[v => !!v || 'Length is required']" label="Length"
+                type="number" required></v-text-field>
             </v-col>
 
             <v-col cols="4">
-              <v-text-field
-                v-model="product.dimensions[1]"
-                :rules="[v => !!v || 'Width is required']"
-                label="Width"
-                type="number"
-                required
-              ></v-text-field>
+              <v-text-field v-model="product.dimensions[1]" :rules="[v => !!v || 'Width is required']" label="Width"
+                type="number" required></v-text-field>
             </v-col>
 
             <v-col cols="4">
-              <v-text-field
-                v-model="product.dimensions[2]"
-                :rules="[v => !!v || 'Height is required']"
-                label="Height"
-                type="number"
-                required
-              ></v-text-field>
+              <v-text-field v-model="product.dimensions[2]" :rules="[v => !!v || 'Height is required']" label="Height"
+                type="number" required></v-text-field>
             </v-col>
           </v-row>
 
@@ -101,12 +59,7 @@
       <!-- Section for displaying the list of products -->
       <v-col cols="12" md="6">
         <h2>Lista de Productos</h2>
-        <v-data-table
-          :headers="tableHeaders"
-          :items="products"
-          item-value="_id"
-          class="elevation-1"
-        >
+        <v-data-table :headers="tableHeaders" :items="products" item-value="_id" class="elevation-1">
           <!-- Toolbar section with title -->
           <template v-slot:top>
             <v-toolbar flat>
@@ -176,7 +129,7 @@ export default {
         const userId = userStore.userId;
 
         if (!userId) throw new Error("Provider ID not found");
-      
+
         const route = `http://127.0.0.1:3000/providers/${userId}/products`;
         const response = await fetch(route);
         if (!response.ok) throw new Error("Error fetching products");
@@ -187,7 +140,7 @@ export default {
         console.error("Error loading products:", error);
       }
     },
-    
+
     // Method to submit the form and add a new product
     async submit() {
       try {
@@ -195,7 +148,9 @@ export default {
         const userId = userStore.userId;
 
         if (!userId) throw new Error("Provider ID not found");
-        this.product.keywords = this.product.keywords.split(",").map((keyword) => keyword.trim());
+        this.product.keywords = Array.isArray(this.product.keywords)
+          ? this.product.keywords // If keywords are already an array, use them as is
+          : this.product.keywords.split(",").map((keyword) => keyword.trim());
 
         if (this.originalProduct) {
           // Update an existing product
@@ -206,7 +161,7 @@ export default {
             const response = await fetch(route, {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ ...this.product}),
+              body: JSON.stringify({ ...this.product }),
             });
             if (!response.ok) throw new Error("Error updating product");
             const updatedProduct = await response.json();
@@ -330,12 +285,13 @@ export default {
 /* Styling for the data table container */
 .v-data-table {
   overflow-x: auto;
-  background-color: white; /* Light yellow background */
+  background-color: white;
 }
 
 /* Styling for the toolbar */
 .v-toolbar {
-  background-color: #003459;  /* Dark blue background */
-  color: white;  /* Light yellow text */
+  background-color: #003459;
+  /* Dark blue background */
+  color: white;
 }
 </style>

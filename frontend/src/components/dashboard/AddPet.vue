@@ -8,38 +8,38 @@
         <!-- Form for adding a new pet -->
         <v-form ref="form" v-model="valid">
           <!-- Pet name input field with validation -->
-          <v-text-field v-model="pet.name" :rules="[v => !!v || 'Name is required']" label="Pet Name"
+          <v-text-field v-model="pet.name" :rules="[v => !!v || 'Nombre']" label="Nombre de la mascota"
             required></v-text-field>
 
           <!-- Pet description input field -->
-          <v-textarea v-model="pet.description" label="Description" rows="3"></v-textarea>
+          <v-textarea v-model="pet.description" label="Descripción" rows="3"></v-textarea>
 
           <!-- Pet type input field with validation -->
-          <v-text-field v-model="pet.type" :rules="[v => !!v || 'Type is required']" label="Pet Type"
+          <v-text-field v-model="pet.type" :rules="[v => !!v || 'Tipo es requerido']" label="Tipo de mascota"
             required></v-text-field>
 
           <!-- Pet breed input field with validation -->
-          <v-text-field v-model="pet.breed" :rules="[v => !!v || 'Breed is required']" label="Breed"
+          <v-text-field v-model="pet.breed" :rules="[v => !!v || 'Raza']" label="Raza de la mascota"
             required></v-text-field>
 
           <!-- Combobox for selecting multiple vaccines -->
-          <v-combobox v-model="pet.vaccines" :items="vaccinesOptions" label="Vaccines" multiple></v-combobox>
+          <v-combobox v-model="pet.vaccines" :items="vaccinesOptions" label="Vacunas" multiple></v-combobox>
 
           <!-- Combobox for selecting multiple medications -->
-          <v-combobox v-model="pet.medication" :items="medicationOptions" label="Medications" multiple></v-combobox>
+          <v-combobox v-model="pet.medication" :items="medicationOptions" label="Medicaciones" multiple></v-combobox>
 
           <!-- Pet birth date input field -->
-          <v-text-field v-model="pet.birthDate" label="Birth Date" :rules="[v => !!v || 'Birth date is required']"
+          <v-text-field v-model="pet.birthDate" label="Fecha de nacimiento" :rules="[v => !!v || 'Fecha de nacimiento es requerida']"
             type="date"></v-text-field>
 
           <!-- Radio buttons for selecting pet gender -->
-          <v-radio-group v-model="pet.genre" :rules="[v => v !== null || 'Gender is required']" label="Gender" row>
-            <v-radio label="Female" :value="true"></v-radio>
-            <v-radio label="Male" :value="false"></v-radio>
+          <v-radio-group v-model="pet.genre" :rules="[v => v !== null || 'Género es requerido']" label="Género" row>
+            <v-radio label="Hembra" :value="true"></v-radio>
+            <v-radio label="Macho" :value="false"></v-radio>
           </v-radio-group>
 
           <!-- Field to upload pet image -->
-          <v-file-input v-model="imageToUpload" label="Upload Pet Image" accept="image/*" required></v-file-input>
+          <v-file-input v-model="imageToUpload" label="Subir imagen de la mascota" accept="image/*" required></v-file-input>
 
           <!-- Button to submit the form -->
           <v-btn color="primary" @click="submit">Añadir mascota</v-btn>
@@ -101,16 +101,15 @@ export default {
       originalPet: null,  // Original pet data for editing
       datePicker: false,  // Flag for date picker
       tableHeaders: [     // Table headers for displaying pets
-        { title: "Name", key: "name" },
-        { title: "Type", key: "type" },
-        { title: "Breed", key: "breed" },
-        { title: "Vaccines", key: "vaccines" },
-        { title: "Birth Date", key: "birthDate" },
-        { title: "Gender", key: "genre" },
-        { title: "Medications", key: "medication" },
-        { title: "Images", key: "images" },
-        { title: "Gender", key: "genre" },
-        { title: "Actions", key: "actions", sortable: false },
+        { title: "Nombre", key: "name" },
+        { title: "Tipo", key: "type" },
+        { title: "Raza", key: "breed" },
+        { title: "Vacunas", key: "vaccines" },
+        { title: "Fecha de nacimiento", key: "birthDate" },
+        { title: "Género", key: "genre" },
+        { title: "Medicaciones", key: "medication" },
+        { title: "Imágenes", key: "images" },
+        { title: "Acciones", key: "actions", sortable: false },
       ],
     };
   },
@@ -170,21 +169,22 @@ export default {
         }
 
         if (this.originalPet) {
-          const formData = new FormData();
-          formData.append('name', this.pet.name || this.originalPet.name);
-          formData.append('description', this.pet.description || this.originalPet.description);
-          formData.append('type', this.pet.type || this.originalPet.type);
-          formData.append('breed', this.pet.breed || this.originalPet.breed);
-          formData.append('vaccines', JSON.stringify(this.pet.vaccines || this.originalPet.vaccines)); // Serializamos arrays
-          formData.append('birthDate', this.pet.birthDate || this.originalPet.birthDate);
-          formData.append('medication', JSON.stringify(this.pet.medication || this.originalPet.medication)); // Serializamos arrays
-          formData.append('genre', String(this.pet.genre || this.originalPet.genre)); // Convertimos a string
-          if (this.imageToUpload) formData.append('image', this.imageToUpload); // Verificamos si existe
+          // const formData = new FormData();
+          // formData.append('name', this.pet.name || this.originalPet.name);
+          // formData.append('description', this.pet.description || this.originalPet.description);
+          // formData.append('type', this.pet.type || this.originalPet.type);
+          // formData.append('breed', this.pet.breed || this.originalPet.breed);
+          // formData.append('vaccines', JSON.stringify(this.pet.vaccines || this.originalPet.vaccines)); // Serializamos arrays
+          // formData.append('birthDate', this.pet.birthDate || this.originalPet.birthDate);
+          // formData.append('medication', JSON.stringify(this.pet.medication || this.originalPet.medication)); // Serializamos arrays
+          // formData.append('genre', String(this.pet.genre || this.originalPet.genre)); // Convertimos a string
+          // if (this.imageToUpload) formData.append('image', this.imageToUpload); // Verificamos si existe
 
 
           const response = await fetch(`http://localhost:3000/pets/${this.originalPet._id}`, {
             method: "PUT",
-            body: formData,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(this.pet),
           });
 
           console.log("Response:", response);
