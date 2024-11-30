@@ -44,12 +44,24 @@ const MODEL_DATA = [
                   <td class="text-body-1" v-else-if="field.key === 'dimensions'">-</td>
                   <td class="text-body-1" v-else-if="field.key === 'weight'">{{ productData[field.key] ?
                     productData[field.key] + ' kg' : '-' }}</td>
-                  <td class="text-body-1" v-else-if="field.key === 'price'">{{ productData[field.key] + ' €'}}</td>
+                  <td class="text-body-1" v-else-if="field.key === 'price'">{{ productData[field.key] + ' €' }}</td>
                   <td class="text-body-1" v-else>{{ productData[field.key] }}</td>
                 </tr>
               </tbody>
             </v-table>
           </v-card>
+          <v-btn v-if="userType === 'purchaser'" class="red-button" @click="addToWishlist" outlined>
+            <v-icon left>mdi-heart-outline</v-icon>
+            AÑADIR A LA LISTA DE DESEADOS
+            <!-- <v-icon left>mdi-heart-outline</v-icon> -->
+          </v-btn>
+          <!-- Snackbar para mostrar el mensaje -->
+          <v-snackbar v-model="snackbar" :timeout="3000" color="info" absolute class="snackbar">
+            {{ snackbarMessage }}
+            <template #actions>
+              <v-btn text @click="snackbar = false">Cerrar</v-btn>
+            </template>
+          </v-snackbar>
         </v-col>
       </v-row>
       <!-- See More Animals -->
@@ -66,6 +78,8 @@ const MODEL_DATA = [
 </template>
 
 <script>
+import { useUserStore } from "@/stores/userStore"; // Imports the user store
+
 export default {
   data() {
     return {
@@ -75,14 +89,59 @@ export default {
         { title: 'Inicio', disabled: false, href: '/' },
         { title: 'Productos', disabled: false, href: '/products' },
         { title: `${this.$route.params.id}`, disabled: true, href: `/products/${this.$route.params.id}` },
-      ]
+      ],
+      snackbar: false,
+      snackbarMessage: '',
     };
   },
   mounted() {
     this.fetchCurrentProduct();
     this.fetchProducts();
   },
+  computed: {
+    userType() {
+      return useUserStore().userType;
+    },
+  },
   methods: {
+    async addToWishlist() {
+      try {
+        const resonse = await fetch(`http://127.0.0.1:3000/purchasers/${useUserStore().userId}`);
+        if (!resonse.ok) {
+          console.error('There was a problem fetching the purchaser:', resonse);
+          return;
+        }
+
+        const userData = await resonse.json();
+
+        const currentWishlist = Array.isArray(userData.wishlist)
+          ? userData.wishlist
+          : [];
+
+        if (currentWishlist.includes(this.productData._id)) {
+          this.snackbarMessage = "El producto ya está en la lista de deseos.";
+          this.snackbar = true;
+          return;
+        }
+
+        const updatedWishlist = [...currentWishlist, this.productData._id];
+
+        const response = await fetch(`http://127.0.0.1:3000/purchasers/${useUserStore().userId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            wishlist: updatedWishlist,
+          }),
+        });
+        if (!response.ok) {
+          console.error('There was a problem adding the product to the wishlist:', response);
+        }
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+      }
+    },
     async fetchCurrentProduct() {
       try {
         const route = `http://127.0.0.1:3000/products/${this.$route.params.id}`;
@@ -115,6 +174,29 @@ export default {
 </script>
 
 <style scoped>
+.snackbar {
+  top: 20px; 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  height: 80px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.red-button {
+  background-color: #003366;
+  color: white;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.red-button:hover {
+  background-color: #24527f;
+}
+
 .main-container {
   background-color: #fcfcfc;
 }
