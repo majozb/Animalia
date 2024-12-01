@@ -48,7 +48,27 @@
           </v-row>
 
           <!-- Field to upload product image -->
-          <v-file-input v-model="imageToUpload" label="Upload Product Image" accept="image/*" required></v-file-input>
+
+          <!-- Preview images to upload in list of cards with options to delete -->
+          <v-card>
+            <v-card-title>Imágenes del producto</v-card-title>
+            <v-card-text>
+              <v-row>
+                <v-col v-for="(image, index) in previewImages" :key="index" cols="6" xs="3" sm="2" md="3" lg="2" xl="2">
+                  <v-card>
+                    <v-img :src=image aspect-ratio="1"></v-img>
+                    <v-card-actions>
+                      <v-btn icon @click="deleteImage(index)">
+                        <v-icon>mdi-close</v-icon>
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+          <v-file-input label="Upload Product Image" accept="image/*" multiple required
+            @change="addImageFiles"></v-file-input>
 
           <!-- Buttons to submit or reset the form -->
           <v-btn color="primary" @click="submit">Añadir</v-btn>
@@ -101,7 +121,8 @@ export default {
         images: [],
         keywords: []
       },
-      imageToUpload: null, // Image file to upload
+      imagesToUpload: [], // Image file to upload
+      previewImages: [],  // Preview images to display
       products: [], // Array to hold the list of products
       tableHeaders: [  // Table headers for displaying products
         { title: "Name", key: "name" },
@@ -157,11 +178,27 @@ export default {
           delete this.product._id;  // Remove the _id field
           delete this.product.__v;  // Remove the __v field
           if (this.isProductModified()) {
-            const route = `http://127.0.0.1:3000/products/${this.originalProduct._id}`;
+            const route = `http://localhost:3000/products/${this.originalProduct._id}`;
+            // Create FormData object
+            const formData = new FormData();
+            formData.append('name', this.product.name);
+            formData.append('weight', this.product.weight);
+            formData.append('stock', this.product.stock);
+            formData.append('description', this.product.description);
+            formData.append('price', this.product.price);
+            formData.append('dimensions', JSON.stringify(this.product.dimensions));
+            formData.append('keywords', JSON.stringify(this.product.keywords));
+
+            // Append images if any
+            if (this.imagesToUpload && this.imagesToUpload.length > 0) {
+              this.imagesToUpload.forEach((file) => {
+                formData.append('images', file);
+              });
+            }
+
             const response = await fetch(route, {
               method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ ...this.product }),
+              body: formData,
             });
             if (!response.ok) throw new Error("Error updating product");
             const updatedProduct = await response.json();
@@ -177,8 +214,8 @@ export default {
           }
         } else {
           // Create a new product
-          if (!this.imageToUpload) {
-            throw new Error("Image is required");
+          if (!this.imagesToUpload) {
+            throw new Error("At least 1 image is required");
           }
           this.product.dimensions = this.product.dimensions.map(Number);
           const formData = new FormData();
@@ -189,7 +226,10 @@ export default {
           formData.append('price', this.product.price);
           formData.append('keywords', this.product.keywords);
           formData.append('dimensions', this.product.dimensions);
-          formData.append('image', this.imageToUpload);
+          // Añadir cada imagen individualmente al FormData
+          this.imagesToUpload.forEach((file) => {
+            formData.append('images', file);
+          });
 
           const response = await fetch('http://localhost:3000/products', {
             method: "POST",
@@ -216,8 +256,30 @@ export default {
     async editProduct(product) {
       this.product = { ...product };  // Pre-fill the form with product data
       this.originalProduct = { ...product };  // Save the original product data
+      if (product.images && product.images.length > 0) {
+        try {
+          // Descarga las imágenes y las convierte en archivos
+          const imageFiles = await this.fetchImagesAsFiles(product.images);
+          this.imagesToUpload = [...imageFiles];
+          this.generatePreviewImages();
+        } catch (error) {
+          console.error("Error fetching images:", error);
+        }
+      }
     },
 
+    async fetchImagesAsFiles(imageUrls) {
+      const promises = imageUrls.map(async (url) => {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Error fetching image from ${url}`);
+
+        const blob = await response.blob();
+        const filename = url.split("/").pop(); // Extraer el nombre del archivo de la URL
+        return new File([blob], filename || "image.jpg", { type: blob.type });
+      });
+
+      return Promise.all(promises);
+    },
     isProductModified() {
       return JSON.stringify(this.product) !== JSON.stringify(this.originalProduct);
     },
@@ -249,6 +311,28 @@ export default {
         console.error("Error deleting product:", error);
       }
     },
+    addImageFiles(event) {
+      const newFiles = Array.from(event.target.files);
+      this.imagesToUpload = [...this.imagesToUpload, ...newFiles];
+      this.generatePreviewImages();
+    },
+    deleteImage(index) {
+      this.imagesToUpload.splice(index, 1);
+      this.generatePreviewImages();
+    },
+    generatePreviewImages() {
+      // Limpia las URLs existentes para evitar fugas de memoria
+      this.clearPreviewImages();
+
+      // Crea nuevas URLs para los archivos seleccionados
+      this.previewImages = this.imagesToUpload.map((file) =>
+        URL.createObjectURL(file)
+      );
+    },
+    clearPreviewImages() {
+      this.previewImages.forEach((url) => URL.revokeObjectURL(url));
+      this.previewImages = [];
+    },
 
     // Method to reset the form to its initial state
     reset() {
@@ -261,8 +345,13 @@ export default {
         price: 0,
         dimensions: [0, 0, 0],  // Reset dimensions
       };
+      this.clearPreviewImages();
       this.originalProduct = null;  // Reset original product data
     },
+  },
+  beforeDestroy() {
+    // Limpia las URLs de previsualización al destruir el componente
+    this.clearPreviewImages();
   },
 };
 </script>

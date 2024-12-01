@@ -11,36 +11,47 @@ const upload = multer({
 });
 
 // (POST) /products
-productRouter.post('/products', upload.single('image'), async (req, res) => {
+productRouter.post('/products', upload.array('images'), async (req, res) => {
   try {
+    // Procesar las dimensiones
     req.body.dimensions = req.body.dimensions.split(',').map(Number);
+
+    // Crear y guardar el producto inicial para obtener el _id
     const product = new Product(req.body);
     await product.save();
 
-    if (!req.file) {
-      console.error('No image uploaded');
-      return res.status(400).send({ error: 'Image is required' });
+    // Verificar que se hayan subido imágenes
+    console.log('req.files', req.files);
+    if (!req.files || req.files.length === 0) {
+      console.error('No images uploaded');
+      return res.status(400).send({ error: 'At least one image is required' });
     }
 
-    const uploadResult = await new Promise((resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(
-        { folder: `products/${product._id}` }, // Directory in Cloudinary
-        (error, result) => {
-          if (error) {
-            console.error('Cloudinary upload error:', error);
-            reject(error);
-          } else {
-            resolve(result);
+    // Subir cada imagen a Cloudinary y obtener las URLs
+    const imageUploadPromises = req.files.map((file) => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: `products/${product._id}` },
+          (error, result) => {
+            if (error) {
+              console.error('Cloudinary upload error:', error);
+              reject(error);
+            } else {
+              resolve(result.secure_url);
+            }
           }
-        }
-      );
-      stream.end(req.file.buffer); // Send the image buffer to the stream
+        );
+        stream.end(file.buffer);
+      });
     });
 
-    // Update the product with the image URL
-    product.images = [uploadResult.secure_url];
+    const imageUrls = await Promise.all(imageUploadPromises);
+
+    // Actualizar el producto con las URLs de las imágenes
+    product.images = imageUrls;
     await product.save();
 
+    // Enviar la respuesta exitosa
     res.status(201).send(product);
   } catch (e) {
     res.status(400).send(e);
@@ -87,64 +98,119 @@ productRouter.get('/products/:id', async (req, res) => {
 });
 
 // (PUT) /products/:id
-productRouter.put('/products/:id', upload.single('image'), async (req, res) => {
+// (PUT) /products/:id
+productRouter.put('/products/:id', upload.array('images', 10), async (req, res) => {
+  // Parse dimensions and keywords if they are JSON strings
   if (req.body.dimensions) {
-    req.body.dimensions = Array.isArray(req.body.dimensions)
-          ? req.body.dimensions // If it's already an array, leave it as is
-          : req.body.dimensions.split(",").map((dimensions) => dimensions.trim());
+    req.body.dimensions = JSON.parse(req.body.dimensions);
   }
+  if (req.body.keywords) {
+    req.body.keywords = JSON.parse(req.body.keywords);
+  }
+
   const updates = Object.keys(req.body);
   const allowedUpdates = ['name', 'weight', 'stock', 'description', 'price', 'keywords', 'provider', 'dimensions'];
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
 
-  if (!isValidOperation) { return res.status(400).send({ error: 'Actualización no permitida' }); }
+  if (!isValidOperation) {
+    return res.status(400).send({ error: 'Actualización no permitida' });
+  }
 
   try {
     const product = await Product.findById(req.params.id);
     if (!product) { return res.status(404).send(); }
 
-    console.log("req.file", req.file);
-    console.log("req.body", req.body);
-    console.log("images", product.images);
+    const folderPath = `products/${product._id}`;
 
-    // if (req.file) {
-    //   const uploadResult = await new Promise((resolve, reject) => {
-    //     const stream = cloudinary.uploader.upload_stream(
-    //       { folder: `products/${product._id}` }, // Directory in Cloudinary
-    //       (error, result) => {
-    //         if (error) {
-    //           console.error('Cloudinary upload error:', error);
-    //           reject(error);
-    //         } else {
-    //           resolve(result);
-    //         }
-    //       }
-    //     );
-    //     stream.end(req.file.buffer); // Send the image buffer to the stream
-    //   });
-    //   // Update the product with the image URL
-    //   product.images = [uploadResult.secure_url];
-    // }
+    // Check if new images are provided
+    if (req.files && req.files.length > 0) {
+      // Delete existing images
+      const existingResources = await cloudinary.api.resources({
+        type: 'upload',
+        prefix: folderPath,
+        max_results: 500,
+      });
+
+      const publicIds = existingResources.resources.map(resource => resource.public_id);
+
+      if (publicIds.length > 0) {
+        await cloudinary.api.delete_resources(publicIds);
+      }
+
+      // Optionally delete the empty folder
+      await cloudinary.api.delete_folder(folderPath);
+
+      // Upload new images
+      const imageUploadPromises = req.files.map((file) => {
+        return new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            { folder: folderPath },
+            (error, result) => {
+              if (error) {
+                console.error('Cloudinary upload error:', error);
+                reject(error);
+              } else {
+                resolve(result.secure_url);
+              }
+            }
+          );
+          stream.end(file.buffer);
+        });
+      });
+
+      const imageUrls = await Promise.all(imageUploadPromises);
+      product.images = imageUrls;
+    }
+
+    // Update allowed fields
     updates.forEach((update) => {
       if (update !== 'images') {
-        product[update] = req.body[update];  
+        product[update] = req.body[update];
       }
     });
 
     await product.save();
     res.send(product);
-  } catch (e) { res.status(400).send(e); }
+  } catch (e) {
+    res.status(400).send(e);
+  }
 });
+
 
 // (DELETE) /products/:id
 productRouter.delete('/products/:id', async (req, res) => {
   try {
+    // Buscar y eliminar el producto de la base de datos
     const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) {
       return res.status(404).send();
     }
+
+    // Ruta de la carpeta en Cloudinary donde se almacenan las imágenes del producto
+    const folderPath = `products/${product._id}`;
+
+    // Obtener todos los recursos (imágenes) en la carpeta del producto
+    const existingResources = await cloudinary.api.resources({
+      type: 'upload',
+      prefix: folderPath,
+      max_results: 500,
+    });
+
+    // Obtener los public_ids de las imágenes para poder eliminarlas
+    const publicIds = existingResources.resources.map((resource) => resource.public_id);
+
+    if (publicIds.length > 0) {
+      // Eliminar todas las imágenes en la carpeta
+      await cloudinary.api.delete_resources(publicIds);
+    }
+
+    // Eliminar la carpeta del producto en Cloudinary
+    await cloudinary.api.delete_folder(folderPath);
+
     res.send(product);
   } catch (e) {
+    console.error('Error al eliminar el producto:', e);
     res.status(400).send();
   }
 });
+
