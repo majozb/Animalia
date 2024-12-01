@@ -62,100 +62,100 @@ export default {
       categories: [
         {
           name: "Alimentación",
-          keywords: ["alimentación"],
+          keywords: ["alimentacion"],
           subcategories: [
             {
               name: "Perros",
-              keywords: ["perro", "alimentación"],
+              keywords: ["perro", "alimentacion"],
               subcategories: [
                 {
                   name: "Comida",
-                  keywords: ["perro", "comida", "alimentación"],
+                  keywords: ["perro", "comida", "alimentacion"],
                   subcategories: []
                 },
                 {
                   name: "Snacks",
-                  keywords: ["perro", "snack", "alimentación"],
+                  keywords: ["perro", "snack", "alimentacion"],
                   subcategories: []
                 },
               ]
             },
             {
               name: "Gatos",
-              keywords: ["gato", "alimentación"],
+              keywords: ["gato", "alimentacion"],
               subcategories: [
                 {
                   name: "Comida",
-                  keywords: ["gato", "comida", "alimentación"],
+                  keywords: ["gato", "comida", "alimentacion"],
                   subcategories: []
                 },
                 {
                   name: "Snacks",
-                  keywords: ["gato", "snack", "alimentación"],
+                  keywords: ["gato", "snack", "alimentacion"],
                   subcategories: []
                 },
               ]
             },
             {
               name: "Aves",
-              keywords: ["ave", "alimentación"],
+              keywords: ["ave", "alimentacion"],
               subcategories: [
                 {
                   name: "Comida",
-                  keywords: ["ave", "comida", "alimentación"],
+                  keywords: ["ave", "comida", "alimentacion"],
                   subcategories: []
                 },
                 {
                   name: "Snacks",
-                  keywords: ["ave", "snack", "alimentación"],
+                  keywords: ["ave", "snack", "alimentacion"],
                   subcategories: []
                 },
               ]
             },
             {
               name: "Reptiles",
-              keywords: ["reptil", "alimentación"],
+              keywords: ["reptil", "alimentacion"],
               subcategories: [
                 {
                   name: "Comida",
-                  keywords: ["reptil", "comida", "alimentación"],
+                  keywords: ["reptil", "comida", "alimentacion"],
                   subcategories: []
                 },
                 {
                   name: "Snacks",
-                  keywords: ["reptil", "snack", "alimentación"],
+                  keywords: ["reptil", "snack", "alimentacion"],
                   subcategories: []
                 },
               ]
             },
             {
               name: "Peces",
-              keywords: ["pez", "alimentación"],
+              keywords: ["pez", "alimentacion"],
               subcategories: [
                 {
                   name: "Comida",
-                  keywords: ["pez", "comida", "alimentación"],
+                  keywords: ["pez", "comida", "alimentacion"],
                   subcategories: []
                 },
                 {
                   name: "Snacks",
-                  keywords: ["pez", "snack", "alimentación"],
+                  keywords: ["pez", "snack", "alimentacion"],
                   subcategories: []
                 },
               ]
             },
             {
               name: "Conejos",
-              keywords: ["conejo", "alimentación"],
+              keywords: ["conejo", "alimentacion"],
               subcategories: [
                 {
                   name: "Comida",
-                  keywords: ["conejo", "comida", "alimentación"],
+                  keywords: ["conejo", "comida", "alimentacion"],
                   subcategories: []
                 },
                 {
                   name: "Snacks",
-                  keywords: ["conejo", "snack", "alimentación"],
+                  keywords: ["conejo", "snack", "alimentacion"],
                   subcategories: []
                 },
               ]
@@ -164,184 +164,179 @@ export default {
         },
         {
           name: "Accesorios",
-          keywords: ["accessorios"],
+          keywords: ["accesorio"],
           subcategories: [
             {
               name: "Perros",
-              keywords: ["perro", "accessorios"],
+              keywords: ["perro", "accesorio"],
               subcategories: [
                 {
                   name: "Comederos",
-                  keywords: ["perro", "comedero", "accessorios"],
+                  keywords: ["perro", "comedero", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Bebederos",
-                  keywords: ["perro", "bebedero", "accessorios"],
+                  keywords: ["perro", "bebedero", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Collares",
-                  keywords: ["perro", "collar", "accessorios"],
+                  keywords: ["perro", "collar", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Correas",
-                  keywords: ["perro", "correa", "accessorios"],
+                  keywords: ["perro", "correa", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Ropa",
-                  keywords: ["perro", "ropa", "accessorios"],
+                  keywords: ["perro", "ropa", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Juguetes",
-                  keywords: ["perro", "juguete", "accessorios"],
+                  keywords: ["perro", "juguete", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Camas",
-                  keywords: ["perro", "cama", "accessorios"],
+                  keywords: ["perro", "cama", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Transporte",
-                  keywords: ["perro", "transporte", "accessorios"],
+                  keywords: ["perro", "transporte", "accesorio"],
                   subcategories: []
                 }
               ]
             },
             {
               name: "Gatos",
-              keywords: ["gato", "accessorios"],
+              keywords: ["gato", "accesorio"],
               subcategories: [
                 {
                   name: "Comederos",
-                  keywords: ["gato", "comedero", "accessorios"],
+                  keywords: ["gato", "comedero", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Bebederos",
-                  keywords: ["gato", "bebedero", "accessorios"],
+                  keywords: ["gato", "bebedero", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Collares",
-                  keywords: ["gato", "collar", "accessorios"],
+                  keywords: ["gato", "collar", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Correas",
-                  keywords: ["gato", "correa", "accessorios"],
+                  keywords: ["gato", "correa", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Ropa",
-                  keywords: ["gato", "ropa", "accessorios"],
+                  keywords: ["gato", "ropa", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Juguetes",
-                  keywords: ["gato", "juguete", "accessorios"],
+                  keywords: ["gato", "juguete", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Camas",
-                  keywords: ["gato", "cama", "accessorios"],
+                  keywords: ["gato", "cama", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Transporte",
-                  keywords: ["gato", "transporte", "accessorios"],
-                  subcategories: []
-                },
-                {
-                  name: "Camas",
-                  keywords: ["gato", "cama", "accessorios"],
+                  keywords: ["gato", "transporte", "accesorio"],
                   subcategories: []
                 }
               ]
             },
             {
               name: "Aves",
-              keywords: ["ave", "accessorios"],
+              keywords: ["ave", "accesorio"],
               subcategories: [
               {
                 name: "Comederos",
-                keywords: ["ave", "comedero", "accessorios"],
+                keywords: ["ave", "comedero", "accesorio"],
                 subcategories: []
               },
               {
                 name: "Bebederos",
-                keywords: ["ave", "bebedero", "accessorios"],
+                keywords: ["ave", "bebedero", "accesorio"],
                 subcategories: []
               },
               {
                 name: "Jaulas",
-                keywords: ["ave", "jaula", "accessorios"],
+                keywords: ["ave", "jaula", "accesorio"],
                 subcategories: []
               }]
             },
             {
               name: "Reptiles",
-              keywords: ["reptil", "accessorios"],
+              keywords: ["reptil", "accesorio"],
               subcategories: [
                 {
                   name: "Terrarios",
-                  keywords: ["reptil", "terrario", "accessorios"],
+                  keywords: ["reptil", "terrario", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Comederos",
-                  keywords: ["reptil", "comedero", "accessorios"],
+                  keywords: ["reptil", "comedero", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Bebederos",
-                  keywords: ["reptil", "bebedero", "accessorios"],
+                  keywords: ["reptil", "bebedero", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Collares",
-                  keywords: ["reptil", "collar", "accessorios"],
+                  keywords: ["reptil", "collar", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Correas",
-                  keywords: ["reptil", "correa", "accessorios"],
+                  keywords: ["reptil", "correa", "accesorio"],
                   subcategories: []
                 },
               ]
             },
             {
               name: "Peces",
-              keywords: ["pez", "accessorios"],
+              keywords: ["pez", "accesorio"],
               subcategories: [
                 {
                   name: "Acuarios",
-                  keywords: ["pez", "acuario", "accessorios"],
+                  keywords: ["pez", "acuario", "accesorio"],
                   subcategories: []
                 }
               ]
             },
             {
               name: "Conejos",
-              keywords: ["conejo", "accessorios"],
+              keywords: ["conejo", "accesorio"],
               subcategories: [
                 {
                   name: "Comederos",
-                  keywords: ["conejo", "comedero", "accessorios"],
+                  keywords: ["conejo", "comedero", "accesorio"],
                   subcategories: []
                 },
                 {
                   name: "Bebederos",
-                  keywords: ["conejo", "bebedero", "accessorios"],
+                  keywords: ["conejo", "bebedero", "accesorio"],
                   subcategories: []
                 },
                 { 
                   name: "Jaulas",
-                  keywords: ["conejo", "jaula", "accessorios"],
+                  keywords: ["conejo", "jaula", "accesorio"],
                   subcategories: []
                 }
               ]
@@ -448,7 +443,10 @@ export default {
   methods: {
     async fetchFilteredProducts(filterCriteria) {
       try {
-        const queryParams = new URLSearchParams(filterCriteria);
+        const queryParams = new URLSearchParams({
+          ...filterCriteria,
+          keywords: this.keywords.join(',')
+        });
         const url = `http://127.0.0.1:3000/products?${queryParams}`;
         const response = await fetch(url, {
           method: 'GET',
@@ -467,7 +465,7 @@ export default {
     },
     updateKeywords(category) {
       this.keywords = category.keywords;
-      // TODO: Fetch products based on the selected category
+      this.fetchFilteredProducts();
     },
   },
 };

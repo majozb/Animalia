@@ -58,10 +58,22 @@ productRouter.post('/products', upload.array('images'), async (req, res) => {
 productRouter.get('/products', async (req, res) => {
   try {
     let products = await Product.find();
+    const keywords = req.query.keywords ? req.query.keywords.split(',') : [];
+    if (keywords.length > 0) {
+      products = products.filter(product => {
+        console.log('product', product.name);  
+        console.log('product.keywords', product.keywords);
+        console.log('keywords', keywords);
+        console.log('product.keywords.includes(keyword)', keywords.every(keyword => product.keywords.includes(keyword)));
+        return keywords.every(keyword => product.keywords.includes(keyword));
+      });
+    }
     // Max price filter
     const maxPrice = Math.max(...products.map(product => product.price));
     const priceRange = req.query.priceRange ? req.query.priceRange.split(',').map(Number) : [0, maxPrice];
     const inStock = (req.query.inStock === undefined) ? true : req.query.inStock === 'true';
+    
+
     if (priceRange != [0, 0]) {
       products = products.filter((product) => product.price >= priceRange[0] && product.price <= priceRange[1]);
     }
@@ -125,8 +137,8 @@ productRouter.put('/products/:id', upload.array('images', 10), async (req, res) 
       const imageUploadPromises = req.files.map((file) => {
         return new Promise((resolve, reject) => {
           const stream = cloudinary.uploader.upload_stream(
-            { 
-              folder: folderPath, 
+            {
+              folder: folderPath,
               transformation: [{ aspect_ratio: "1:1", crop: 'fill' }]
             },
             (error, result) => {
