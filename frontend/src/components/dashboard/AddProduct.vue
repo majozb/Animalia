@@ -58,7 +58,7 @@
                   <v-card>
                     <v-img :src=image aspect-ratio="1"></v-img>
                     <v-card-actions>
-                      <v-btn icon @click="deleteImage(index)">
+                      <v-btn icon color="error" @click="deleteImage(index)">
                         <v-icon>mdi-close</v-icon>
                       </v-btn>
                     </v-card-actions>
@@ -167,12 +167,10 @@ export default {
       try {
         const userStore = useUserStore();
         const userId = userStore.userId;
-
         if (!userId) throw new Error("Provider ID not found");
         this.product.keywords = Array.isArray(this.product.keywords)
           ? this.product.keywords // If keywords are already an array, use them as is
           : this.product.keywords.split(",").map((keyword) => keyword.trim());
-
         if (this.originalProduct) {
           // Update an existing product
           delete this.product._id;  // Remove the _id field
@@ -188,14 +186,12 @@ export default {
             formData.append('price', this.product.price);
             formData.append('dimensions', JSON.stringify(this.product.dimensions));
             formData.append('keywords', JSON.stringify(this.product.keywords));
-
             // Append images if any
             if (this.imagesToUpload && this.imagesToUpload.length > 0) {
               this.imagesToUpload.forEach((file) => {
                 formData.append('images', file);
               });
             }
-
             const response = await fetch(route, {
               method: "PUT",
               body: formData,
@@ -226,18 +222,15 @@ export default {
           formData.append('price', this.product.price);
           formData.append('keywords', this.product.keywords);
           formData.append('dimensions', this.product.dimensions);
-          // Añadir cada imagen individualmente al FormData
+          // Add images to the form data
           this.imagesToUpload.forEach((file) => {
             formData.append('images', file);
           });
-
           const response = await fetch('http://localhost:3000/products', {
             method: "POST",
             body: formData,
           });
-
           if (!response.ok) throw new Error("Error adding product");
-
           const newProduct = await response.json();
           await fetch(`http://localhost:3000/providers/${userId}`, {
             method: "PUT",
@@ -258,7 +251,7 @@ export default {
       this.originalProduct = { ...product };  // Save the original product data
       if (product.images && product.images.length > 0) {
         try {
-          // Descarga las imágenes y las convierte en archivos
+          // Download the images as files
           const imageFiles = await this.fetchImagesAsFiles(product.images);
           this.imagesToUpload = [...imageFiles];
           this.generatePreviewImages();
@@ -274,7 +267,7 @@ export default {
         if (!response.ok) throw new Error(`Error fetching image from ${url}`);
 
         const blob = await response.blob();
-        const filename = url.split("/").pop(); // Extraer el nombre del archivo de la URL
+        const filename = url.split("/").pop(); // Extract filename from URL
         return new File([blob], filename || "image.jpg", { type: blob.type });
       });
 
@@ -321,10 +314,9 @@ export default {
       this.generatePreviewImages();
     },
     generatePreviewImages() {
-      // Limpia las URLs existentes para evitar fugas de memoria
+      // Clean up existing preview images
       this.clearPreviewImages();
-
-      // Crea nuevas URLs para los archivos seleccionados
+      // Create new preview images
       this.previewImages = this.imagesToUpload.map((file) =>
         URL.createObjectURL(file)
       );
@@ -346,11 +338,12 @@ export default {
         dimensions: [0, 0, 0],  // Reset dimensions
       };
       this.clearPreviewImages();
+      this.imagesToUpload = [];  // Reset image files
       this.originalProduct = null;  // Reset original product data
     },
   },
   beforeDestroy() {
-    // Limpia las URLs de previsualización al destruir el componente
+    // Clean up preview images before the component is destroyed
     this.clearPreviewImages();
   },
 };
