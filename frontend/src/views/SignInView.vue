@@ -1,6 +1,6 @@
 <template>
   <v-container class="signIn-container" fluid>
-    <v-row justify="center" align-content>
+    <v-row justify="center">
       <v-col cols="6" md="6" class="text-center">
         <v-breadcrumbs :items="items"></v-breadcrumbs>
         <v-card class="pa-8" outlined>
@@ -51,17 +51,17 @@
       </v-col>
 
       <!-- Imagen decorativa de perro y gato -->
-      <v-col cols="6" md="6" class="text-right">
+      <v-col cols="auto" class="text-right">
         <v-img :src="getImagePath('../assets/dog-and-cat.png')" alt="Imagen del item" width="600px"></v-img>
       </v-col>
     </v-row>
     
   </v-container>
   <v-row justify="center" class="mb-0">
-      <v-col cols="12" md="12">
-        <p>&copy; 2024 Animalia. Todos los derechos reservados.</p>
-      </v-col>
-    </v-row>
+    <v-col cols="auto">
+      <p>&copy; 2024 Animalia. Todos los derechos reservados.</p>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

@@ -192,7 +192,7 @@ export default {
         // Convert vaccines to an array
         this.pet.vaccines = Array.isArray(this.pet.vaccines)
           ? this.pet.vaccines
-          : this.pet.vaccines.split(",").map((vaccine) => vaccine.trim());
+          : this.pet.vaccines.trim().split(",").map((vaccine) => vaccine);
 
         // If there has been a pet selected for editing...
         if (this.originalPet) {

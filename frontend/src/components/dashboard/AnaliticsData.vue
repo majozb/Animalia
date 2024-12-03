@@ -144,7 +144,6 @@ export default {
       try {
         const response = await fetch('http://localhost:3000/providers');
         const data = await response.json();
-        console.log('Data:', data);
 
         this.providers = data;
       } catch (error) {
@@ -198,6 +197,7 @@ export default {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: 80px;
 }
 
 .widget-card {
