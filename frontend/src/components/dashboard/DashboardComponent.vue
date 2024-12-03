@@ -68,7 +68,7 @@
             </v-list-item-title>
           </v-list-item>
           <v-list-item v-if="userType === 'purchaser'" class="menu-item">
-            <v-list-item-title @click="switchComponent('Wishlist')">
+            <v-list-item-title @click="switchComponent('WishList')">
               Lista de deseados
             </v-list-item-title>
           </v-list-item>
@@ -95,6 +95,7 @@ import Analitics from "@/components/dashboard/AnaliticsData.vue";
 import AddPet from "@/components/dashboard/AddPet.vue";
 import AddProvider from "@/components/dashboard/AddProvider.vue";
 import AddProduct from "@/components/dashboard/AddProduct.vue";
+import WishList from "@/components/dashboard/WishList.vue";
 
 export default {
   data() {
@@ -153,6 +154,7 @@ export default {
     AddPet,
     AddProvider,
     AddProduct,
+    WishList,
   },
 };
 </script>

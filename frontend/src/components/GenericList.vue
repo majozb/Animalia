@@ -52,7 +52,7 @@
         <v-btn v-if="!previewFlag" color="primary" @click="previousPage" :disabled="currentPage === 1">
           Anterior
         </v-btn>
-        <v-btn v-if="!previewFlag" color="primary" @click="nextPage" :disabled="currentPage === totalPages">
+        <v-btn v-if="!previewFlag" color="primary" @click="nextPage" :disabled="this.currentPage >= this.totalPages">
           Siguiente
         </v-btn>
       </v-col>
@@ -187,7 +187,9 @@ export default {
     },
     nextPage() {
       // Move to the next page of items
-      this.currentPage += 1;
+      if (this.currentPage < this.totalPages) {
+        this.currentPage += 1;
+      }
     },
     previousPage() {
       // Move to the previous page of items

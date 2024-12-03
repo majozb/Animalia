@@ -50,10 +50,14 @@ const MODEL_DATA = [
               </tbody>
             </v-table>
           </v-card>
-          <v-btn v-if="userType === 'purchaser'" class="red-button" @click="addToWishlist" outlined>
+          <v-btn v-if="userType === 'purchaser'" class="blue-button" @click="addToWishlist" outlined>
             <v-icon left>mdi-heart-outline</v-icon>
             AÑADIR A LA LISTA DE DESEADOS
             <!-- <v-icon left>mdi-heart-outline</v-icon> -->
+          </v-btn>
+          <v-btn v-if="userType === 'purchaser'" class="red-button" @click="removeFromWishlist" outlined>
+            <v-icon left>mdi-heart-broken</v-icon>
+            ELIMINAR DE LA LISTA DE DESEADOS
           </v-btn>
           <!-- Snackbar para mostrar el mensaje -->
           <v-snackbar v-model="snackbar" :timeout="3000" color="info" absolute class="snackbar">
@@ -92,6 +96,7 @@ export default {
       ],
       snackbar: false,
       snackbarMessage: '',
+      isInWishlist: false,
     };
   },
   mounted() {
@@ -106,13 +111,13 @@ export default {
   methods: {
     async addToWishlist() {
       try {
-        const resonse = await fetch(`http://127.0.0.1:3000/purchasers/${useUserStore().userId}`);
-        if (!resonse.ok) {
-          console.error('There was a problem fetching the purchaser:', resonse);
+        const purchaserResponse = await fetch(`http://127.0.0.1:3000/purchasers/${useUserStore().userId}`);
+        if (!purchaserResponse.ok) {
+          console.error('There was a problem fetching the purchaser:', purchaserResponse);
           return;
         }
 
-        const userData = await resonse.json();
+        const userData = await purchaserResponse.json();
 
         const currentWishlist = Array.isArray(userData.wishlist)
           ? userData.wishlist
@@ -126,7 +131,7 @@ export default {
 
         const updatedWishlist = [...currentWishlist, this.productData._id];
 
-        const response = await fetch(`http://127.0.0.1:3000/purchasers/${useUserStore().userId}`, {
+        const productResponse = await fetch(`http://127.0.0.1:3000/purchasers/${useUserStore().userId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -135,12 +140,54 @@ export default {
             wishlist: updatedWishlist,
           }),
         });
-        if (!response.ok) {
-          console.error('There was a problem adding the product to the wishlist:', response);
+        if (!productResponse.ok) {
+          console.error('There was a problem adding the product to the wishlist:', productResponse);
         }
       } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
       }
+      this.isInWishlist = true;
+      this.snackbarMessage = "Producto añadido a la lista de deseos.";
+      this.snackbar = true;
+    },
+    async removeFromWishlist() {
+      try {
+        const purchaserResponse = await fetch(`http://127.0.0.1:3000/purchasers/${useUserStore().userId}`);
+        if (!purchaserResponse.ok) {
+          console.error('There was a problem fetching the purchaser:', purchaserResponse);
+          return;
+        }
+
+        const userData = await purchaserResponse.json();
+
+        const currentWishlist = Array.isArray(userData.wishlist)
+          ? userData.wishlist
+          : [];
+
+        if (!currentWishlist.includes(this.productData._id)) {
+          this.snackbarMessage = "El producto no está en la lista de deseos.";
+          this.snackbar = true;
+          return;
+        }
+        const updatedWishlist = currentWishlist.filter((id) => id !== this.productData._id);
+
+        const productResponse = await fetch(`http://127.0.0.1:3000/purchasers/${useUserStore().userId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            wishlist: updatedWishlist,
+          }),
+        });
+        if (!productResponse.ok) {
+          console.error('There was a problem removing the product to the wishlist:', productResponse);
+        }
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+      }
+      this.snackbarMessage = "Producto eliminado de la lista de deseos.";
+      this.snackbar = true;
     },
     async fetchCurrentProduct() {
       try {
@@ -164,7 +211,7 @@ export default {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        this.productsDisplay = data;
+        this.productsDisplay = data.filter((product) => product._id !== this.productData._id);
       } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
       }
@@ -175,7 +222,7 @@ export default {
 
 <style scoped>
 .snackbar {
-  top: 20px; 
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
   width: 400px;
@@ -186,15 +233,26 @@ export default {
   text-align: center;
 }
 
-.red-button {
+.blue-button {
   background-color: #003366;
   color: white;
   text-transform: uppercase;
   font-weight: bold;
 }
 
-.red-button:hover {
+.blue-button:hover {
   background-color: #24527f;
+}
+
+.red-button {
+  background-color: #D75A5A;
+  color: white;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.red-button:hover {
+  background-color: #ff7777;
 }
 
 .main-container {
