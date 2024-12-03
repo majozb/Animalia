@@ -28,7 +28,7 @@ const PurchaserSchema = new mongoose.Schema({
   },
   pets: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Pet' }], // Relatioship with Pet collection
   points: { type: Number, required: false, default: 0 },
-  purchases : [{ type: mongoose.Schema.Types.ObjectId, ref: 'Purchase' }] // Relatioship with Purchase collection
+  wishlist : [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }] // Relatioship with Product collection
 });
 
 export const Purchaser = mongoose.model('Purchaser', PurchaserSchema);

@@ -67,6 +67,11 @@
               Productos
             </v-list-item-title>
           </v-list-item>
+          <v-list-item v-if="userType === 'purchaser'" class="menu-item">
+            <v-list-item-title @click="switchComponent('WishList')">
+              Lista de deseados
+            </v-list-item-title>
+          </v-list-item>
           <v-list-item @click="signOut" class="menu-item">
             <v-list-item-title>Cerrar sesión</v-list-item-title>
           </v-list-item>
@@ -84,19 +89,20 @@
 </template>
 
 <script>
-import { useUserStore } from "@/stores/userStore"; // Importa el store de Pinia
+import { useUserStore } from "@/stores/userStore"; // Imports the user store
 import AddPurchaser from "@/components/dashboard/AddPurchaser.vue";
 import Analitics from "@/components/dashboard/AnaliticsData.vue";
 import AddPet from "@/components/dashboard/AddPet.vue";
 import AddProvider from "@/components/dashboard/AddProvider.vue";
 import AddProduct from "@/components/dashboard/AddProduct.vue";
+import WishList from "@/components/dashboard/WishList.vue";
 
 export default {
   data() {
     return {
-      currentComponent: "", // Componente inicial será configurado dinámicamente
-      isMenuOpen: false, // Controla si el menú está abierto o no
-      searchQuery: "", // Query del buscador
+      currentComponent: "", // Actual component to display
+      isMenuOpen: false,
+      searchQuery: "",
       breadcrumbs: [
         { title: "Inicio", disabled: false, to: "/" },
         { title: "Panel de Control", disabled: true },
@@ -104,7 +110,7 @@ export default {
     };
   },
   computed: {
-    // Accede al store de usuario para determinar el tipo de usuario y nombre
+    // Access the user type from the user store
     userType() {
       return useUserStore().userType;
     },
@@ -113,7 +119,7 @@ export default {
     },
   },
   created() {
-    // Configura el componente inicial según el tipo de usuario
+    // Configure the initial component based on the user type
     this.setInitialComponent();
   },
   methods: {
@@ -127,7 +133,6 @@ export default {
       this.currentComponent = componentName;
     },
     setInitialComponent() {
-      // Configura el componente inicial basado en el tipo de usuario
       if (this.userType === "admin") {
         this.currentComponent = "Analitics";
       } else if (this.userType === "purchaser") {
@@ -135,7 +140,7 @@ export default {
       } else if (this.userType === "provider") {
         this.currentComponent = "AddProduct";
       } else {
-        this.currentComponent = ""; // Valor predeterminado o manejar errores
+        this.currentComponent = "";
       }
     },
     signOut() {
@@ -149,12 +154,12 @@ export default {
     AddPet,
     AddProvider,
     AddProduct,
+    WishList,
   },
 };
 </script>
 
 <style scoped>
-/* Estilos para el panel de control */
 .dashboard-container {
   display: flex;
   flex-direction: column;
