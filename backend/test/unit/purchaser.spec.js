@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import request from 'supertest';
-import { Purchaser } from '../src/models/purchaser.js';
-import { Pet } from '../src/models/pet.js';
-import { app } from '../src/index.js';
+import { Purchaser } from '../../src/models/purchaser.js';
+import { Pet } from '../../src/models/pet.js';
+import { app } from '../../src/index.js';
 
 const Purchaser1 = {
   name: 'Juan',

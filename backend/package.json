@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "env-cmd -f ./config/dev.env node src/index.js",
-    "test": "env-cmd -f ./config/test.env mocha --exit"
+    "test": "env-cmd -f ./config/test.env mocha test/unit --exit",
+    "mockup": "env-cmd -f ./config/test.env mocha test/mockup --exit"
   },
   "keywords": [],
   "author": "",
@@ -18,9 +19,14 @@
     "env-cmd": "^10.1.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
+    "install": "^0.13.0",
     "mocha": "^10.8.2",
+    "mockgoose": "^8.0.4",
+    "mockingoose": "^2.16.2",
     "nodemon": "^3.1.7",
+    "npm": "^10.9.1",
     "prettier": "^3.2.5",
+    "sinon": "^19.0.2",
     "supertest": "^7.0.0"
   },
   "dependencies": {
