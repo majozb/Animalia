@@ -108,11 +108,11 @@ describe('Purchaser routes', () => {
       expect(res.status).to.equal(200);
       expect(res.body.pets).to.be.an('array');
     });
-    it('should return a purchaser by id with purchases', async () => {
+    it('should return a purchaser by id with wishlist', async () => {
       purchaser = await Purchaser.findOne();
       const res = await request(app).get(`/purchasers/${purchaser._id}`);
       expect(res.status).to.equal(200);
-      expect(res.body.purchases).to.be.an('array');
+      expect(res.body.wishlist).to.be.an('array');
     });
   });
   context('POST /purchasers', () => {
