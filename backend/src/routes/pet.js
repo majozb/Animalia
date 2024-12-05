@@ -93,6 +93,7 @@ petRouter.post('/pets', upload.array('images'), async (req, res) => {
         stream.end(file.buffer);
       });
     });
+    
     // Wait for all images to be uploaded
     const imageUrls = await Promise.all(imageUploadPromises);
 
