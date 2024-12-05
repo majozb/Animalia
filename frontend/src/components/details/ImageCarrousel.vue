@@ -2,19 +2,27 @@
   <v-container>
     <v-row>
       <v-col cols="12">
+        <!-- Carousel with the main image -->
         <v-carousel v-model="currentSlide" hide-delimiters height="auto">
-          <v-carousel-item v-for="(image, index) in images" :key="index">
+          <v-carousel-item
+            v-for="(image, index) in images"
+            :key="index"
+          >
             <v-img :src="getImagePath(image)" class="carousel-image"></v-img>
           </v-carousel-item>
         </v-carousel>
-
-        <!-- <v-row justify="center" class="mt-4 image-list-container">
-          <v-img v-for="(image, index) in images" :key="index" :src="getImagePath(image)" class="thumbnail"
-            @click="currentSlide = index"></v-img>
-        </v-row> -->
+        <!-- Container for the thumbnails. Made with pure CSS -->
+        <div class="image-list-container">
+          <v-img
+            v-for="(image, index) in images"
+            :key="index"
+            :src="getImagePath(image)"
+            class="thumbnail"
+            :class="{ semitransparent: index !== currentSlide }" 
+            @click="currentSlide = index"
+          ></v-img>
+        </div>
       </v-col>
-    </v-row>
-    <v-row>
     </v-row>
   </v-container>
 </template>
@@ -43,15 +51,23 @@ export default {
 
 <style scoped>
 .image-list-container {
+  display: flex;
   overflow-x: scroll;
+  /* Opcional: define una altura fija a las miniaturas si lo deseas */
+  /* align-items: center; */
 }
 
-
-
 .thumbnail {
+  flex: 0 0 25%;  /* Every thumbnail will take 25% of the container */
+  box-sizing: border-box;
+  padding: 5px;
   cursor: pointer;
-  margin: 5px;
   border: 2px solid transparent;
+  object-fit: contain; /* Adjust the image size to the container */
+}
+
+.thumbnail.semitransparent {
+  opacity: 0.5; /* Make the image semitransparent if it's not the current slide */
 }
 
 .thumbnail:hover {

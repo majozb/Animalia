@@ -80,6 +80,15 @@ export default {
   mounted() {
     this.fetchCurrentPet();
     this.fetchPets();
+    window.scrollTo(0, 0); // Scroll to top of the page
+  },
+  // Watch for changes in the route in case the user navigates to another pet
+  watch: {
+    '$route.params.id'(newId, oldId) {
+      this.fetchCurrentPet();
+      this.fetchPets();
+      window.scrollTo(0, 0); // Scroll to top of the page
+    }
   },
   methods: {
     async fetchCurrentPet() {
@@ -104,7 +113,7 @@ export default {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        this.petsDisplay = data;
+        this.petsDisplay = data.filter((pet) => pet._id !== this.$route.params.id);
       } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
       }
