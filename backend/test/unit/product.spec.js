@@ -2,6 +2,8 @@ import { expect } from 'chai';
 import request from 'supertest';
 import { Product } from '../../src/models/product.js';
 import { app } from '../../src/index.js';
+import path from 'path';
+import fs from 'fs';
 
 const product1 = {
   name: 'Pienso para perros',
@@ -45,11 +47,25 @@ beforeEach(async () => {
 
 describe('Product routes', () => {
   context('POST /products', () => {
-    // it('should create a new product', async () => {
-    //   const response = await request(app).post('/products').send(product1);
-    //   expect(response.statusCode).to.equal(201);
-    //   expect(response.body.name).to.equal(product1.name);
-    // });
+    it('creates a new product', async function () {
+      this.timeout(10000); // Agregar más tiempo si es necesario
+      const __dirname = path.resolve();
+      const imagePath1 = path.join(__dirname, 'test/data', 'image1.jpg');
+      const imagePath2 = path.join(__dirname, 'test/data', 'image2.jpg');
+
+      const res = await request(app)
+        .post('/products')
+        .field('name', product1.name)
+        .field('description', product1.description)
+        .field('weight', product1.weight)
+        .field('stock', product1.stock)
+        .field('price', product1.price)
+        .field('dimensions', product1.dimensions.join(','))
+        .attach('images', fs.createReadStream(imagePath1))
+        .attach('images', fs.createReadStream(imagePath2));
+      
+      expect(res.statusCode).to.equal(201);
+    });
     it('should not create a new product without a name', async () => {
       const response = await request(app).post('/products').send({ ...product1, name: '' });
       expect(response.statusCode).to.equal(400);
