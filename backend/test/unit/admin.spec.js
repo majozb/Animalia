@@ -5,7 +5,7 @@ import { app } from '../../src/index.js';
 
 const admin1 = {
   name: 'Juan Carlos',
-  user: 'juanca',
+  user: `juanca_${Date.now()}`,
   password: '123456',
   email: 'juanca@gmail.com',
 };
