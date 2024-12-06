@@ -2,6 +2,8 @@ import { expect } from 'chai';
 import request from 'supertest';
 import { Pet } from '../../src/models/pet.js';
 import { app } from '../../src/index.js';
+import path from 'path';
+import fs from 'fs';
 
 const Dog1 = {
   name: 'Juan Carlos',
@@ -86,10 +88,24 @@ describe('Pet routes', () => {
     });
   });
   context('POST /pets', () => {
-    // it('creates a new pet', async () => {
-    //   const response = await request(app).post('/pets').send(Dog1);
-    //   expect(response.statusCode).to.equal(201);
-    // });
+    it('creates a new pet', async function () {
+      this.timeout(10000); 
+      const __dirname = path.resolve();
+      const imagePath1 = path.join(__dirname, 'test/data', 'image1.jpg');
+      const imagePath2 = path.join(__dirname, 'test/data', 'image2.jpg');
+      const res = await request(app)
+      .post('/pets')
+      .field('name', Dog1.name)
+      .field('description', Dog1.description)
+      .field('type', Dog1.type)
+      .field('breed', Dog1.breed)
+      .field('vaccines', Dog1.vaccines.join(','))
+      .field('birthDate', Dog1.birthDate.toISOString())
+      .field('genre', Dog1.genre)
+      .attach('images', fs.createReadStream(imagePath1))
+      .attach('images', fs.createReadStream(imagePath2));
+      expect(res.statusCode).to.equal(201);
+    });
     it('returns 400 if the request is invalid', async () => {
       const response = await request(app).post('/pets').send({});
       expect(response.statusCode).to.equal(400);
@@ -123,11 +139,11 @@ describe('Pet routes', () => {
     });
   });
   context('PUT /pets/:id', () => {
-    // it('updates a pet by id', async () => {
-    //   const response = await request(app).put(`/pets/${dog._id}`).send({ name: 'Juan Carlos II' });
-    //   expect(response.statusCode).to.equal(200);
-    //   expect(response.body.name).to.equal('Juan Carlos II');
-    // });
+    it('updates a pet by id', async () => {
+      const response = await request(app).put(`/pets/${dog._id}`).send({ name: 'Juan Carlos II' });
+      expect(response.statusCode).to.equal(200);
+      expect(response.body.name).to.equal('Juan Carlos II');
+    });
     it('returns 404 if the pet is not found', async () => {
       const response = await request(app).put('/pets/6738a7d061407fe740b46994').send({ name: 'Juan Carlos II' });
       expect(response.statusCode).to.equal(404);
@@ -137,10 +153,6 @@ describe('Pet routes', () => {
       const response = await request(app).put('/pets/123').send({ name: 'Juan Carlos II' });
       expect(response.statusCode).to.equal(400);
     });
-    // it('updates the vaccines of a pet', async () => {
-    //   const response = await request(app).put(`/pets/${dog._id}`).send({ vaccines: ['Rabia', 'Moquillo', 'Parvovirus'] });
-    //   expect(response.statusCode).to.equal(200);
-    // });
     it('returns 400 if the birthDate is invalid', async () => {
       try {
         Dog1.birthDate = '123';
@@ -156,12 +168,6 @@ describe('Pet routes', () => {
     });
   });
   context('DELETE /pets/:id', () => {
-    // it('deletes a pet by id', async () => {
-    //   const pet = await Pet.findOne();
-    //   const response = await request(app).delete(`/pets/${pet._id}`);
-    //   expect(response.statusCode).to.equal(200);
-    //   expect(response.body._id).to.equal(pet._id.toString());
-    // });
     it('returns 404 if the pet is not found', async () => {
       const response = await request(app).delete('/pets/6738a7d061407fe740b46994');
       expect(response.statusCode).to.equal(404);
@@ -170,14 +176,5 @@ describe('Pet routes', () => {
       const response = await request(app).delete('/pets/123');
       expect(response.statusCode).to.equal(400);
     });
-    // it('Deleting a pet two times', async () => {
-    //   const cat = await new Pet(Cat1).save();
-    //   const response = await request(app).delete(`/pets/${cat._id}`);
-    //   expect(response.statusCode).to.equal(200);
-    //   expect(response.body._id).to.equal(cat._id.toString());
-    //   const response2 = await request(app).delete(`/pets/${cat._id}`);
-    //   expect(response2.statusCode).to.equal(404);
-    //   expect(response2.body.error).to.equal('Pet not found');
-    // });
   });
 });

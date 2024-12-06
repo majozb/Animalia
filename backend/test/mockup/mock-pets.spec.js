@@ -136,14 +136,6 @@ describe('Pet routes mockup', () => {
   });
 
   context('DELETE /pets/:id', () => {
-    // it('deletes a pet by id', async function () {
-    //   this.timeout(10000); 
-    //   const pet = await Pet.findOne();
-    //   findByIdAndDeleteStub.resolves(Dog1);
-    //   const res = await request(app).delete(`/pets/${pet._id}`);
-    //   expect(res.statusCode).to.equal(200);
-    // });
-
     it('returns 404 if the pet is not found', async () => {
       findByIdAndDeleteStub.resolves(null);
       const res = await request(app).delete(`/pets/nonexistent-id`);

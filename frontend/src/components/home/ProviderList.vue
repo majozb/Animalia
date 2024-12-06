@@ -15,15 +15,6 @@
         <v-img :src="provider.logo" :alt="provider.name" height="50" width="80" contain></v-img>
       </v-col>
     </v-row>
-
-    <v-btn
-      class="view-all-button"
-      variant="outlined"
-      color="primary"
-      @click="viewAllProviders"
-    >
-      Ver todos nuestros proveedores
-    </v-btn>
   </v-container>
 </template>
 
@@ -42,12 +33,6 @@ export default {
         { name: 'Pedigree', logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSN_sh4OqOJn2wpUh2QxSQRl_pfehow5FPGJw&s' }
       ]
     };
-  },
-  methods: {
-    viewAllProviders() {
-      console.log("Ver todos los proveedores");
-      // Lógica para mostrar todos los proveedores, redirigir o mostrar más información
-    }
   }
 };
 </script>
