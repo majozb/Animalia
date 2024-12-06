@@ -59,7 +59,7 @@ const MODEL_DATA = [
             <v-icon left>mdi-heart-broken</v-icon>
             ELIMINAR DE LA LISTA DE DESEADOS
           </v-btn>
-          <!-- Snackbar para mostrar el mensaje -->
+          <!-- Snackbar to show the msg -->
           <v-snackbar v-model="snackbar" :timeout="3000" color="info" absolute class="snackbar">
             {{ snackbarMessage }}
             <template #actions>
@@ -102,6 +102,15 @@ export default {
   mounted() {
     this.fetchCurrentProduct();
     this.fetchProducts();
+    window.scrollTo(0, 0); // Scroll to top of the page
+  },
+  // Watch the route params to update the data in case the user navigates to a different product
+  watch: {
+    '$route.params.id'(newId, oldId) {
+      this.fetchCurrentProduct();
+      this.fetchProducts();
+      window.scrollTo(0, 0); // Scroll to top of the page
+    }
   },
   computed: {
     userType() {
