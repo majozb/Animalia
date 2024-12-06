@@ -30,11 +30,11 @@ export default {
   methods: {
     moreInfo() {
       // Acciones a realizar cuando se hace clic en "Más Información"
-      alert('Aquí iría la información adicional.');
+      this.$router.push('/pets');
     },
     joinInfo() {
       // Acciones a realizar cuando se hace clic en "Únete"
-      alert('Aquí se podría redirigir a una página de registro.');
+      this.$router.push('/signup');
     }
   }
 };

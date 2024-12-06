@@ -3,7 +3,7 @@
     <v-row align="center" justify="space-between">
     
       <!-- Search Bar -->
-      <v-col cols="auto">
+      <v-col cols="auto" class="search-bar">
         <v-text-field
           flat
           dense
@@ -98,6 +98,13 @@ export default {
   font-weight: bold;
   color: #003366;
   margin-left: 8px;
+}
+
+/* Media query para pantallas pequeñas */
+@media (max-width: 700px) {
+  .search-bar {
+    display: none;
+  }
 }
 </style>
 

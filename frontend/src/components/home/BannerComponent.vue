@@ -6,8 +6,8 @@
         <h3 class="subtitle">{{ subtitle }}</h3>
         <p class="description">{{ description }}</p>
         <div class="buttons">
-          <v-btn v-if="type === 'adoption'" class="btn" color="primary" variant="outlined">Más mascotas</v-btn>
-          <v-btn v-if="type === 'adoption'" class="btn" color="secondary" variant="text">Historias</v-btn>
+          <v-btn v-if="type === 'adoption'" class="btn" color="primary" variant="outlined" @click="learnMore">Más mascotas</v-btn>
+          <v-btn v-if="type === 'adoption'" class="btn" color="secondary" variant="text" @click="learnMore">Historias</v-btn>
           <v-btn v-if="type === 'services'" color="primary" @click="learnMore">Más Información</v-btn>
         </div>
       </v-col>
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'Banner',
   props: {
@@ -42,7 +43,7 @@ export default {
       alert('Aquí se podría redirigir a una página de registro.');
     },
     learnMore() {
-      alert('Aquí se podría redirigir a una página con todos los servicios ofrecidos.');
+      this.$router.push('/pets');
     }
   }
 };
