@@ -1,4 +1,4 @@
-name: Coveralls and Tests
+name: Coveralls
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [16, 18, 20, 21]
+        node: [21]
         os: [ubuntu-latest, windows-latest]
 
     steps:
@@ -30,19 +30,23 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Install dependencies
+        working-directory: backend
         run: npm ci
 
       - name: Run lint
+        working-directory: backend
         run: npm run lint
 
       - name: Run tests with coverage
-        run: npm run coverage
+        working-directory: backend
+        run: npm run test-cov
 
       - name: Verify Coveralls Token
         run: echo "${{ secrets.COVERALLS_REPO_TOKEN }}"
 
       - name: Upload coverage to Coveralls
-        run: cat ./backend/coverage/lcov.info | node ./bin/coveralls.js
+        working-directory: backend
+        run: cat ./coverage/lcov.info | node ./bin/coveralls.js
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
           COVERALLS_SERVICE_NAME: CI-pipeline
