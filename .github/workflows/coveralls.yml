@@ -1,0 +1,41 @@
+name: Coveralls
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v4
+
+    - name: Use Node.js 21.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 21.x
+        cache: 'npm'
+
+    - name: Start MongoDB 7.0
+      uses: supercharge/mongodb-github-action@1.10.0
+      with:
+        mongodb-version: '7.0'
+
+    - name: Install dependencies
+      working-directory: backend
+      run: npm ci
+
+    - name: Generate coverage info
+      working-directory: backend
+      run: npm run coverage
+
+    - name: Coveralls
+      working-directory: backend
+      uses: coverallsapp/github-action@v2.2.3
+      with:
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
