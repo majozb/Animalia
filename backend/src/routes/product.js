@@ -19,7 +19,6 @@ productRouter.post('/products', upload.array('images'), async (req, res) => {
     const product = new Product(req.body);
     await product.save();
     // Verify that at least one image was uploaded
-    console.log('req.files', req.files);
     if (!req.files || req.files.length === 0) {
       console.error('No images uploaded');
       return res.status(400).send({ error: 'At least one image is required' });
@@ -61,10 +60,7 @@ productRouter.get('/products', async (req, res) => {
     const keywords = req.query.keywords ? req.query.keywords.split(',') : [];
     if (keywords.length > 0) {
       products = products.filter(product => {
-        console.log('product', product.name);  
-        console.log('product.keywords', product.keywords);
-        console.log('keywords', keywords);
-        console.log('product.keywords.includes(keyword)', keywords.every(keyword => product.keywords.includes(keyword)));
+        // console.log('product.keywords.includes(keyword)', keywords.every(keyword => product.keywords.includes(keyword)));
         return keywords.every(keyword => product.keywords.includes(keyword));
       });
     }
