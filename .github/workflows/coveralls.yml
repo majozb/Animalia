@@ -38,4 +38,4 @@ jobs:
       working-directory: backend
       uses: coverallsapp/github-action@v2.2.3
       with:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
