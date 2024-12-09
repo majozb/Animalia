@@ -7,8 +7,7 @@ on:
     branches: [ "dev" ]
 
 jobs:
-  build:
-
+  build:  
     runs-on: ubuntu-latest
 
     steps:
@@ -34,7 +33,7 @@ jobs:
       working-directory: backend
       run: npm run coverage
 
-    - name: Coveralls
+    - name: Upload coverage to Coveralls
       working-directory: backend
       uses: coverallsapp/github-action@v2.2.3
       with:
