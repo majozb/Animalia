@@ -78,7 +78,7 @@ productRouter.get('/products', async (req, res) => {
     }
     res.status(200).send(products);
   } catch (e) {
-    res.status(500).send();
+    res.status(400).send();
   }
 });
 
@@ -109,7 +109,7 @@ productRouter.put('/products/:id', upload.array('images', 10), async (req, res) 
   const allowedUpdates = ['name', 'weight', 'stock', 'description', 'price', 'keywords', 'provider', 'dimensions'];
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
   if (!isValidOperation) {
-    return res.status(400).send({ error: 'Actualización no permitida' });
+    return res.status(400).send({ error: 'Update not allowed' });
   }
   try {
     const product = await Product.findById(req.params.id);
@@ -190,8 +190,6 @@ productRouter.delete('/products/:id', async (req, res) => {
     await cloudinary.api.delete_folder(folderPath);
     res.send(product);
   } catch (e) {
-    console.error('Error al eliminar el producto:', e);
     res.status(400).send();
   }
 });
-

@@ -58,9 +58,8 @@ adminRouter.put('/admins/:id', async (req, res) => {
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
 
   if (!isValidOperation) {
-    return res.status(400).send({ error: 'Actualización no permitida' });
+    return res.status(400).send({ error: 'Update not allowed' });
   }
-
   try {
     const admin = await Admin.findById(req.params.id);
     if (!admin) {

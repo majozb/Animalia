@@ -109,8 +109,6 @@ petRouter.post('/pets', upload.array('images'), async (req, res) => {
 
 
 // PUT /pets/:id
-const allowedUpdates = ['name', 'description', 'type', 'breed', 'vaccines', 'birthDate', 'medication', 'genre'];
-
 // IMPORTANT: In the case of a PUT request, all the images are replaced with the new ones.
 petRouter.put('/pets/:id', upload.array('images', 10), async (req, res) => {
   // Parse vaccines JSON string
@@ -119,9 +117,10 @@ petRouter.put('/pets/:id', upload.array('images', 10), async (req, res) => {
   }
   // Allow only certain fields to be updated (name, description, etc.)
   const updates = Object.keys(req.body);
+  const allowedUpdates = ['name', 'description', 'type', 'breed', 'vaccines', 'birthDate', 'medication', 'genre'];
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
   if (!isValidOperation) {
-    return res.status(400).send({ error: 'Actualización no permitida' });
+    return res.status(400).send({ message: 'Update not allowed' });
   }
   try {
     // Find the pet by ID
