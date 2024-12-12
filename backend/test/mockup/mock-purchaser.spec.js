@@ -213,6 +213,10 @@ describe('Purchaser routes with Sinon mocks', () => {
 
   context('DELETE /purchasers/:id', () => {
     it('deletes a purchaser', async () => {
+      let deleteOneStub, deleteManyStub;
+      deleteManyStub = sinon.stub(Pet, 'deleteMany').resolves();
+      deleteOneStub = sinon.stub(Purchaser, 'deleteOne').resolves(purchaser);
+      findByIdAndDeleteStub.resolves(purchaser);
       const res = await request(app).delete(`/purchasers/${Purchaser1._id}`);
       expect(res.statusCode).to.equal(200);
     });

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "env-cmd -f ./config/dev.env node src/index.js",
-    "test": "env-cmd -f ./config/test.env mocha test/mockup --exit",
+    "test": "mocha test/mockup 2> errores.log --exit",
     "coverage": "c8 npm test && c8 report --reporter=lcov > coverage/lcov.info",
     "coverage-sonar": "c8 report --reporter=lcov"
   },
