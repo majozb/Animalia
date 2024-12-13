@@ -30,9 +30,11 @@ jobs:
           mongodb-version: '7.0'
 
       - name: Install dependencies
+        working-directory: backend
         run: npm ci
 
       - name: Generate coverage information
+        working-directory: backend
         run: npm run coverage
 
       - name: SonarCloud Scan
@@ -42,4 +44,4 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: backend
-          coverageFile: ./backend/coverage/lcov.info
+          coverageFile: ./coverage/lcov.info
