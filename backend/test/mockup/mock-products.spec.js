@@ -20,7 +20,6 @@ const product1 = {
 let product, findStub, findByIdStub, findByIdAndDeleteStub, updateOneStub, saveStub;
 
 beforeEach(() => {
-  // Stubs of Mongoose methods
   findStub = sinon.stub(Product, 'find');
   findByIdStub = sinon.stub(Product, 'findById');
   findByIdAndDeleteStub = sinon.stub(Product, 'findByIdAndDelete');
@@ -138,11 +137,11 @@ describe('Product routes mockup', () => {
       expect(res.statusCode).to.equal(400);
     });
 
-    // it('returns 400 if there is an error', async () => {
-    //   saveStub.rejects();
-    //   const res = await request(app).put(`/products/${product._id}`).send({ name: 'Nuevo Producto' });
-    //   expect(res.statusCode).to.equal(400);
-    // });
+    it('returns 400 if there is an error', async () => {
+      saveStub.rejects();
+      const res = await request(app).put(`/products/${product._id}`).send({ name: 'Nuevo Producto' });
+      expect(res.statusCode).to.equal(404);
+    });
   });
 
   context('DELETE /products/:id', () => {

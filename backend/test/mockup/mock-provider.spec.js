@@ -167,15 +167,6 @@ describe('Provider routes mockup', () => {
       expect(provider.products).to.have.lengthOf(1);
     });
 
-    // it('should hash the password if provided', async () => {
-    //   let bcryptStub = sinon.stub(bcrypt, 'hash').resolves('hashedPassword123'); // Simulates the password hash
-    //   const newPassword = 'newPassword123';
-    //   const response = await request(app).put(`/providers/${provider._id}`).send({ password: newPassword });
-    //   expect(bcryptStub.calledWith(newPassword, 8)).to.be.true;
-    //   expect(response.statusCode).to.equal(200);
-    //   expect(response.body.password).to.equal('hashedPassword123');
-    // });
-
     it('should return 400 if the provider is not saved', async () => {
       saveStub.rejects();
       const response = await request(app).put(`/providers/${provider._id}`).send({ name: 'Juan Carlos' });
@@ -209,13 +200,13 @@ describe('Provider routes mockup', () => {
       expect(res.statusCode).to.equal(404);
     });
 
-    // it('returns 400 if there is an error', async () => {
-    //   provider.products.push('6738a7d061407fe740b46994');
-    //   findByIdStub.resolves(provider);
-    //   saveStub.rejects();
-    //   const res = await request(app).put(`/providers/${provider._id}/removeProduct`).send({ productId: '6738a7d061407fe740b46994' });
-    //   expect(res.statusCode).to.equal(400);
-    // });
+    it('returns 400 if there is an error', async () => {
+      provider.products.push('6738a7d061407fe740b46994');
+      findByIdStub.resolves(provider);
+      saveStub.rejects();
+      const res = await request(app).put(`/providers/${provider._id}/removeProduct`).send({ productId: '6738a7d061407fe740b46994' });
+      expect(res.statusCode).to.equal(400);
+    });
   });
 
   context('DELETE /providers/:id', () => {
@@ -239,11 +230,5 @@ describe('Provider routes mockup', () => {
       const res = await request(app).delete('/providers/123');
       expect(res.statusCode).to.equal(404);
     });
-    
-    // it('returns 400 if there is an error', async () => {
-    //   findByIdAndDeleteStub.rejects();
-    //   const res = await request(app).delete(`/providers/${provider._id}`);
-    //   expect(res.statusCode).to.equal(400);
-    // });
   });
 });

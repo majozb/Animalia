@@ -115,7 +115,6 @@ petRouter.put('/pets/:id', upload.array('images', 10), async (req, res) => {
   if (req.body.vaccines) {
     req.body.vaccines = JSON.parse(req.body.vaccines);
   }
-  // Allow only certain fields to be updated (name, description, etc.)
   const updates = Object.keys(req.body);
   const allowedUpdates = ['name', 'description', 'type', 'breed', 'vaccines', 'birthDate', 'medication', 'genre'];
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
@@ -123,7 +122,6 @@ petRouter.put('/pets/:id', upload.array('images', 10), async (req, res) => {
     return res.status(400).send({ message: 'Update not allowed' });
   }
   try {
-    // Find the pet by ID
     const pet = await Pet.findById(req.params.id);
     if (!pet) {
       return res.status(404).send({ error: 'Pet not found' });
@@ -138,8 +136,6 @@ petRouter.put('/pets/:id', upload.array('images', 10), async (req, res) => {
         prefix: folderPath,
         max_results: 500, // Maximum number of resources to return
       });
-      // Get the public_ids of the images to delete, so they do not stay in Cloudinary without being
-      // associated with the folder
       const publicIds = existingResources.resources.map((resource) => resource.public_id);
       // Delete all these images
       if (publicIds.length > 0) {
@@ -147,7 +143,6 @@ petRouter.put('/pets/:id', upload.array('images', 10), async (req, res) => {
       }
       // Delete the empty folder
       await cloudinary.api.delete_folder(folderPath);
-      // Upload the new images
       const imageUploadPromises = req.files.map((file) => {
         return new Promise((resolve, reject) => {
           const stream = cloudinary.uploader.upload_stream(
@@ -171,7 +166,6 @@ petRouter.put('/pets/:id', upload.array('images', 10), async (req, res) => {
       pet.images = imageUrls;
     }
 
-    // Update the pet's fields
     updates.forEach((update) => {
       pet[update] = req.body[update];
     });
@@ -186,26 +180,20 @@ petRouter.put('/pets/:id', upload.array('images', 10), async (req, res) => {
 // (DELETE) /pets/:id
 petRouter.delete('/pets/:id', async (req, res) => {
   try {
-    // Search for the pet by ID and delete it
     const pet = await Pet.findByIdAndDelete(req.params.id);
     if (!pet) {
       return res.status(404).send({ error: 'Pet not found' });
     }
-    // Get the path to the pet's folder in Cloudinary
     const folderPath = `pets/${pet._id}`;
-    // Get all the resources (images) in the folder
     const existingResources = await cloudinary.api.resources({
       type: 'upload',
       prefix: folderPath,
       max_results: 500,
     });
-    // Get the public_ids of the images to delete
     const publicIds = existingResources.resources.map((resource) => resource.public_id);
     if (publicIds.length > 0) {
-      // Delete all the images
       await cloudinary.api.delete_resources(publicIds);
     }
-    // Delete the empty folder
     await cloudinary.api.delete_folder(folderPath);
     res.send(pet);
   } catch (error) {

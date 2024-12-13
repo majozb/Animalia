@@ -27,15 +27,12 @@ describe('signUpRouter', () => {
         phone: '+1234567890',
       };
     
-      // Mock Purchaser.save() to reject with an error
-      // const saveStub = sinon.stub(Purchaser.prototype, 'save').rejects(new Error('Database error'));
-    
       const res = await request(app).post('/signUp').send(user);
     
       expect(res.statusCode).to.equal(500);
       expect(res.body).to.have.property('error').to.equal('Error al registrar el comprador');
     
-      sinon.restore(); // Restore mocked functions
+      sinon.restore();
     });
 
     it('returns 500 for weak password', async () => {

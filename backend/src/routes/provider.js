@@ -100,13 +100,11 @@ providerRouter.put('/providers/:id/removeProduct', async (req, res) => {
       return res.status(404).send({ message: 'Provider not found' });
     }
 
-    // Verify if the productId is in the provider products list
     const productIndex = provider.products.indexOf(productId);
     if (productIndex === -1) {
       return res.status(404).send({ error: 'Product not found in provider products list' });
     }
 
-    // Remove the product from the provider products list
     provider.products.splice(productIndex, 1);
     await provider.save();
     

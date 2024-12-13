@@ -60,7 +60,6 @@ productRouter.get('/products', async (req, res) => {
     const keywords = req.query.keywords ? req.query.keywords.split(',') : [];
     if (keywords.length > 0) {
       products = products.filter(product => {
-        // console.log('product.keywords.includes(keyword)', keywords.every(keyword => product.keywords.includes(keyword)));
         return keywords.every(keyword => product.keywords.includes(keyword));
       });
     }
@@ -115,9 +114,7 @@ productRouter.put('/products/:id', upload.array('images', 10), async (req, res) 
     const product = await Product.findById(req.params.id);
     if (!product) { return res.status(404).send(); }
     const folderPath = `products/${product._id}`;
-    // Check if new images are provided
     if (req.files && req.files.length > 0) {
-      // Delete existing images
       const existingResources = await cloudinary.api.resources({
         type: 'upload',
         prefix: folderPath,
@@ -127,7 +124,7 @@ productRouter.put('/products/:id', upload.array('images', 10), async (req, res) 
       if (publicIds.length > 0) {
         await cloudinary.api.delete_resources(publicIds);
       }
-      // Optionally delete the empty folder
+      // Optionally delete the empty folde
       await cloudinary.api.delete_folder(folderPath);
       // Upload new images
       const imageUploadPromises = req.files.map((file) => {

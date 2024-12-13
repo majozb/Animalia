@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import request from 'supertest';
 import sinon from 'sinon';
 import { Pet } from '../../src/models/pet.js';
-import { Admin } from '../../src/models/admin.js';
 import { app } from '../../src/index.js';
 import { v2 as cloudinary } from 'cloudinary';
 import path from 'path';
@@ -77,52 +76,6 @@ describe('Pet routes mockup', () => {
     });
   });
 
-  // context('GET /adoptionpets', () => {
-  //   it('returns all pets', async () => {
-  //     findIdStubAdmin = sinon.stub(Admin, 'find').resolves([{ _id: 'admin1', pets: [Dog1] }]);
-  //     const res = await request(app).get('/adoptionpets');
-  //     expect(res.statusCode).to.equal(200);
-  //     expect(res.body).to.be.an('array').with.lengthOf(1);
-  //   });
-
-  //   it('filters pets by selectedSpecies (dog)', async () => {
-  //     findIdStubAdmin = sinon.stub(Admin, 'find').resolves([{ _id: 'admin1', pets: [Dog1, { ...Dog1, type: 'dog' }] }]);
-  //     const res = await request(app).get('/adoptionpets').query({ selectedSpecies: 'dog' });
-  //     expect(res.statusCode).to.equal(200);
-  //     expect(res.body).to.be.an('array').with.lengthOf(2); // Solo perros
-  //   });
-
-  //   it('filters pets by selectedGenre (female)', async () => {
-  //     const petFemale = { ...Dog1, genre: 'female' };
-  //     findIdStubAdmin = sinon.stub(Admin, 'find').resolves([{ _id: 'admin1', pets: [petFemale, Dog1] }]);
-  //     const res = await request(app).get('/adoptionpets').query({ selectedGenre: 'female' });
-  //     expect(res.statusCode).to.equal(200);
-  //     expect(res.body).to.be.an('array').with.lengthOf(1); // Solo hembras
-  //   });
-
-  //   it('filters pets by selectedSpecies (cat)', async () => {
-  //     const petCat = { ...Dog1, type: 'cat' };
-  //     findIdStubAdmin = sinon.stub(Admin, 'find').resolves([{ _id: 'admin1', pets: [petCat, Dog1] }]);
-  //     const res = await request(app).get('/adoptionpets').query({ selectedSpecies: 'cat' });
-  //     expect(res.statusCode).to.equal(200);
-  //     expect(res.body).to.be.an('array').with.lengthOf(1); // Solo gatos
-  //   });
-
-  //   it('returns 404 if no admins found', async () => {
-  //     findIdStubAdmin = sinon.stub(Admin, 'find').resolves([]);
-  //     const res = await request(app).get('/adoptionpets');
-  //     expect(res.statusCode).to.equal(404);
-  //     expect(res.body).to.have.property('error', 'No admins found');
-  //   });
-
-  //   it('returns 500 if there is a server error', async () => {
-  //     findIdStubAdmin = sinon.stub(Admin, 'find').rejects(new Error('Database error'));
-  //     const res = await request(app).get('/adoptionpets');
-  //     expect(res.statusCode).to.equal(500);
-  //     expect(res.body).to.have.property('error', 'Database error');
-  //   });
-  // });
-
   context('GET /pets/:id', () => {
     it('returns a pet by id', async () => {
       findByIdStub.resolves(Dog1);
@@ -170,12 +123,12 @@ describe('Pet routes mockup', () => {
       const res = await request(app).post('/pets').send({});
       expect(res.statusCode).to.equal(400);
     });
-    // it('returns 400 if there is no image', async () => {
-    //   saveStub.rejects();
-    //   const res = await request(app).post('/pets').send({...Dog1, images: []});
-    //   expect(res.statusCode).to.equal(400);
-    //   expect(res.body.error).to.equal('At least one image is required');
-    // });
+    it('returns 400 if there is no image', async () => {
+      saveStub.rejects();
+      const res = await request(app).post('/pets').send({...Dog1, images: []});
+      expect(res.statusCode).to.equal(400);
+      expect(res.body.error).to.equal('Error adding pet');
+    });
   });
 
   context('PUT /pets/:id', () => {
@@ -191,12 +144,11 @@ describe('Pet routes mockup', () => {
       const res = await request(app).put(`/pets/nonexistent-id`).send({ name: 'Juan Carlos II' });
       expect(res.statusCode).to.equal(404);
     });
-    // it('returns 400 if the update is invalid', async () => {
-    //   saveStub.resolves(dog);
-    //   const response = await request(app).put(`/admins/${dog._id}`).send({ cif: '123' });
-    //   expect(response.statusCode).to.equal(400);
-    //   expect(response.error.message).to.equal('Update not allowed');
-    // });
+    it('returns 400 if the update is invalid', async () => {
+      saveStub.resolves(dog);
+      const response = await request(app).put(`/admins/${dog._id}`).send({ cif: '123' });
+      expect(response.statusCode).to.equal(400);
+    });
   });
 
   context('DELETE /pets/:id', () => {

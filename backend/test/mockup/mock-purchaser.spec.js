@@ -44,7 +44,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  sinon.restore(); // Restaurar todos los stubs
+  sinon.restore();
 });
 
 describe('Purchaser routes with Sinon mocks', () => {
@@ -232,11 +232,5 @@ describe('Purchaser routes with Sinon mocks', () => {
       const res = await request(app).delete('/purchasers/123');
       expect(res.statusCode).to.equal(404);
     });
-
-    // it('returns 400 if there is an error', async () => {
-    //   findByIdAndDeleteStub.rejects();
-    //   const res = await request(app).delete(`/purchasers/${purchaser._id}`);
-    //   expect(res.statusCode).to.equal(400);
-    // });
   });
 });
