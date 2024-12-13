@@ -24,4 +24,5 @@ pnpm-debug.log*
 
 .coveralls.yml
 .nyc_output
+coverage/
 errores.log
