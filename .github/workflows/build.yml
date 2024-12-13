@@ -24,6 +24,12 @@ jobs:
           node-version: 21.x
           cache: 'npm'
 
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17' # Actualizamos a Java 17
+
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.10.0
         with:
@@ -44,4 +50,3 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: backend
-          coverageFile: ./coverage/lcov.info
