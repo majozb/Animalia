@@ -93,13 +93,11 @@ purchaserRouter.put('/purchasers/:id/removePet', async (req, res) => {
       return res.status(404).send({ error: 'Purchaser not found' });
     }
 
-    // Verify if the petId is in the purchaser pets list
     const petIndex = purchaser.pets.indexOf(petId);
     if (petIndex === -1) {
       return res.status(404).send({ error: 'Pet not found in purchaser pets list' });
     }
 
-    // Remove the pet from the purchaser pets list
     purchaser.pets.splice(petIndex, 1);
     await purchaser.save();
     

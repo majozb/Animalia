@@ -19,10 +19,9 @@ const Dog1 = {
 };
 let dog;
 
-let findStub, findByIdStub, findByIdAndDeleteStub, saveStub, updateOneStub, resourcesStub, deleteResourcesStub, deleteFolderStub;;
+let findStub, findByIdStub, findByIdAndDeleteStub, saveStub, updateOneStub, resourcesStub, deleteResourcesStub, deleteFolderStub;
 
 beforeEach(() => {
-  // Stub de métodos de Mongoose
   findStub = sinon.stub(Pet, 'find');
   findByIdStub = sinon.stub(Pet, 'findById');
   findByIdAndDeleteStub = sinon.stub(Pet, 'findByIdAndDelete');
@@ -69,6 +68,12 @@ describe('Pet routes mockup', () => {
       expect(res.statusCode).to.equal(200);
       expect(res.body).to.be.an('array').with.lengthOf(2);
     });
+
+    it('returns 500 if there is an error', async () => {
+      findStub.rejects();
+      const res = await request(app).get('/pets');
+      expect(res.statusCode).to.equal(500);
+    });
   });
 
   context('GET /pets/:id', () => {
@@ -85,10 +90,10 @@ describe('Pet routes mockup', () => {
       expect(res.statusCode).to.equal(404);
     });
 
-    it('returns 404 if the id is invalid', async () => {
-      findByIdStub.resolves(null);
-      const res = await request(app).get('/pets/invalid-id');
-      expect(res.statusCode).to.equal(404);
+    it('returns 400 if there is an error', async () => {
+      findByIdStub.rejects();
+      const res = await request(app).get('/pets/1234');
+      expect(res.statusCode).to.equal(400);
     });
   });
 
@@ -118,6 +123,12 @@ describe('Pet routes mockup', () => {
       const res = await request(app).post('/pets').send({});
       expect(res.statusCode).to.equal(400);
     });
+    it('returns 400 if there is no image', async () => {
+      saveStub.rejects();
+      const res = await request(app).post('/pets').send({...Dog1, images: []});
+      expect(res.statusCode).to.equal(400);
+      expect(res.body.error).to.equal('Error adding pet');
+    });
   });
 
   context('PUT /pets/:id', () => {
@@ -132,6 +143,11 @@ describe('Pet routes mockup', () => {
       updateOneStub.resolves({ modifiedCount: 0 });
       const res = await request(app).put(`/pets/nonexistent-id`).send({ name: 'Juan Carlos II' });
       expect(res.statusCode).to.equal(404);
+    });
+    it('returns 400 if the update is invalid', async () => {
+      saveStub.resolves(dog);
+      const response = await request(app).put(`/admins/${dog._id}`).send({ cif: '123' });
+      expect(response.statusCode).to.equal(400);
     });
   });
 

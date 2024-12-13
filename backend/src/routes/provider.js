@@ -62,7 +62,7 @@ providerRouter.put('/providers/:id', async (req, res) => {
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
 
   if (!isValidOperation) {
-    return res.status(400).send({ error: 'Actualización no permitida' });
+    return res.status(400).send({ error: 'Update not allowed' });
   }
 
   try {
@@ -97,16 +97,14 @@ providerRouter.put('/providers/:id/removeProduct', async (req, res) => {
     const provider = await Provider.findById(req.params.id);  // Find the provider by id
 
     if (!provider) {
-      return res.status(404).send({ error: 'Provider not found' });
+      return res.status(404).send({ message: 'Provider not found' });
     }
 
-    // Verify if the productId is in the provider products list
     const productIndex = provider.products.indexOf(productId);
     if (productIndex === -1) {
-      return res.status(404).send({ error: 'Pet not found in provider products list' });
+      return res.status(404).send({ error: 'Product not found in provider products list' });
     }
 
-    // Remove the product from the provider products list
     provider.products.splice(productIndex, 1);
     await provider.save();
     
@@ -130,4 +128,3 @@ providerRouter.delete('/providers/:id', async (req, res) => {
     res.status(400).send();
   }
 });
-

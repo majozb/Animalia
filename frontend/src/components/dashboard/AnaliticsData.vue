@@ -28,7 +28,6 @@ import WidgetDonut from './WidgetDonut.vue';
 import GenericTable from './GenericTable.vue';
 
 
-// Registra todos los componentes de Chart.js
 Chart.register(...registerables);
 
 export default {
@@ -169,10 +168,6 @@ export default {
             counter_salud++;
           }
         });
-
-        console.log('Alimentos:', counter_alimentos);
-        console.log('Accesorios:', counter_accesorios);
-        console.log('Salud:', counter_salud);
 
         this.counter_accesorios = counter_accesorios;
         this.counter_alimentos = counter_alimentos;

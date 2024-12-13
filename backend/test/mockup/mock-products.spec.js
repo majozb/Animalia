@@ -6,7 +6,6 @@ import { app } from '../../src/index.js';
 import path from 'path';
 import fs from 'fs';
 
-// Productos de ejemplo
 const product1 = {
   name: 'Pienso para perros',
   weight: 2.5,
@@ -18,34 +17,33 @@ const product1 = {
   images: ['image1', 'image2'],
 };
 
-let product, findStub, findByIdStub, findByIdAndDeleteStub, updateOneStub;
+let product, findStub, findByIdStub, findByIdAndDeleteStub, updateOneStub, saveStub;
 
 beforeEach(() => {
-  // Stubs de métodos de Mongoose
   findStub = sinon.stub(Product, 'find');
   findByIdStub = sinon.stub(Product, 'findById');
   findByIdAndDeleteStub = sinon.stub(Product, 'findByIdAndDelete');
+  saveStub = sinon.stub(Product.prototype, 'save');
   
   updateOneStub = sinon.stub(Product, 'updateOne');
 
-  // Crear instancia simulada del producto
   product = new Product(product1);
 });
 
 afterEach(() => {
-  sinon.restore(); // Restaurar los métodos stub
+  sinon.restore();
 });
 
 describe('Product routes mockup', () => {
   
   context('POST /products', () => {
     it('creates a new product', async function () {
-      this.timeout(5000); // Agregar más tiempo si es necesario
+      this.timeout(5000);
       const __dirname = path.resolve();
       const imagePath1 = path.join(__dirname, 'test/data', 'image1.jpg');
       const imagePath2 = path.join(__dirname, 'test/data', 'image2.jpg');
 
-      const saveStubProduct = sinon.stub(Product.prototype, 'save').resolves(product1);
+      saveStub.resolves(product1);
 
       const res = await request(app)
         .post('/products')
@@ -59,15 +57,12 @@ describe('Product routes mockup', () => {
         .attach('images', fs.createReadStream(imagePath2));
       
       expect(res.statusCode).to.equal(201);
-      // Restaurar después del test
-    saveStubProduct.restore();
     });
 
     it('returns 400 if required fields are missing', async () => {
-      const saveStubProduct = sinon.stub(Product.prototype, 'save').rejects();
+      saveStub.rejects();
       const res = await request(app).post('/products').send({});
       expect(res.statusCode).to.equal(400);
-      saveStubProduct.restore();
     });
   
   });
@@ -85,6 +80,12 @@ describe('Product routes mockup', () => {
       const res = await request(app).get('/products');
       expect(res.statusCode).to.equal(200);
       expect(res.body).to.be.an('array').with.lengthOf(0);
+    });
+
+    it('returns 500 if there is an error', async () => {
+      findStub.rejects();
+      const res = await request(app).get('/products');
+      expect(res.statusCode).to.equal(400);
     });
   });
 
@@ -107,6 +108,12 @@ describe('Product routes mockup', () => {
       const res = await request(app).get('/products/invalid-id');
       expect(res.statusCode).to.equal(404);
     });
+
+    it('returns 400 if there is an error', async () => {
+      findByIdStub.rejects();
+      const res = await request(app).get(`/products/${product1._id}`);
+      expect(res.statusCode).to.equal(400);
+    });
   });
 
   context('PUT /products/:id', () => {
@@ -121,6 +128,18 @@ describe('Product routes mockup', () => {
     it('returns 404 if the product is not found', async () => {
       updateOneStub.resolves({ modifiedCount: 0 });
       const res = await request(app).put('/products/nonexistent-id').send({ name: 'Nuevo Producto' });
+      expect(res.statusCode).to.equal(404);
+    });
+
+    it('returns 400 if the update is not allowed', async () => {
+      saveStub.resolves(product);
+      const res = await request(app).put(`/products/${product._id}`).send({ invalidField: 'value' });
+      expect(res.statusCode).to.equal(400);
+    });
+
+    it('returns 400 if there is an error', async () => {
+      saveStub.rejects();
+      const res = await request(app).put(`/products/${product._id}`).send({ name: 'Nuevo Producto' });
       expect(res.statusCode).to.equal(404);
     });
   });
@@ -142,6 +161,12 @@ describe('Product routes mockup', () => {
       findByIdStub.resolves(null);
       const res = await request(app).delete('/products/invalid-id');
       expect(res.statusCode).to.equal(404);
+    });
+
+    it('returns 400 if there is an error', async () => {
+      findByIdAndDeleteStub.rejects();
+      const res = await request(app).delete(`/products/${product1._id}`);
+      expect(res.statusCode).to.equal(400);
     });
   });
 });
